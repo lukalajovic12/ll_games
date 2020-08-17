@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterapp_spomin_igra/CircleBasicMemoryGame.dart';
-import 'logic.dart';
-import 'squareBasicMemoryGame.dart';
+import 'memory/circles/CircleBasicMemoryGame.dart';
+import 'memory/logic.dart';
+import 'memory/squares/squareBasicMemoryGame.dart';
 import 'dart:async';
 import 'dart:io';
 import 'score_chart.dart';

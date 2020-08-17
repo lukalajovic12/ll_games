@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'logic.dart';
+import '../logic.dart';
 
 
 class BasicCircleMemory extends MemoryGame{
