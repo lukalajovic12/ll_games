@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../main.dart';
 import 'memory_game.dart';
 import 'memory_score_chart.dart';
 
@@ -71,21 +72,7 @@ class _MemoryTabWidget extends State<MemoryTabWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          Colors.indigo,
-          Colors.blueAccent,
-          Colors.indigo,
-          Colors.blueAccent,
-          Colors.indigo,
-        ], stops: [
-          0.2,
-          0.4,
-          0.6,
-          0.8,
-          1,
-        ]),
-      ),
+      color:Color(hexColor('#B7D7DA')),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -93,9 +80,9 @@ class _MemoryTabWidget extends State<MemoryTabWidget> {
           RaisedButton(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
-                side: BorderSide(color: Colors.black)),
-            color: Colors.blue,
-            child: Text('PLAY'),
+                ),
+            color: Color(hexColor('#0E629B')),
+            child: Text('PLAY',style: TextStyle(color: Color(hexColor('#B7D7DA'))),),
             onPressed: () {
               Navigator.push(
                 context,
@@ -106,9 +93,9 @@ class _MemoryTabWidget extends State<MemoryTabWidget> {
           RaisedButton(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(60),
-                side: BorderSide(color: Colors.blue)),
-            color: Colors.blue,
-            child: Text('STATISTICS'),
+                ),
+            color: Color(hexColor('#0E629B')),
+            child: Text('STATISTICS',style: TextStyle(color: Color(hexColor('#B7D7DA'))),),
             onPressed: () {
               Navigator.push(
                 context,

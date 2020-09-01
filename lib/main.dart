@@ -23,7 +23,18 @@ class MyHomePage extends StatefulWidget {
   State createState() => new MyHomePageState();
 }
 
+
+  hexColor(String chc){
+  String cn='0xff'+chc;
+  cn=cn.replaceAll('#', '');
+  int ci=int.parse(cn);
+  return ci;
+  }
+
+
 class MyHomePageState extends State<MyHomePage> {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,21 +48,7 @@ class MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            Colors.indigo,
-            Colors.blueAccent,
-            Colors.indigo,
-            Colors.blueAccent,
-            Colors.indigo,
-          ], stops: [
-            0.2,
-            0.4,
-            0.6,
-            0.8,
-            1,
-          ]),
-        ),
+        color: Color(hexColor('#B7D7DA')),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -87,13 +84,18 @@ class _MenuButtonWidget extends State<MenuButtonWidget> {
   Widget build(BuildContext context) {
     return Container(
       height: 150.0,
-      padding: new EdgeInsets.only(left: 10,right:10,top: 30,bottom: 30 ),
+      padding: new EdgeInsets.only(left: 10,right:10,top: 40,bottom: 40 ),
       child: RaisedButton(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(90),
-            side: BorderSide(color: Colors.black)),
-        color: Colors.blue,
-        child: Text('$name'),
+            ),
+        color: Color(hexColor('#0E629B')),
+        child: Text('$name',style:TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Color(hexColor('#B7D7DA')),
+          fontSize: 40.0,
+          letterSpacing: 2.0,
+        ),),
         onPressed: () {
           changeScreen();
         },
@@ -103,15 +105,52 @@ class _MenuButtonWidget extends State<MenuButtonWidget> {
 
   void changeScreen() {
     if (name == 'memory') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MemoryMainWidget()),
-      );
+      Navigator.of(context).push(_createRoute());
     } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => GeoMainWidget()),
-      );
+      Navigator.of(context).push(_createRoute2());
     }
   }
+
+
+
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => MemoryMainWidget(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
+
+  Route _createRoute2() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => GeoMainWidget(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
+
+
+
 }

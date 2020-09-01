@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../main.dart';
 import 'geo.dart';
 import 'kviz.dart';
 import 'score_table.dart';
@@ -14,13 +15,9 @@ class GeoMainWidget extends StatefulWidget {
 }
 
 class _GeoMainWidget extends State<GeoMainWidget> {
-
   _GeoMainWidget() {
     loadGeo();
   }
-
-
-
 
   void loadGeo() async {
     List<CountryCapital> geoList = new List();
@@ -35,7 +32,6 @@ class _GeoMainWidget extends State<GeoMainWidget> {
           continent: geoLines[i].split(",")[2]);
       geoList.add(cc);
     }
-
   }
 
   @override
@@ -68,55 +64,38 @@ class _GeoMainWidget extends State<GeoMainWidget> {
                 body: TabBarView(children: [
                   GeoTabWidget(1),
                   GeoTabWidget(2),
-
                 ]))));
   }
 }
 
-
-
 class GeoTabWidget extends StatefulWidget {
-
   int type = 1;
 
-
-
-  GeoTabWidget(int type){
-    this.type=type;
+  GeoTabWidget(int type) {
+    this.type = type;
   }
-
-
 
   @override
   State createState() => new _GeoTabWidget(type);
 }
 
-
 class _GeoTabWidget extends State<GeoTabWidget> {
+  List<CountryCapital> euroList = new List();
 
+  List<CountryCapital> namericaList = new List();
 
+  List<CountryCapital> samericaList = new List();
 
+  List<CountryCapital> afroList = new List();
 
-  List<CountryCapital> euroList=new List();
+  List<CountryCapital> asiaList = new List();
 
-
-
-  List<CountryCapital> namericaList=new List();
-
-  List<CountryCapital> samericaList=new List();
-
-  List<CountryCapital> afroList=new List();
-
-  List<CountryCapital> asiaList=new List();
-
-  List<CountryCapital> oceaniaList=new List();
+  List<CountryCapital> oceaniaList = new List();
 
   int type = 1;
 
-
-
   void loadGeo() async {
-    List<CountryCapital> geoList=new List();
+    List<CountryCapital> geoList = new List();
     var geoString = await rootBundle.loadString('assets/geo.txt');
     LineSplitter ls = new LineSplitter();
     List<String> geoLines = ls.convert(geoString);
@@ -128,7 +107,7 @@ class _GeoTabWidget extends State<GeoTabWidget> {
       geoList.add(cc);
     }
 
-    for(CountryCapital cc in geoList) {
+    for (CountryCapital cc in geoList) {
       if (cc.continent == 'europe') {
         euroList.add(cc);
       }
@@ -148,49 +127,49 @@ class _GeoTabWidget extends State<GeoTabWidget> {
         oceaniaList.add(cc);
       }
     }
-
   }
 
   _GeoTabWidget(int type) {
-
-
     this.type = type;
     loadGeo();
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          Colors.indigo,
-          Colors.blueAccent,
-          Colors.indigo,
-          Colors.blueAccent,
-          Colors.indigo,
-        ], stops: [
-          0.2,
-          0.4,
-          0.6,
-          0.8,
-          1,
-        ]),
-      ),
+      color: Color(hexColor('#B7D7DA')),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           RaisedButton(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-                side: BorderSide(color: Colors.black)),
-            color: Colors.blue,
-            child: Text('Europe'),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            color: Color(hexColor('#0E629B')),
+            child: Text(
+              'Europe',
+              style: TextStyle(color: Color(hexColor('#B7D7DA'))),
+            ),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) =>  Quiz(euroList, type,'europe')),
+                MaterialPageRoute(
+                    builder: (context) => Quiz(euroList, type, 'europe')),
+              );
+            },
+          ),
+          RaisedButton(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+),
+            color: Color(hexColor('#0E629B')),
+            child: Text('Asia',style: TextStyle(color: Color(hexColor('#B7D7DA')))),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Quiz(asiaList, type, 'asia')),
               );
             },
           ),
@@ -198,12 +177,14 @@ class _GeoTabWidget extends State<GeoTabWidget> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
                 side: BorderSide(color: Colors.black)),
-            color: Colors.blue,
-            child: Text('asia'),
+            color: Color(hexColor('#0E629B')),
+            child: Text('North America',style: TextStyle(color: Color(hexColor('#B7D7DA')))),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) =>  Quiz(asiaList, type,'asia')),
+                MaterialPageRoute(
+                    builder: (context) =>
+                        Quiz(namericaList, type, ',North america')),
               );
             },
           ),
@@ -211,12 +192,14 @@ class _GeoTabWidget extends State<GeoTabWidget> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
                 side: BorderSide(color: Colors.black)),
-            color: Colors.blue,
-            child: Text('North America'),
+            color: Color(hexColor('#0E629B')),
+            child: Text('South america',style: TextStyle(color: Color(hexColor('#B7D7DA')))),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) =>  Quiz(namericaList, type,',orth america')),
+                MaterialPageRoute(
+                    builder: (context) =>
+                        Quiz(samericaList, type, 'south america')),
               );
             },
           ),
@@ -224,12 +207,13 @@ class _GeoTabWidget extends State<GeoTabWidget> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
                 side: BorderSide(color: Colors.black)),
-            color: Colors.blue,
-            child: Text('south america'),
+            color: Color(hexColor('#0E629B')),
+            child: Text('Afrika',style: TextStyle(color: Color(hexColor('#B7D7DA'))),),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) =>  Quiz(samericaList, type,'south america')),
+                MaterialPageRoute(
+                    builder: (context) => Quiz(afroList, type, 'afrika')),
               );
             },
           ),
@@ -237,41 +221,22 @@ class _GeoTabWidget extends State<GeoTabWidget> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
                 side: BorderSide(color: Colors.black)),
-            color: Colors.blue,
-            child: Text('afrika'),
+            color: Color(hexColor('#0E629B')),
+            child: Text('Oceania',style: TextStyle(color: Color(hexColor('#B7D7DA'))),),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) =>  Quiz(afroList, type,'afrika')),
+                MaterialPageRoute(
+                    builder: (context) => Quiz(oceaniaList, type, 'oceania')),
               );
             },
           ),
-          RaisedButton(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-                side: BorderSide(color: Colors.black)),
-            color: Colors.blue,
-            child: Text('oceania'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) =>  Quiz(oceaniaList, type,'oceania')),
-              );
-            },
-          ),
-
-
-
-
-
-
-
           RaisedButton(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(60),
                 side: BorderSide(color: Colors.blue)),
-            color: Colors.blue,
-            child: Text('STATISTICS'),
+            color: Color(hexColor('#0E629B')),
+            child: Text('Statistics',style: TextStyle(color: Color(hexColor('#B7D7DA')))),
             onPressed: () {
               Navigator.push(
                 context,
