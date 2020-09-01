@@ -1,0 +1,247 @@
+Abkhazia,Sukhumi,asia
+Afghanistan,Kabul,asia
+Akrotiri and Dhekelia,Episkopi Cantonment,unknown
+Albania,Tirana,europe
+Algeria,Algiers,afrika
+American Samoa,Pago Pago,ocenia
+Andorra,Andorra la Vella,europe
+Angola,Luanda,afrika
+Anguilla,The Valley,unknown
+Antigua and Barbuda,St. John's,north america
+Argentina,Buenos Aires,south america
+Armenia,Yerevan,asia
+Aruba,Oranjestad,unknown
+Ascension Island,Georgetown,unknown
+Australia,Canberra,oceania
+Austria,Vienna,europe
+Azerbaijan,Baku,asia
+Bahamas,Nassau,unknown
+Bahrain,Manama,asia
+Bangladesh,Dhaka,asia
+Barbados,Bridgetown,unknown
+Belarus,Minsk,europe
+Belgium,Brussels,europe
+Belize,Belmopan,north america
+Benin,Porto-Novo,afrika
+Bermuda,Hamilton,north america
+Bhutan,Thimphu,asia
+Bolivia,La Paz,south america
+Bosnia and Herzegovina,Sarajevo,europe
+Botswana,Gaborone,afrika
+Brazil,Brasília,south america
+British Virgin Islands,Road Town,unknown
+Brunei,Bandar Seri Begawan,asia
+Bulgaria,Sofia,europe
+Burkina Faso,Ouagadougou,afrika
+Burundi,Bujumbura,afrika
+Cambodia,Phnom Penh,asia
+Cameroon,Yaoundé,afrika
+Canada,Ottawa,north america
+Cape Verde,Praia,unknown
+Cayman Islands,George Town,unknown
+Central African Republic,Bangui,afrika
+Chad,N'Djamena,unknown
+Chile,Santiago,south afrika
+China,Beijing,asia
+Christmas Island,Flying Fish Cove,unknown
+Cocos (Keeling) Islands,West Island,unknown
+Colombia,Bogotá,south america
+Comoros,Moroni,unknown
+Cook Islands,Avarua,unknown
+Costa Rica,San José,north america
+Croatia,Zagreb,europe
+Cuba,Havana,north america
+Curaçao,Willemstad,unknown
+Cyprus,Nicosia,europe
+Czech Republic,Prague,europe
+Côte d'Ivoire,Yamoussoukro,afrika
+Democratic Republic of the Congo,Kinshasa,afrika
+Denmark,Copenhagen,europe
+Djibouti,Djibouti,afrika
+Dominica,Roseau,unknown
+Dominican Republic,Santo Domingo,unknown
+East Timor,Dili,asia
+Easter Island,Hanga Roa,unknown
+Ecuador,Quito,south america
+Egypt,Cairo,afrika
+El Salvador,San Salvador,south america
+Equatorial Guinea,Malabo,afrika
+Eritrea,Asmara,afrika
+Estonia,Tallinn,europe
+Ethiopia,Addis Ababa,afrika
+Falkland Islands,Stanley,south america
+Faroe Islands,Tórshavn,unknown
+Federated States of Micronesia,Palikir,oceania
+Fiji,Suva,oceania
+Finland,Helsinki,europe
+France,Paris,europe
+French Guiana,Cayenne,south america
+French Polynesia,Papeete,oceania
+Gabon,Libreville,afrika
+Gambia,Banjul,afrika
+Georgia,Tbilisi,asia
+Germany,Berlin,europe
+Ghana,Accra,afrika
+Gibraltar,Gibraltar,europe
+Greece,Athens,europe
+Greenland,Nuuk,north america
+Grenada,St. George's,north america
+Guam,Hagåtña,oceania
+Guatemala,Guatemala City,south america
+Guernsey,St. Peter Port,unknown
+Guinea,Conakry,afrika
+Guinea-Bissau,Bissau,afrika
+Guyana,Georgetown,south america
+Haiti,Port-au-Prince,north america
+Honduras,Tegucigalpa,north america
+Hungary,Budapest,europe
+Iceland,Reykjavík,europe
+India,New Delhi,asia
+Indonesia,Jakarta,asia
+Iran,Tehran,asia
+Iraq,Baghdad,asia
+Ireland,Dublin,europe
+Isle of Man,Douglas,europe
+Israel,Jerusalem,asia
+Italy,Rome,europe
+Jamaica,Kingston,north america
+Japan,Tokyo,asia
+Jersey,St. Helier,unknown
+Jordan,Amman,asia
+Kazakhstan,Astana,asia
+Kenya,Nairobi,afrika
+Kiribati,Tarawa,oceania
+Kosovo,Pristina,europe
+Kuwait,Kuwait City,asia
+Kyrgyzstan,Bishkek,asia
+Laos,Vientiane,asia
+Latvia,Riga,europe
+Lebanon,Beirut,asia
+Lesotho,Maseru,afrika
+Liberia,Monrovia,afrika
+Libya,Tripoli,asia
+Liechtenstein,Vaduz,europe
+Lithuania,Vilnius,europe
+Luxembourg,Luxembourg,europe
+Macedonia,Skopje,afrika
+Madagascar,Antananarivo,afrika
+Malawi,Lilongwe,afrika
+Malaysia,Kuala Lumpur,asia
+Maldives,Malé,unknown
+Mali,Bamako,afrika
+Malta,Valletta,europe
+Marshall Islands,Majuro,unknown
+Mauritania,Nouakchott,afrika
+Mauritius,Port Louis,unknown
+Mexico,Mexico City,north america
+Moldova,Chisinau, europe
+Monaco,Monaco,europe
+Mongolia,Ulaanbaatar,asia
+Montenegro,Podgorica,europe
+Montserrat,Plymouth,unknown
+Morocco,Rabat,asia
+Mozambique,Maputo,afrika
+Myanmar,Naypyidaw,asia
+Nagorno Karabakh,Stepanakert,asia
+Namibia,Windhoek,afrika
+Nauru,Yaren,oceania
+Nepal,Kathmandu,asia
+Netherlands,Amsterdam,asia
+New Caledonia,Nouméa,oceania
+New Zealand,Wellington,oceania
+Nicaragua,Managua,north america
+Niger,Niamey,afrika
+Nigeria,Abuja,afrika
+Niue,Alofi,unknown
+Norfolk Island,Kingston,unknown
+North Korea,Pyongyang,asia
+Northern Cyprus,Nicosia,europe
+Northern Ireland,Belfast,europe
+Northern Mariana Islands,Saipan,unknown
+Norway,Oslo,europe
+Oman,Muscat,europe
+Pakistan,Islamabad,asia
+Palau,Ngerulmud,unknown
+Palestine,Jerusalem,asia
+Panama,Panama City,south america
+Papua New Guinea,Port Moresby,asia
+Paraguay,Asunción,south america
+Peru,Lima,south america
+Philippines,Manila,asia
+Pitcairn Islands,Adamstown,unknown
+Poland,Warsaw,europe
+Portugal,Lisbon,europe
+Puerto Rico,San Juan,north america
+Qatar,Doha,asia
+Taiwan,Taipei,asia
+Republic of the Congo,Brazzaville,afrika
+Romania,Bucharest,europe
+Russia,Moscow,europe
+Rwanda,Kigali,afrika
+Saint Barthélemy,Gustavia,unknown
+Saint Helena,Jamestown,unknown
+Saint Kitts and Nevis,Basseterre,unknown
+Saint Lucia,Castries,unknown
+Saint Martin,Marigot,unknown
+Saint Pierre and Miquelon,St. Pierre,unknown
+Saint Vincent and the Grenadines,Kingstown,unknown
+Samoa,Apia,oceania
+San Marino,San Marino,europe
+Saudi Arabia,Riyadh,asia
+Scotland,Edinburgh,europe
+Senegal,Dakar,europe
+Serbia,Belgrade,europe
+Seychelles,Victoria,afrika
+Sierra Leone,Freetown,afrika
+Singapore,Singapore,asia
+Sint Maarten,Philipsburg,unknown
+Slovakia,Bratislava,europe
+Slovenia,Ljubljana,europe
+Solomon Islands,Honiara,oceania
+Somalia,Mogadishu,afrika
+Somaliland,Hargeisa,afrika
+South Africa,Pretoria,afrika
+South Georgia and the South Sandwich Islands,Grytviken,unknown
+South Korea,Seoul,asia
+South Ossetia,Tskhinvali,asia
+South Sudan,Juba,afrika
+Spain,Madrid,europe
+Sri Lanka,Sri Jayawardenapura Kotte,asia
+Sudan,Khartoum,afrika
+Suriname,Paramaribo,south america
+Swaziland,Mbabane,afrika
+Sweden,Stockholm,europe
+Switzerland,Bern,europe
+Syria,Damascus,asia
+São Tomé and Príncipe,São Tomé,unknown
+Tajikistan,Dushanbe,asia
+Tanzania,Dodoma,afrika
+Thailand,Bangkok,asia
+Togo,Lomé,afrika
+Tonga,Nukuʻalofa,unknown
+Transnistria,Tiraspol,europe
+Trinidad and Tobago,Port of Spain,north america
+Tristan da Cunha,Edinburgh of the Seven Seas,unknown
+Tunisia,Tunis,afrika
+Turkey,Ankara,asia
+Turkmenistan,Ashgabat,asia
+Turks and Caicos Islands,Cockburn Town,unknown
+Tuvalu,Funafuti,unknown
+Uganda,Kampala,afrika
+Ukraine,Kiev,europe
+United Arab Emirates,Abu Dhabi,asia
+United Kingdom England,London,europe
+United States,Washington.D.C.,europe
+United States Virgin Islands,Charlotte Amalie,unknown
+Uruguay,Montevideo,south america
+Uzbekistan,Tashkent,asia
+Vanuatu,Port Vila,oceania
+Vatican City,Vatican City,europe
+Venezuela,Caracas,south america
+Vietnam,Hanoi,asia
+Wales,Cardiff,europe
+Wallis and Futuna,Mata-Utu,unknown
+Western Sahara,El Aaiún,afrika
+Yemen,Sanaá,asia
+Zambia,Lusaka,afrika
+Zimbabwe,Harare,asia

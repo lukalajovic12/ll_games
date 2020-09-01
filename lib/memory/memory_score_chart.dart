@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'database.dart';
-
-
+import 'memory_database.dart';
 
 class Score{
   int id=-1;
@@ -43,10 +41,7 @@ class _ScorePageState extends State<ScorePage> {
 
   List<Score> scoreist;
 
-  _HomePageState(){
-    this.scoreist=new List();
-    _query();
-  }
+
 
   void _query() async {
     scoreist=new List();
@@ -198,6 +193,10 @@ class _ScorePageState extends State<ScorePage> {
                   ),
                 ),
               ),
+
+
+
+
             ],
           ),
         ),

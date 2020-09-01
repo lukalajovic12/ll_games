@@ -1,12 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'memory/circles/CircleBasicMemoryGame.dart';
-import 'memory/logic.dart';
-import 'memory/squares/squareBasicMemoryGame.dart';
-import 'dart:async';
 import 'dart:io';
-import 'score_chart.dart';
-import 'database.dart';
+import 'geography/geo_main.dart';
+import 'memory/memory_main.dart';
+import 'memory/memory_score_chart.dart';
 
 void main() {
   runApp(new MyApp());
@@ -29,237 +26,92 @@ class MyHomePage extends StatefulWidget {
 class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
-      backgroundColor: Colors.grey[200],
-
-  appBar: AppBar(
-  title: Text('Memory'),
-  ),
-  body:Column(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: <Widget>[
-      RaisedButton(
-        color:Colors.blue,
-        child: Text('start squares'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => GameWidget(1)),
-            );
-          },
-      ),
-
-      RaisedButton(
-        color:Colors.blue,
-        child: Text('start circles'),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => GameWidget(2)),
-          );
-        },
-      ),
-         RaisedButton(
-           color:Colors.blue,
-           child: Text('score squares'),
-           onPressed: () {
-             Navigator.push(
-               context,
-               MaterialPageRoute(builder: (context) => ScorePage(1)),
-            );
-          },
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: Text(
+          'Gemory',
+          style: TextStyle(fontStyle: FontStyle.italic),
+          textAlign: TextAlign.center,
         ),
-
-
-      RaisedButton(
-        color:Colors.blue,
-        child: Text('score circles'),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ScorePage(2)),
-          );
-        },
+        centerTitle: true,
       ),
-        RaisedButton(
-          color:Colors.blue,
-          child: Text('exit'),
-          onPressed: () {
-            exit(0);
-          },
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [
+            Colors.indigo,
+            Colors.blueAccent,
+            Colors.indigo,
+            Colors.blueAccent,
+            Colors.indigo,
+          ], stops: [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1,
+          ]),
         ),
-    ],
-  ),
-  );
-  }
-  }
-
-class GameWidget extends StatefulWidget {
-
-  GameWidget(int type){
-    this.type=type;
-  }
-
-  int type=1;
-
-  @override
-  _GameWidget createState() => _GameWidget(type);
-}
-
-class _GameWidget extends State<GameWidget> {
-
-
-  final dbHelper = DatabaseHelper.instance;
-
-  GlobalKey _paintKey = new GlobalKey();
-   double canvasWidth=300;
-   double canvasHeight=300;
-  MemoryGame memoryGame;
-  Timer _timer;
-
-  int type=1;
-
-  _GameWidget(int type){
-    this.type=type;
-    if(type==1) {
-      memoryGame = new BasicSquareMemory(this.canvasWidth, this.canvasHeight);
-    }
-    else{
-      memoryGame = new BasicCircleMemory(canvasWidth, canvasHeight);
-    }
-    memoryGame.createGeoObjects();
-    runTimer();
-  }
-
-  void runTimer() {
-    memoryGame.work=false;
-    const oneSec = const Duration(milliseconds: 1);
-    _timer = new Timer.periodic(
-      oneSec,
-          (Timer timer) => setState(
-            () {
-          if (memoryGame.countDown <1) {
-            timer.cancel();
-            memoryGame.work=true;
-            memoryGame.hideGeoObjects();
-          } else {
-            memoryGame.countDown -= 1;
-          }
-        },
-      ),
-    );
-  }
-
-  void _insert() async {
-
-    Map<String, dynamic> row = {
-      DatabaseHelper.columnPoints : memoryGame.points,
-      DatabaseHelper.columnType:type,
-    };
-    final id = await dbHelper.insert(row);
-  }
-
-
-  void waitGameOver() {
-    memoryGame.work=false;
-    int timeOut=1000;
-    const oneSec = const Duration(milliseconds: 1);
-    _timer = new Timer.periodic(
-      oneSec,
-          (Timer timer) => setState(
-            () {
-          if (timeOut <1) {
-            timer.cancel();
-            _insert();
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MyHomePage()),
-            );
-          } else {
-            timeOut -= 1;
-          }
-        },
-      ),
-    );
-  }
-
-  void touch(Offset point) {
-    //0 pomeni ni dotika
-    //1 pomeni dotik prave
-    //-1 pomeni dotik napacne
-    int t=memoryGame.touch(point);
-      if (t == 1) {
-        setState(() {
-          memoryGame.objectsClicked+=1;
-          memoryGame.points += 100;
-            if(memoryGame.prepareForNextLevel()){
-              setState(() {
-                GameCanvas(this.memoryGame);
-              });
-              runTimer();
-            }
-        });
-      }
-      if (t == -1) {
-        memoryGame.looseLife();
-        if(memoryGame.lives>0) {
-          memoryGame.createGeoObjects();
-          setState(() {
-            GameCanvas(this.memoryGame);
-          });
-          runTimer();
-        }
-        else{
-          waitGameOver();
-        }
-      }
-    }
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('memory'),
-      ),
-      body: new Listener(
-        onPointerDown: (PointerDownEvent event) {
-          RenderBox referenceBox = _paintKey.currentContext.findRenderObject();
-          Offset offset = referenceBox.globalToLocal(event.position);
-          setState(() {
-            touch(offset);
-          });
-        },
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Center(
-              child: CustomPaint(
-                key: _paintKey,
-                size:Size(canvasWidth,canvasHeight),
-                painter:GameCanvas(memoryGame),
-              ),
-            ),
-            Text(
-              'points: ${memoryGame.points}',
-              style: TextStyle(
-                color: Colors.blue,
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-                letterSpacing: 2.0,
-              ),
-            ),
-            Text('lives ${memoryGame.lives}',
-              style: TextStyle(
-                color: Colors.blue,
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-                letterSpacing: 2.0,
-              ),
-            ),
+            MenuButtonWidget('memory'),
+            MenuButtonWidget('geo'),
           ],
         ),
       ),
     );
+  }
+}
+
+class MenuButtonWidget extends StatefulWidget {
+  String name = "";
+
+  MenuButtonWidget(String name) {
+    this.name = name;
+  }
+
+  @override
+  State createState() => new _MenuButtonWidget(name);
+}
+
+class _MenuButtonWidget extends State<MenuButtonWidget> {
+  String name = "";
+
+  _MenuButtonWidget(String name) {
+    this.name = name;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 150.0,
+      padding: new EdgeInsets.only(left: 10,right:10,top: 30,bottom: 30 ),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(90),
+            side: BorderSide(color: Colors.black)),
+        color: Colors.blue,
+        child: Text('$name'),
+        onPressed: () {
+          changeScreen();
+        },
+      ),
+    );
+  }
+
+  void changeScreen() {
+    if (name == 'memory') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MemoryMainWidget()),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => GeoMainWidget()),
+      );
+    }
   }
 }
