@@ -4,11 +4,6 @@ import 'geo.dart';
 import 'geo_database.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
-
-
-
-
-
 class ScoreList extends StatefulWidget {
   int type = 1;
 
@@ -21,30 +16,17 @@ class ScoreList extends StatefulWidget {
 }
 
 class _ScoreListState extends State<ScoreList> {
+  final bool animate = true;
 
+  List<charts.Series<TotalAnwsers, String>> _seriesPieData =
+      List<charts.Series<TotalAnwsers, String>>();
 
-
-
-
-
-  final bool animate=true;
-
-
-  List<charts.Series<TotalAnwsers, String>> _seriesPieData = List<charts.Series<TotalAnwsers, String>>();
-
-
-  _generateData(int correct,int wrong,int skipped) {
-
-
+  _generateData(int correct, int wrong, int skipped) {
     var piedata = [
       new TotalAnwsers('correct', correct, Color(0xfffdbe19)),
       new TotalAnwsers('wrong', wrong, Color(0xffff9900)),
       new TotalAnwsers('skipped', skipped, Color(0xffdc3912)),
     ];
-
-
-
-
 
     _seriesPieData.add(
       charts.Series(
@@ -57,18 +39,7 @@ class _ScoreListState extends State<ScoreList> {
         labelAccessorFn: (TotalAnwsers row, _) => '${row.count}',
       ),
     );
-
-
   }
-
-
-
-
-
-
-
-
-
 
   int type = 1;
 
@@ -78,12 +49,7 @@ class _ScoreListState extends State<ScoreList> {
     this.type = type;
     this.scoreist = new List();
     _query();
-
   }
-
-
-
-
 
   void _query() async {
     scoreist = new List();
@@ -96,24 +62,20 @@ class _ScoreListState extends State<ScoreList> {
           row[DatabaseHelper.columnSkipedAnwser],
           row[DatabaseHelper.columnType])));
     }
-    for(Score s in scl){
-
-    }
+    for (Score s in scl) {}
     setState(() {
       scoreist = new List();
 
-      int co=0;
-      int wr=0;
-      int sk=0;
-      for(Score s in scl){
+      int co = 0;
+      int wr = 0;
+      int sk = 0;
+      for (Score s in scl) {
         scoreist.add(s);
-        co+=s.correctAnwser;
-        wr+=s.wrongAnwser;
-        sk+=s.skipedAnwser;
+        co += s.correctAnwser;
+        wr += s.wrongAnwser;
+        sk += s.skipedAnwser;
       }
-      _generateData(co,wr,sk);
-
-
+      _generateData(co, wr, sk);
     });
   }
 
@@ -149,7 +111,6 @@ class _ScoreListState extends State<ScoreList> {
                 body: TabBarView(children: [
                   Container(
                       child: SingleChildScrollView(
-
                     child: DataTable(
                       sortAscending: true,
                       columns: <DataColumn>[
@@ -188,14 +149,6 @@ class _ScoreListState extends State<ScoreList> {
                           .toList(),
                     ),
                   )),
-
-
-
-
-
-
-
-
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Container(
@@ -203,21 +156,28 @@ class _ScoreListState extends State<ScoreList> {
                         child: Column(
                           children: <Widget>[
                             Text(
-                              'total points',style: TextStyle(fontSize: 24.0,fontWeight: FontWeight.bold),),
-                            SizedBox(height: 10.0,),
+                              'total points',
+                              style: TextStyle(
+                                  fontSize: 24.0, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
                             Expanded(
-                              child: charts.PieChart(
-                                  _seriesPieData,
+                              child: charts.PieChart(_seriesPieData,
                                   animate: true,
                                   animationDuration: Duration(seconds: 5),
                                   behaviors: [
                                     new charts.DatumLegend(
-                                      outsideJustification: charts.OutsideJustification.endDrawArea,
+                                      outsideJustification: charts
+                                          .OutsideJustification.endDrawArea,
                                       horizontalFirst: false,
                                       desiredMaxRows: 2,
-                                      cellPadding: new EdgeInsets.only(right: 4.0, bottom: 4.0),
+                                      cellPadding: new EdgeInsets.only(
+                                          right: 4.0, bottom: 4.0),
                                       entryTextStyle: charts.TextStyleSpec(
-                                          color: charts.MaterialPalette.purple.shadeDefault,
+                                          color: charts.MaterialPalette.purple
+                                              .shadeDefault,
                                           fontFamily: 'Georgia',
                                           fontSize: 11),
                                     )
@@ -226,7 +186,8 @@ class _ScoreListState extends State<ScoreList> {
                                       arcWidth: 100,
                                       arcRendererDecorators: [
                                         new charts.ArcLabelDecorator(
-                                            labelPosition: charts.ArcLabelPosition.inside)
+                                            labelPosition:
+                                                charts.ArcLabelPosition.inside)
                                       ])),
                             ),
                           ],
@@ -234,13 +195,6 @@ class _ScoreListState extends State<ScoreList> {
                       ),
                     ),
                   ),
-
-
-
-
-
-
-
                 ]))));
   }
 }
@@ -249,5 +203,6 @@ class TotalAnwsers {
   String type;
   int count;
   Color colorval;
+
   TotalAnwsers(this.type, this.count, this.colorval);
 }

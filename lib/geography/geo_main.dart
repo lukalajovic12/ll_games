@@ -15,24 +15,7 @@ class GeoMainWidget extends StatefulWidget {
 }
 
 class _GeoMainWidget extends State<GeoMainWidget> {
-  _GeoMainWidget() {
-    loadGeo();
-  }
-
-  void loadGeo() async {
-    List<CountryCapital> geoList = new List();
-    WidgetsFlutterBinding.ensureInitialized();
-    var geoString = await rootBundle.loadString('assets/geo.txt');
-    LineSplitter ls = new LineSplitter();
-    List<String> geoLines = ls.convert(geoString);
-    for (int i = 0; i < geoLines.length; i++) {
-      CountryCapital cc = new CountryCapital(
-          country: geoLines[i].split(",")[0],
-          capital: geoLines[i].split(",")[1],
-          continent: geoLines[i].split(",")[2]);
-      geoList.add(cc);
-    }
-  }
+  _GeoMainWidget() {}
 
   @override
   Widget build(BuildContext context) {
@@ -80,53 +63,37 @@ class GeoTabWidget extends StatefulWidget {
 }
 
 class _GeoTabWidget extends State<GeoTabWidget> {
-  List<CountryCapital> euroList = new List();
-
-  List<CountryCapital> namericaList = new List();
-
-  List<CountryCapital> samericaList = new List();
-
-  List<CountryCapital> afroList = new List();
-
-  List<CountryCapital> asiaList = new List();
-
-  List<CountryCapital> oceaniaList = new List();
+  List<CountryCategory> countryCategoryList = new List();
 
   int type = 1;
 
   void loadGeo() async {
-    List<CountryCapital> geoList = new List();
+    List<CountryCategory> ccl = new List();
     var geoString = await rootBundle.loadString('assets/geo.txt');
     LineSplitter ls = new LineSplitter();
     List<String> geoLines = ls.convert(geoString);
     for (int i = 0; i < geoLines.length; i++) {
-      CountryCapital cc = new CountryCapital(
+      CountryCapital countryCapital = new CountryCapital(
           country: geoLines[i].split(",")[0],
-          capital: geoLines[i].split(",")[1],
-          continent: geoLines[i].split(",")[2]);
-      geoList.add(cc);
-    }
-
-    for (CountryCapital cc in geoList) {
-      if (cc.continent == 'europe') {
-        euroList.add(cc);
+          capital: geoLines[i].split(",")[1]);
+      String category = geoLines[i].split(",")[2];
+      bool newContinent = true;
+      for (int i = 0; i < ccl.length; i++) {
+        if (category == ccl[i].category) {
+          ccl[i].addCountryCapital(countryCapital);
+          newContinent = false;
+          break;
+        }
       }
-      if (cc.continent == 'afrika') {
-        afroList.add(cc);
-      }
-      if (cc.continent == 'north america') {
-        namericaList.add(cc);
-      }
-      if (cc.continent == 'south america') {
-        samericaList.add(cc);
-      }
-      if (cc.continent == 'asia') {
-        asiaList.add(cc);
-      }
-      if (cc.continent == 'oceania') {
-        oceaniaList.add(cc);
+      if (newContinent) {
+        CountryCategory countryCategory =
+            new CountryCategory(category, countryCapital);
+        ccl.add(countryCategory);
       }
     }
+    setState(() {
+      countryCategoryList = ccl;
+    });
   }
 
   _GeoTabWidget(int type) {
@@ -137,115 +104,88 @@ class _GeoTabWidget extends State<GeoTabWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(hexColor('#B7D7DA')),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            color: Color(hexColor('#0E629B')),
-            child: Text(
-              'Europe',
-              style: TextStyle(color: Color(hexColor('#B7D7DA'))),
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Quiz(euroList, type, 'europe')),
-              );
-            },
+        color: Color(hexColor('#B7D7DA')),
+        child: Column(
+          children: <Widget>[
+            ListView.builder(
+                shrinkWrap: true,
+                itemCount: countryCategoryList.length,
+                itemBuilder: (context, i) {
+                  return Container(
+                    padding: new EdgeInsets.only(
+                        left: 40, right: 40),
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      color: Color(hexColor('#0E629B')),
+                      child: Text(
+                        countryCategoryList[i].category,
+                        style: TextStyle(color: Color(hexColor('#B7D7DA'))),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Quiz(
+                                  countryCategoryList[i].countryCapitalList,
+                                  type,
+                                  countryCategoryList[i].category)),
+                        );
+                      },
+                    ),
+                  );
+                }),
+
+
+
+      Container(
+        padding: new EdgeInsets.only(
+            left: 40, right: 40),
+        child: RaisedButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
           ),
-          RaisedButton(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-),
-            color: Color(hexColor('#0E629B')),
-            child: Text('Asia',style: TextStyle(color: Color(hexColor('#B7D7DA')))),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Quiz(asiaList, type, 'asia')),
-              );
-            },
+          color: Color(hexColor('#0E629B')),
+          child: Text(
+            'STATISTICS',
+            style: TextStyle(color: Color(hexColor('#B7D7DA'))),
           ),
-          RaisedButton(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-                side: BorderSide(color: Colors.black)),
-            color: Color(hexColor('#0E629B')),
-            child: Text('North America',style: TextStyle(color: Color(hexColor('#B7D7DA')))),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        Quiz(namericaList, type, ',North america')),
-              );
-            },
-          ),
-          RaisedButton(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-                side: BorderSide(color: Colors.black)),
-            color: Color(hexColor('#0E629B')),
-            child: Text('South america',style: TextStyle(color: Color(hexColor('#B7D7DA')))),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        Quiz(samericaList, type, 'south america')),
-              );
-            },
-          ),
-          RaisedButton(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-                side: BorderSide(color: Colors.black)),
-            color: Color(hexColor('#0E629B')),
-            child: Text('Afrika',style: TextStyle(color: Color(hexColor('#B7D7DA'))),),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Quiz(afroList, type, 'afrika')),
-              );
-            },
-          ),
-          RaisedButton(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-                side: BorderSide(color: Colors.black)),
-            color: Color(hexColor('#0E629B')),
-            child: Text('Oceania',style: TextStyle(color: Color(hexColor('#B7D7DA'))),),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Quiz(oceaniaList, type, 'oceania')),
-              );
-            },
-          ),
-          RaisedButton(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(60),
-                side: BorderSide(color: Colors.blue)),
-            color: Color(hexColor('#0E629B')),
-            child: Text('Statistics',style: TextStyle(color: Color(hexColor('#B7D7DA')))),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ScoreList(type)),
-              );
-            },
-          ),
-        ],
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ScoreList(type)),
+            );
+          },
+        ),
       ),
-    );
+
+
+
+
+
+
+
+
+          ],
+        ));
+  }
+}
+
+class CountryCategory {
+  String category = '';
+
+  List<CountryCapital> countryCapitalList = new List();
+
+  CountryCategory(String category, CountryCapital countryCapital) {
+    this.category = category;
+
+    countryCapitalList = new List();
+    countryCapitalList.add(countryCapital);
+  }
+
+  void addCountryCapital(CountryCapital countryCapital) {
+    countryCapitalList.add(countryCapital);
   }
 }

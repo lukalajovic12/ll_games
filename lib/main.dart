@@ -84,7 +84,7 @@ class _MenuButtonWidget extends State<MenuButtonWidget> {
   Widget build(BuildContext context) {
     return Container(
       height: 150.0,
-      padding: new EdgeInsets.only(left: 10,right:10,top: 40,bottom: 40 ),
+      padding: new EdgeInsets.only(left: 40,right:40,top: 40,bottom: 40 ),
       child: RaisedButton(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(90),
@@ -149,8 +149,6 @@ class _MenuButtonWidget extends State<MenuButtonWidget> {
       },
     );
   }
-
-
 
 
 }

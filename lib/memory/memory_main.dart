@@ -54,8 +54,8 @@ class _MemoryMainWidget extends State<MemoryMainWidget> {
 class MemoryTabWidget extends StatefulWidget {
   int type = 1;
 
-  MemoryTabWidget(int type){
-    this.type=type;
+  MemoryTabWidget(int type) {
+    this.type = type;
   }
 
   @override
@@ -72,37 +72,51 @@ class _MemoryTabWidget extends State<MemoryTabWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color:Color(hexColor('#B7D7DA')),
+      color: Color(hexColor('#B7D7DA')),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          RaisedButton(
-            shape: RoundedRectangleBorder(
+
+
+          Container(
+            padding: new EdgeInsets.only(
+                left: 40, right: 40, top: 40, bottom: 40),
+            child: RaisedButton(
+              shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
-                ),
-            color: Color(hexColor('#0E629B')),
-            child: Text('PLAY',style: TextStyle(color: Color(hexColor('#B7D7DA'))),),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => GameWidget(type)),
-              );
-            },
+              ),
+              color: Color(hexColor('#0E629B')),
+              child: Text(
+                'PLAY', style: TextStyle(color: Color(hexColor('#B7D7DA'))),),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GameWidget(type)),
+                );
+              },
+            ),
           ),
-          RaisedButton(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(60),
+
+          Container(padding: new EdgeInsets.only(
+              left: 40, right: 40, top: 40, bottom: 40),
+              child: RaisedButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(60),
                 ),
-            color: Color(hexColor('#0E629B')),
-            child: Text('STATISTICS',style: TextStyle(color: Color(hexColor('#B7D7DA'))),),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ScorePage(type)),
-              );
-            },
-          ),
+                color: Color(hexColor('#0E629B')),
+                child: Text('STATISTICS',
+                  style: TextStyle(color: Color(hexColor('#B7D7DA'))),),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ScorePage(type)),
+                  );
+                },
+              ),
+          )
+
+
         ],
       ),
     );

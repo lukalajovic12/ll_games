@@ -60,11 +60,6 @@ class CountryCapitalList extends StatelessWidget{
                         showEditIcon: false,
                         placeholder: false,
                       ),
-                      DataCell(
-                        Text(cc.continent),
-                        showEditIcon: false,
-                        placeholder: false,
-                      ),
                     ],
                   ),
                 ).toList(),

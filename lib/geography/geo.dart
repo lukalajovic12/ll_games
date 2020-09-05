@@ -4,8 +4,7 @@ import 'dart:math';
 class CountryCapital{
   String country;
   String capital;
-  String continent;
-  CountryCapital({ this.country,this.capital,this.continent}){
+  CountryCapital({ this.country,this.capital}){
   }
 }
 

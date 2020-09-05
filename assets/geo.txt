@@ -3,7 +3,7 @@ Afghanistan,Kabul,asia
 Akrotiri and Dhekelia,Episkopi Cantonment,unknown
 Albania,Tirana,europe
 Algeria,Algiers,afrika
-American Samoa,Pago Pago,ocenia
+American Samoa,Pago Pago,oceania
 Andorra,Andorra la Vella,europe
 Angola,Luanda,afrika
 Anguilla,The Valley,unknown
@@ -41,7 +41,7 @@ Cape Verde,Praia,unknown
 Cayman Islands,George Town,unknown
 Central African Republic,Bangui,afrika
 Chad,N'Djamena,unknown
-Chile,Santiago,south afrika
+Chile,Santiago,south america
 China,Beijing,asia
 Christmas Island,Flying Fish Cove,unknown
 Cocos (Keeling) Islands,West Island,unknown
@@ -134,7 +134,7 @@ Marshall Islands,Majuro,unknown
 Mauritania,Nouakchott,afrika
 Mauritius,Port Louis,unknown
 Mexico,Mexico City,north america
-Moldova,Chisinau, europe
+Moldova,Chisinau,europe
 Monaco,Monaco,europe
 Mongolia,Ulaanbaatar,asia
 Montenegro,Podgorica,europe
@@ -146,7 +146,7 @@ Nagorno Karabakh,Stepanakert,asia
 Namibia,Windhoek,afrika
 Nauru,Yaren,oceania
 Nepal,Kathmandu,asia
-Netherlands,Amsterdam,asia
+Netherlands,Amsterdam,europe
 New Caledonia,Nouméa,oceania
 New Zealand,Wellington,oceania
 Nicaragua,Managua,north america
@@ -231,7 +231,7 @@ Uganda,Kampala,afrika
 Ukraine,Kiev,europe
 United Arab Emirates,Abu Dhabi,asia
 United Kingdom England,London,europe
-United States,Washington.D.C.,europe
+United States,Washington.D.C.,north america
 United States Virgin Islands,Charlotte Amalie,unknown
 Uruguay,Montevideo,south america
 Uzbekistan,Tashkent,asia
