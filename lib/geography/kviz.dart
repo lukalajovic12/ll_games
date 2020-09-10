@@ -9,7 +9,7 @@ class Quiz extends StatefulWidget {
   List<CountryCapital> geoList;
   int quizType = 1;
 
-  String continent = '';
+  List<String> categories = new List();
 
   List<CountryCapital> getGeoList() {
     if (geoList == null) {
@@ -18,14 +18,14 @@ class Quiz extends StatefulWidget {
     return geoList;
   }
 
-  Quiz(List<CountryCapital> geoList, int quizType, String continent) {
+  Quiz(List<CountryCapital> geoList, int quizType, List<String> categories) {
     this.geoList = geoList;
     this.quizType = quizType;
-    this.continent = continent;
+    this.categories = categories;
   }
 
   @override
-  _QuizState createState() => _QuizState(getGeoList(), quizType, continent);
+  _QuizState createState() => _QuizState(getGeoList(), quizType, categories);
 }
 
 class _QuizState extends State<Quiz> {
@@ -36,7 +36,7 @@ class _QuizState extends State<Quiz> {
   // type true is you guess country type false is you guess capital
   int quizType = 1;
 
-  String continent = '';
+  List<String> categories = new List();
 
   List<CountryCapital> geoList;
 
@@ -47,7 +47,10 @@ class _QuizState extends State<Quiz> {
     return geoList;
   }
 
-  _QuizState(List<CountryCapital> geoList, int quizType, String continent) {
+  List<CountryCapital> correctlyAnwsered = new List();
+
+  _QuizState(
+      List<CountryCapital> geoList, int quizType, List<String> categories) {
     this.geoList = geoList;
     this.quizType = quizType;
     createGeo();
@@ -55,8 +58,10 @@ class _QuizState extends State<Quiz> {
     correctAnwsers = 0;
     wrongAnwsers = 0;
     skipedAnwserrs = 0;
-    this.continent = continent;
+    this.categories = categories;
+    this.correctlyAnwsered = new List();
   }
+
 
   KvizQuestion kvizQuestion;
 
@@ -74,7 +79,14 @@ class _QuizState extends State<Quiz> {
 
   int countDown;
 
+  int wait;
+
+  bool timeCounting = true;
+
+  String clickedAnwser = "";
+
   void createGeo() {
+    clickedAnwser = "";
     getGeoList().shuffle();
     CountryCapital rightAnwser = getGeoList()[0];
     if (quizType == 1) {
@@ -108,11 +120,24 @@ class _QuizState extends State<Quiz> {
             _insert();
             Navigator.pop(context);
           } else {
-            countDown -= 1;
+            if (timeCounting) {
+              countDown -= 1;
+            } else {
+              wait -= 1;
+              if (wait < 1) {
+                timeCounting = true;
+                createGeo();
+              }
+            }
           }
         },
       ),
     );
+  }
+
+  void startWait() {
+    timeCounting = false;
+    wait = 2;
   }
 
   void _insert() async {
@@ -125,23 +150,49 @@ class _QuizState extends State<Quiz> {
     final id = await dbHelper.insert(row);
   }
 
-  void checkAnwser(String anwser) {
-    setState(() {
-      if (quizType == 1) {
-        if (anwser == kvizQuestion.corectAnwser.capital) {
-          correctAnwsers += 1;
-        } else {
-          wrongAnwsers += 1;
-        }
+  bool checkingAnwser(String anwser) {
+    bool cor = true;
+
+    if (quizType == 1) {
+      if (anwser == kvizQuestion.corectAnwser.capital) {
+        cor = true;
       } else {
-        if (anwser == kvizQuestion.corectAnwser.country) {
-          correctAnwsers += 1;
-        } else {
-          wrongAnwsers += 1;
-        }
+        cor = false;
       }
-      createGeo();
+    } else {
+      if (anwser == kvizQuestion.corectAnwser.country) {
+        cor = true;
+      } else {
+        cor = false;
+      }
+    }
+    return cor;
+  }
+
+  void checkAnwser(String anwser) {
+    clickedAnwser = anwser;
+    setState(() {
+      if (checkingAnwser(anwser)) {
+        correctAnwsers += 1;
+      } else {
+        wrongAnwsers -= 1;
+      }
+      startWait();
     });
+  }
+
+  Color buttonCollor(String anwser) {
+    if (timeCounting) {
+      return Color(hexColor('#0E629B'));
+    } else {
+      if (checkingAnwser(anwser)) {
+        return Colors.green;
+      } else if (anwser == clickedAnwser) {
+        return Colors.red;
+      } else {
+        return Color(hexColor('#0E629B'));
+      }
+    }
   }
 
   void skipAnwser() {
@@ -169,19 +220,31 @@ class _QuizState extends State<Quiz> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('$continent rime ')),
+        appBar: AppBar(title: Text('GEO')),
         body: Container(
           color: Color(hexColor('#B7D7DA')),
           child: Column(
             children: <Widget>[
               Container(
+                width: double.infinity,
                 color: Color(hexColor('#0E629B')),
-                child: Text(getQuestion(),
-                    style: TextStyle(
-                      color: Color(hexColor('#B7D7DA')),
-                      fontSize: 20.0,
-                    )),
+                padding: new EdgeInsets.only(top: 40, bottom: 40),
+                child: Center(
+                  child: Text(getQuestion(),
+                      style: TextStyle(
+                        color: Color(hexColor('#B7D7DA')),
+                        fontSize: 20.0,
+                      )),
+                ),
               ),
+
+
+
+
+
+
+
+
               ListView.builder(
                   shrinkWrap: true,
                   itemCount: getAnwsers().length,
@@ -192,7 +255,7 @@ class _QuizState extends State<Quiz> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        color: Color(hexColor('#0E629B')),
+                        color: buttonCollor(getAnwsers()[index]),
                         child: Text(
                           getAnwsers()[index],
                           style: TextStyle(color: Color(hexColor('#B7D7DA'))),
@@ -221,19 +284,10 @@ class _QuizState extends State<Quiz> {
                 ),
               ),
               Container(
-                color: Color(hexColor('#0E629B')),
-                child: Text(
-                    ' correct: $correctAnwsers wrong: $wrongAnwsers skiped $skipedAnwserrs',
+                color: Color(hexColor('#B7D7DA')),
+                child: Text('${countDown}s',
                     style: TextStyle(
-                      color: Color(hexColor('#B7D7DA')),
-                      fontSize: 20.0,
-                    )),
-              ),
-              Container(
-                color: Color(hexColor('#0E629B')),
-                child: Text('You have $countDown time',
-                    style: TextStyle(
-                      color: Color(hexColor('#B7D7DA')),
+                      color: Color(hexColor('#0E629B')),
                       fontSize: 20.0,
                     )),
               ),

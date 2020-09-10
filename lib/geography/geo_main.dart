@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../main.dart';
 import 'geo.dart';
 import 'kviz.dart';
-import 'score_table.dart';
+import 'statistics.dart';
 
 class GeoMainWidget extends StatefulWidget {
   @override
@@ -65,9 +65,44 @@ class GeoTabWidget extends StatefulWidget {
 class _GeoTabWidget extends State<GeoTabWidget> {
   List<CountryCategory> countryCategoryList = new List();
 
+  List<CountryCategory> getCountryCategoryList() {
+    if (countryCategoryList == null) {
+      countryCategoryList = new List();
+    }
+    return countryCategoryList;
+  }
+
   int type = 1;
 
+  List<String> categories = new List();
+
+  List<String> getCategories() {
+    if (categories == null) {
+      categories = new List();
+    }
+
+    return categories;
+  }
+
+  Map<String, bool> selectedCategories = {};
+
+  List<CountryCapital> getSelectedCountryCapitals() {
+    List<CountryCapital> countryCapitals = new List();
+    for (CountryCategory cc in getCountryCategoryList()) {
+      if(selectedCategories[cc.category]){
+        print('brutus');
+        print(cc.category);
+        print('casius');
+        countryCapitals.addAll(cc.countryCapitalList);
+      }
+
+    }
+    return countryCapitals;
+  }
+
   void loadGeo() async {
+    categories = new List();
+
     List<CountryCategory> ccl = new List();
     var geoString = await rootBundle.loadString('assets/geo.txt');
     LineSplitter ls = new LineSplitter();
@@ -86,6 +121,8 @@ class _GeoTabWidget extends State<GeoTabWidget> {
         }
       }
       if (newContinent) {
+        getCategories().add(category);
+        selectedCategories[category] = false;
         CountryCategory countryCategory =
             new CountryCategory(category, countryCapital);
         ccl.add(countryCategory);
@@ -104,77 +141,93 @@ class _GeoTabWidget extends State<GeoTabWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Color(hexColor('#B7D7DA')),
-        child: Column(
-          children: <Widget>[
-            ListView.builder(
-                shrinkWrap: true,
-                itemCount: countryCategoryList.length,
-                itemBuilder: (context, i) {
-                  return Container(
-                    padding: new EdgeInsets.only(
-                        left: 40, right: 40),
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      color: Color(hexColor('#0E629B')),
-                      child: Text(
-                        countryCategoryList[i].category,
-                        style: TextStyle(color: Color(hexColor('#B7D7DA'))),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Quiz(
-                                  countryCategoryList[i].countryCapitalList,
-                                  type,
-                                  countryCategoryList[i].category)),
-                        );
-                      },
+      color: Color(hexColor('#B7D7DA')),
+      child: Column(
+        children: <Widget>[
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: countryCategoryList.length,
+            itemBuilder: (context, i) {
+              return Container(
+                padding: new EdgeInsets.only(left: 40, right: 40),
+                child: CheckboxListTile(
+                  title: new Text(countryCategoryList[i].category),
+                  value: selectedCategories[countryCategoryList[i].category],
+                  onChanged: (bool value) {
+                    setState(() {
+                      selectedCategories[countryCategoryList[i].category] =
+                          value;
+                    });
+                  },
+                ),
+              );
+            },
+          ),
+          Container(
+            child: Row(
+              children: <Widget>[
+                Container(
+                  padding: new EdgeInsets.only(left: 20, right: 20),
+                  child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
                     ),
-                  );
-                }),
-
-
-
-      Container(
-        padding: new EdgeInsets.only(
-            left: 40, right: 40),
-        child: RaisedButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+                    color: Color(hexColor('#0E629B')),
+                    child: Text(
+                      'STATISTICS',
+                      style: TextStyle(color: Color(hexColor('#B7D7DA'))),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ScoreList(type)),
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  padding: new EdgeInsets.only(left: 50),
+                  child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    color: Color(hexColor('#0E629B')),
+                    child: Text(
+                      'PLAY',
+                      style: TextStyle(color: Color(hexColor('#B7D7DA'))),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Quiz(
+                                getSelectedCountryCapitals(),
+                                type,
+                                getCategories())),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
-          color: Color(hexColor('#0E629B')),
-          child: Text(
-            'STATISTICS',
-            style: TextStyle(color: Color(hexColor('#B7D7DA'))),
-          ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ScoreList(type)),
-            );
-          },
-        ),
+        ],
       ),
-
-
-
-
-
-
-
-
-          ],
-        ));
+    );
   }
 }
 
 class CountryCategory {
   String category = '';
+
+  List<String> returnCategoryAsList() {
+    List<String> cl = new List();
+
+    cl.add(category);
+
+    return cl;
+  }
 
   List<CountryCapital> countryCapitalList = new List();
 
