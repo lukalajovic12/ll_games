@@ -20,6 +20,11 @@ class _GeoMainWidget extends State<GeoMainWidget> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
+
+
+
+
         home: DefaultTabController(
             length: 2,
             child: Scaffold(
@@ -47,7 +52,58 @@ class _GeoMainWidget extends State<GeoMainWidget> {
                 body: TabBarView(children: [
                   GeoTabWidget(1),
                   GeoTabWidget(2),
-                ]))));
+                ]),
+
+
+
+
+              drawer: Drawer(
+                // Add a ListView to the drawer. This ensures the user can scroll
+                // through the options in the drawer if there isn't enough vertical
+                // space to fit everything.
+                child: ListView(
+                  // Important: Remove any padding from the ListView.
+                  padding: EdgeInsets.zero,
+                  children: <Widget>[
+                    DrawerHeader(
+                      child: Text('Drawer Header'),
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                      ),
+                    ),
+                    ListTile(
+                      title: Text('Item 1'),
+                      onTap: () {
+                        // Update the state of the app
+                        // ...
+                        // Then close the drawer
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: Text('Item 2'),
+                      onTap: () {
+                        // Update the state of the app
+                        // ...
+                        // Then close the drawer
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+
+
+
+            )),
+
+
+
+
+
+
+    );
   }
 }
 
@@ -89,13 +145,9 @@ class _GeoTabWidget extends State<GeoTabWidget> {
   List<CountryCapital> getSelectedCountryCapitals() {
     List<CountryCapital> countryCapitals = new List();
     for (CountryCategory cc in getCountryCategoryList()) {
-      if(selectedCategories[cc.category]){
-        print('brutus');
-        print(cc.category);
-        print('casius');
+      if (selectedCategories[cc.category]) {
         countryCapitals.addAll(cc.countryCapitalList);
       }
-
     }
     return countryCapitals;
   }
@@ -151,7 +203,10 @@ class _GeoTabWidget extends State<GeoTabWidget> {
               return Container(
                 padding: new EdgeInsets.only(left: 40, right: 40),
                 child: CheckboxListTile(
-                  title: new Text(countryCategoryList[i].category),
+                  title: new Text(
+                    countryCategoryList[i].category,
+                    style: TextStyle(color: Color(hexColor('#0E629B'))),
+                  ),
                   value: selectedCategories[countryCategoryList[i].category],
                   onChanged: (bool value) {
                     setState(() {
@@ -159,6 +214,8 @@ class _GeoTabWidget extends State<GeoTabWidget> {
                           value;
                     });
                   },
+                  activeColor: Color(hexColor('#0E629B')),
+                  checkColor: Color(hexColor('#0E629B')),
                 ),
               );
             },
@@ -187,7 +244,7 @@ class _GeoTabWidget extends State<GeoTabWidget> {
                   ),
                 ),
                 Container(
-                  padding: new EdgeInsets.only(left: 50),
+                  padding: new EdgeInsets.only(left: 110),
                   child: RaisedButton(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),

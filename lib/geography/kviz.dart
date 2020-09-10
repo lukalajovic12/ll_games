@@ -62,7 +62,6 @@ class _QuizState extends State<Quiz> {
     this.correctlyAnwsered = new List();
   }
 
-
   KvizQuestion kvizQuestion;
 
   String _question;
@@ -175,7 +174,7 @@ class _QuizState extends State<Quiz> {
       if (checkingAnwser(anwser)) {
         correctAnwsers += 1;
       } else {
-        wrongAnwsers -= 1;
+        wrongAnwsers += 1;
       }
       startWait();
     });
@@ -237,14 +236,6 @@ class _QuizState extends State<Quiz> {
                       )),
                 ),
               ),
-
-
-
-
-
-
-
-
               ListView.builder(
                   shrinkWrap: true,
                   itemCount: getAnwsers().length,
