@@ -9,6 +9,8 @@ class Quiz extends StatefulWidget {
   List<CountryCapital> geoList;
   int quizType = 1;
 
+  int time = 30;
+
   List<String> categories = new List();
 
   List<CountryCapital> getGeoList() {
@@ -18,14 +20,17 @@ class Quiz extends StatefulWidget {
     return geoList;
   }
 
-  Quiz(List<CountryCapital> geoList, int quizType, List<String> categories) {
+  Quiz(List<CountryCapital> geoList, int quizType, List<String> categories,
+      int time) {
     this.geoList = geoList;
     this.quizType = quizType;
     this.categories = categories;
+    this.time = time;
   }
 
   @override
-  _QuizState createState() => _QuizState(getGeoList(), quizType, categories);
+  _QuizState createState() =>
+      _QuizState(getGeoList(), quizType, categories, time);
 }
 
 class _QuizState extends State<Quiz> {
@@ -33,8 +38,9 @@ class _QuizState extends State<Quiz> {
 
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
-  // type true is you guess country type false is you guess capital
   int quizType = 1;
+
+  int time = 30;
 
   List<String> categories = new List();
 
@@ -47,10 +53,10 @@ class _QuizState extends State<Quiz> {
     return geoList;
   }
 
-  List<CountryCapital> correctlyAnwsered = new List();
+  List<String> correctlyAnwsered = new List();
 
-  _QuizState(
-      List<CountryCapital> geoList, int quizType, List<String> categories) {
+  _QuizState(List<CountryCapital> geoList, int quizType,
+      List<String> categories, int time) {
     this.geoList = geoList;
     this.quizType = quizType;
     createGeo();
@@ -60,6 +66,7 @@ class _QuizState extends State<Quiz> {
     skipedAnwserrs = 0;
     this.categories = categories;
     this.correctlyAnwsered = new List();
+    this.time = time;
   }
 
   KvizQuestion kvizQuestion;
@@ -87,7 +94,18 @@ class _QuizState extends State<Quiz> {
   void createGeo() {
     clickedAnwser = "";
     getGeoList().shuffle();
-    CountryCapital rightAnwser = getGeoList()[0];
+
+    CountryCapital rightAnwser = null;
+    while (true) {
+      if (correctlyAnwsered.contains(getGeoList()[0].capital) ||
+          correctlyAnwsered.contains(getGeoList()[0].country)) {
+        getGeoList().shuffle();
+      } else {
+        rightAnwser = getGeoList()[0];
+        break;
+      }
+    }
+
     if (quizType == 1) {
       _question = rightAnwser.country;
     } else {
@@ -108,7 +126,7 @@ class _QuizState extends State<Quiz> {
   }
 
   void runTimer() {
-    countDown = 50;
+    countDown = time;
     const oneSec = const Duration(milliseconds: 1000);
     _timer = new Timer.periodic(
       oneSec,
@@ -151,7 +169,6 @@ class _QuizState extends State<Quiz> {
 
   bool checkingAnwser(String anwser) {
     bool cor = true;
-
     if (quizType == 1) {
       if (anwser == kvizQuestion.corectAnwser.capital) {
         cor = true;
@@ -173,6 +190,10 @@ class _QuizState extends State<Quiz> {
     setState(() {
       if (checkingAnwser(anwser)) {
         correctAnwsers += 1;
+        correctlyAnwsered.add(anwser);
+        if (getGeoList().length == correctlyAnwsered.length) {
+          Navigator.pop(context);
+        }
       } else {
         wrongAnwsers += 1;
       }
@@ -225,9 +246,9 @@ class _QuizState extends State<Quiz> {
           child: Column(
             children: <Widget>[
               Container(
+                padding: new EdgeInsets.only(top: 40,bottom: 40),
                 width: double.infinity,
                 color: Color(hexColor('#0E629B')),
-                padding: new EdgeInsets.only(top: 40, bottom: 40),
                 child: Center(
                   child: Text(getQuestion(),
                       style: TextStyle(
@@ -236,30 +257,35 @@ class _QuizState extends State<Quiz> {
                       )),
                 ),
               ),
-              ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: getAnwsers().length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      padding: new EdgeInsets.only(left: 40, right: 40),
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        color: buttonCollor(getAnwsers()[index]),
-                        child: Text(
-                          getAnwsers()[index],
-                          style: TextStyle(color: Color(hexColor('#B7D7DA'))),
-                        ),
-                        onPressed: () {
-                          checkAnwser(getAnwsers()[index]);
-                        },
+          Container(
+            padding: new EdgeInsets.only(top: 20),
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: getAnwsers().length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    padding: new EdgeInsets.only(left: 40, right: 40, top:20,bottom: 20),
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
-                    );
-                  }),
+                      color: buttonCollor(getAnwsers()[index]),
+                      child: Text(
+                        getAnwsers()[index],
+                        style: TextStyle(color: Color(hexColor('#B7D7DA'))),
+                      ),
+                      onPressed: () {
+                        checkAnwser(getAnwsers()[index]);
+                      },
+                    ),
+                  );
+                }),
+
+          ),
+
               Container(
                 padding: new EdgeInsets.only(
-                    left: 40, right: 40, top: 40, bottom: 40),
+                    left: 40, right: 40,),
                 child: RaisedButton(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),

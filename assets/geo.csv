@@ -1,24 +1,24 @@
 Abkhazia,Sukhumi,asia
 Afghanistan,Kabul,asia
-Akrotiri and Dhekelia,Episkopi Cantonment,unknown
+Akrotiri and Dhekelia,Episkopi Cantonment,europe,british teritory
 Albania,Tirana,europe
 Algeria,Algiers,afrika
-American Samoa,Pago Pago,oceania
+American Samoa,Pago Pago,oceania,us teritory
 Andorra,Andorra la Vella,europe
 Angola,Luanda,afrika
-Anguilla,The Valley,unknown
+Anguilla,The Valley,north america,british teritory
 Antigua and Barbuda,St. John's,north america
 Argentina,Buenos Aires,south america
 Armenia,Yerevan,asia
-Aruba,Oranjestad,unknown
-Ascension Island,Georgetown,unknown
+Aruba,Oranjestad,north america,dutch teritory
+Ascension Island,Georgetown,afrika,british teritory
 Australia,Canberra,oceania
 Austria,Vienna,europe
 Azerbaijan,Baku,asia
-Bahamas,Nassau,unknown
+Bahamas,Nassau,north america
 Bahrain,Manama,asia
 Bangladesh,Dhaka,asia
-Barbados,Bridgetown,unknown
+Barbados,Bridgetown,north america
 Belarus,Minsk,europe
 Belgium,Brussels,europe
 Belize,Belmopan,north america
@@ -29,7 +29,7 @@ Bolivia,La Paz,south america
 Bosnia and Herzegovina,Sarajevo,europe
 Botswana,Gaborone,afrika
 Brazil,Brasília,south america
-British Virgin Islands,Road Town,unknown
+British Virgin Islands,Road Town,north america,british teritory
 Brunei,Bandar Seri Begawan,asia
 Bulgaria,Sofia,europe
 Burkina Faso,Ouagadougou,afrika
@@ -37,40 +37,40 @@ Burundi,Bujumbura,afrika
 Cambodia,Phnom Penh,asia
 Cameroon,Yaoundé,afrika
 Canada,Ottawa,north america
-Cape Verde,Praia,unknown
-Cayman Islands,George Town,unknown
+Cape Verde,Praia,afrika
+Cayman Islands,George Town,north america,british teritory
 Central African Republic,Bangui,afrika
-Chad,N'Djamena,unknown
+Chad,N'Djamena,afrika
 Chile,Santiago,south america
 China,Beijing,asia
-Christmas Island,Flying Fish Cove,unknown
-Cocos (Keeling) Islands,West Island,unknown
+Christmas Island,Flying Fish Cove,oceania,australian teritory
+Cocos (Keeling) Islands,West Island,oceania,australian teritory
 Colombia,Bogotá,south america
-Comoros,Moroni,unknown
-Cook Islands,Avarua,unknown
+Comoros,Moroni,afrika
+Cook Islands,Avarua,oceania,new zealand teritory
 Costa Rica,San José,north america
 Croatia,Zagreb,europe
 Cuba,Havana,north america
-Curaçao,Willemstad,unknown
+Curaçao,Willemstad,north america,dutch teritory
 Cyprus,Nicosia,europe
 Czech Republic,Prague,europe
 Côte d'Ivoire,Yamoussoukro,afrika
 Democratic Republic of the Congo,Kinshasa,afrika
 Denmark,Copenhagen,europe
 Djibouti,Djibouti,afrika
-Dominica,Roseau,unknown
-Dominican Republic,Santo Domingo,unknown
+Dominica,Roseau,north america
+Dominican Republic,Santo Domingo,north america
 East Timor,Dili,asia
-Easter Island,Hanga Roa,unknown
+Easter Island,Hanga Roa,south america,chile teritory
 Ecuador,Quito,south america
 Egypt,Cairo,afrika
-El Salvador,San Salvador,south america
+El Salvador,San Salvador,north america
 Equatorial Guinea,Malabo,afrika
 Eritrea,Asmara,afrika
 Estonia,Tallinn,europe
 Ethiopia,Addis Ababa,afrika
 Falkland Islands,Stanley,south america
-Faroe Islands,Tórshavn,unknown
+Faroe Islands,Tórshavn,europe,dutch teritory
 Federated States of Micronesia,Palikir,oceania
 Fiji,Suva,oceania
 Finland,Helsinki,europe
@@ -87,8 +87,8 @@ Greece,Athens,europe
 Greenland,Nuuk,north america
 Grenada,St. George's,north america
 Guam,Hagåtña,oceania
-Guatemala,Guatemala City,south america
-Guernsey,St. Peter Port,unknown
+Guatemala,Guatemala City,north america
+Guernsey,St. Peter Port,europe,british teritory
 Guinea,Conakry,afrika
 Guinea-Bissau,Bissau,afrika
 Guyana,Georgetown,south america
@@ -106,7 +106,7 @@ Israel,Jerusalem,asia
 Italy,Rome,europe
 Jamaica,Kingston,north america
 Japan,Tokyo,asia
-Jersey,St. Helier,unknown
+Jersey,St. Helier,europe,british teritory
 Jordan,Amman,asia
 Kazakhstan,Astana,asia
 Kenya,Nairobi,afrika
@@ -123,22 +123,22 @@ Libya,Tripoli,asia
 Liechtenstein,Vaduz,europe
 Lithuania,Vilnius,europe
 Luxembourg,Luxembourg,europe
-Macedonia,Skopje,afrika
+North Macedonia,Skopje,europe
 Madagascar,Antananarivo,afrika
 Malawi,Lilongwe,afrika
 Malaysia,Kuala Lumpur,asia
-Maldives,Malé,unknown
+Maldives,Malé,oceania
 Mali,Bamako,afrika
 Malta,Valletta,europe
-Marshall Islands,Majuro,unknown
+Marshall Islands,Majuro,oceania
 Mauritania,Nouakchott,afrika
-Mauritius,Port Louis,unknown
+Mauritius,Port Louis,afrika
 Mexico,Mexico City,north america
 Moldova,Chisinau,europe
 Monaco,Monaco,europe
 Mongolia,Ulaanbaatar,asia
 Montenegro,Podgorica,europe
-Montserrat,Plymouth,unknown
+Montserrat,Plymouth,north america,british teritory
 Morocco,Rabat,asia
 Mozambique,Maputo,afrika
 Myanmar,Naypyidaw,asia
@@ -152,23 +152,23 @@ New Zealand,Wellington,oceania
 Nicaragua,Managua,north america
 Niger,Niamey,afrika
 Nigeria,Abuja,afrika
-Niue,Alofi,unknown
-Norfolk Island,Kingston,unknown
+Niue,Alofi,oceania
+Norfolk Island,Kingston,oceania,australian teritory
 North Korea,Pyongyang,asia
 Northern Cyprus,Nicosia,europe
 Northern Ireland,Belfast,europe
-Northern Mariana Islands,Saipan,unknown
+Northern Mariana Islands,Saipan,oceania, us teritory
 Norway,Oslo,europe
-Oman,Muscat,europe
+Oman,Muscat,asia
 Pakistan,Islamabad,asia
-Palau,Ngerulmud,unknown
+Palau,Ngerulmud,oceania
 Palestine,Jerusalem,asia
 Panama,Panama City,south america
 Papua New Guinea,Port Moresby,asia
 Paraguay,Asunción,south america
 Peru,Lima,south america
 Philippines,Manila,asia
-Pitcairn Islands,Adamstown,unknown
+Pitcairn Islands,Adamstown,oceania,british teritory
 Poland,Warsaw,europe
 Portugal,Lisbon,europe
 Puerto Rico,San Juan,north america
@@ -178,13 +178,13 @@ Republic of the Congo,Brazzaville,afrika
 Romania,Bucharest,europe
 Russia,Moscow,europe
 Rwanda,Kigali,afrika
-Saint Barthélemy,Gustavia,unknown
-Saint Helena,Jamestown,unknown
-Saint Kitts and Nevis,Basseterre,unknown
-Saint Lucia,Castries,unknown
-Saint Martin,Marigot,unknown
-Saint Pierre and Miquelon,St. Pierre,unknown
-Saint Vincent and the Grenadines,Kingstown,unknown
+Saint Barthélemy,Gustavia,north america,french teritory
+Saint Helena,Jamestown,afrika,british teritory
+Saint Kitts and Nevis,Basseterre,north america
+Saint Lucia,Castries,north america
+Saint Martin,Marigot,north america,french teritory
+Saint Pierre and Miquelon,St. Pierre,north america,french teritory
+Saint Vincent and the Grenadines,Kingstown,north america,british teritory
 Samoa,Apia,oceania
 San Marino,San Marino,europe
 Saudi Arabia,Riyadh,asia
@@ -194,14 +194,14 @@ Serbia,Belgrade,europe
 Seychelles,Victoria,afrika
 Sierra Leone,Freetown,afrika
 Singapore,Singapore,asia
-Sint Maarten,Philipsburg,unknown
+Sint Maarten,Philipsburg,north america,dutch teritory
 Slovakia,Bratislava,europe
 Slovenia,Ljubljana,europe
 Solomon Islands,Honiara,oceania
 Somalia,Mogadishu,afrika
 Somaliland,Hargeisa,afrika
 South Africa,Pretoria,afrika
-South Georgia and the South Sandwich Islands,Grytviken,unknown
+South Georgia and the South Sandwich Islands,Grytviken,south america,british teritory
 South Korea,Seoul,asia
 South Ossetia,Tskhinvali,asia
 South Sudan,Juba,afrika
@@ -213,26 +213,26 @@ Swaziland,Mbabane,afrika
 Sweden,Stockholm,europe
 Switzerland,Bern,europe
 Syria,Damascus,asia
-São Tomé and Príncipe,São Tomé,unknown
+São Tomé and Príncipe,São Tomé,afrika
 Tajikistan,Dushanbe,asia
 Tanzania,Dodoma,afrika
 Thailand,Bangkok,asia
 Togo,Lomé,afrika
-Tonga,Nukuʻalofa,unknown
+Tonga,Nukuʻalofa,oceania
 Transnistria,Tiraspol,europe
 Trinidad and Tobago,Port of Spain,north america
-Tristan da Cunha,Edinburgh of the Seven Seas,unknown
+Tristan da Cunha,Edinburgh of the Seven Seas,afrika,british teritory
 Tunisia,Tunis,afrika
 Turkey,Ankara,asia
 Turkmenistan,Ashgabat,asia
-Turks and Caicos Islands,Cockburn Town,unknown
-Tuvalu,Funafuti,unknown
+Turks and Caicos Islands,Cockburn Town,north america,british teritory
+Tuvalu,Funafuti,oceania
 Uganda,Kampala,afrika
 Ukraine,Kiev,europe
 United Arab Emirates,Abu Dhabi,asia
 United Kingdom England,London,europe
 United States,Washington.D.C.,north america
-United States Virgin Islands,Charlotte Amalie,unknown
+United States Virgin Islands,Charlotte Amalie,north america, us teritory
 Uruguay,Montevideo,south america
 Uzbekistan,Tashkent,asia
 Vanuatu,Port Vila,oceania
@@ -240,7 +240,7 @@ Vatican City,Vatican City,europe
 Venezuela,Caracas,south america
 Vietnam,Hanoi,asia
 Wales,Cardiff,europe
-Wallis and Futuna,Mata-Utu,unknown
+Wallis and Futuna,Mata-Utu,oceania,french teritory
 Western Sahara,El Aaiún,afrika
 Yemen,Sanaá,asia
 Zambia,Lusaka,afrika

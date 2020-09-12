@@ -3,119 +3,127 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../main.dart';
 import 'geo.dart';
 import 'kviz.dart';
 import 'statistics.dart';
+
+bool quizType = true;
+
+TextEditingController txt = TextEditingController();
+
+TextEditingController getTxt(){
+  if(txt==null){
+    txt = TextEditingController();
+}
+  return txt;
+}
+
+int returnTime(){
+  int time=30;
+   time =int.tryParse(getTxt().text);
+  return time;
+}
+
+
 
 class GeoMainWidget extends StatefulWidget {
   @override
   State createState() => new _GeoMainWidget();
 }
 
+enum SingingCharacter { Countries, Capitals }
+
 class _GeoMainWidget extends State<GeoMainWidget> {
   _GeoMainWidget() {}
 
+  SingingCharacter _character = SingingCharacter.Countries;
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-
-
-
-
-
-        home: DefaultTabController(
-            length: 2,
-            child: Scaffold(
-                appBar: AppBar(
-                  iconTheme: IconThemeData(
-                    color: Colors.black, //change your color here
-                  ),
-                  title: Text('GEO'),
-                  centerTitle: true,
-                  backgroundColor: Colors.blue,
-                  bottom: TabBar(
-                    indicatorColor: Color(0xff9962D0),
-                    tabs: [
-                      Tab(
-                        icon: Icon(FontAwesomeIcons.landmark),
-                        text: 'countries',
-                      ),
-                      Tab(
-                        icon: Icon(FontAwesomeIcons.city),
-                        text: 'capitals',
-                      ),
-                    ],
-                  ),
-                ),
-                body: TabBarView(children: [
-                  GeoTabWidget(1),
-                  GeoTabWidget(2),
-                ]),
-
-
-
-
-              drawer: Drawer(
-                // Add a ListView to the drawer. This ensures the user can scroll
-                // through the options in the drawer if there isn't enough vertical
-                // space to fit everything.
-                child: ListView(
-                  // Important: Remove any padding from the ListView.
-                  padding: EdgeInsets.zero,
-                  children: <Widget>[
-                    DrawerHeader(
-                      child: Text('Drawer Header'),
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                      ),
-                    ),
-                    ListTile(
-                      title: Text('Item 1'),
-                      onTap: () {
-                        // Update the state of the app
-                        // ...
-                        // Then close the drawer
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      title: Text('Item 2'),
-                      onTap: () {
-                        // Update the state of the app
-                        // ...
-                        // Then close the drawer
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: Text(
+          'Gemory',
+          style: TextStyle(fontStyle: FontStyle.italic),
+          textAlign: TextAlign.center,
+        ),
+        centerTitle: true,
+      ),
+      body: GeoTabWidget(),
+      drawer: Drawer(
+        child: Container(
+          color: Color(hexColor('#B7D7DA')),
+          child: ListView(
+            // Important: Remove any padding from the ListView.
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                child: Text('Settings'),
+                decoration: BoxDecoration(
+                  color: Color(hexColor('#B7D7DA')),
                 ),
               ),
+              ListTile(
+                title: const Text('Countries'),
+                leading: Radio(
+                  value: SingingCharacter.Countries,
+                  groupValue: _character,
+                  onChanged: (SingingCharacter value) {
+                    setState(() {
+                      _character = value;
+                      quizType = true;
+                    });
+                  },
+                ),
+              ),
+              ListTile(
+                title: const Text('Capitals'),
+                leading: Radio(
+                  value: SingingCharacter.Capitals,
+                  groupValue: _character,
+                  onChanged: (SingingCharacter value) {
+                    setState(() {
+                      _character = value;
+                      quizType = false;
+                    });
+                  },
+                ),
+              ),
+              /*
+              ListTile(
+                title: const Text('time'),
+                leading: TextField(
+                  controller: getTxt(),
+                  decoration: new InputDecoration(labelText: "30"),
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+              */
 
-
-
-
-            )),
-
-
-
-
-
-
+              ListTile(
+                title: Center(child: Text('back')),
+                onTap: () {
+                  // Update the state of the app
+                  // ...
+                  // Then close the drawer
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
 
 class GeoTabWidget extends StatefulWidget {
-  int type = 1;
-
-  GeoTabWidget(int type) {
-    this.type = type;
-  }
+  GeoTabWidget() {}
 
   @override
-  State createState() => new _GeoTabWidget(type);
+  State createState() => new _GeoTabWidget();
 }
 
 class _GeoTabWidget extends State<GeoTabWidget> {
@@ -128,7 +136,13 @@ class _GeoTabWidget extends State<GeoTabWidget> {
     return countryCategoryList;
   }
 
-  int type = 1;
+  int returnType() {
+    if (quizType) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
 
   List<String> categories = new List();
 
@@ -154,9 +168,8 @@ class _GeoTabWidget extends State<GeoTabWidget> {
 
   void loadGeo() async {
     categories = new List();
-
     List<CountryCategory> ccl = new List();
-    var geoString = await rootBundle.loadString('assets/geo.txt');
+    var geoString = await rootBundle.loadString('assets/geo.csv');
     LineSplitter ls = new LineSplitter();
     List<String> geoLines = ls.convert(geoString);
     for (int i = 0; i < geoLines.length; i++) {
@@ -185,8 +198,7 @@ class _GeoTabWidget extends State<GeoTabWidget> {
     });
   }
 
-  _GeoTabWidget(int type) {
-    this.type = type;
+  _GeoTabWidget() {
     loadGeo();
   }
 
@@ -221,6 +233,7 @@ class _GeoTabWidget extends State<GeoTabWidget> {
             },
           ),
           Container(
+            padding: new EdgeInsets.only(top: 90),
             child: Row(
               children: <Widget>[
                 Container(
@@ -238,7 +251,7 @@ class _GeoTabWidget extends State<GeoTabWidget> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ScoreList(type)),
+                            builder: (context) => ScoreList(returnType())),
                       );
                     },
                   ),
@@ -255,14 +268,17 @@ class _GeoTabWidget extends State<GeoTabWidget> {
                       style: TextStyle(color: Color(hexColor('#B7D7DA'))),
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Quiz(
-                                getSelectedCountryCapitals(),
-                                type,
-                                getCategories())),
-                      );
+                      if (!getSelectedCountryCapitals().isEmpty) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Quiz(
+                                  getSelectedCountryCapitals(),
+                                  returnType(),
+                                  getCategories(),
+                                  returnTime())),
+                        );
+                      }
                     },
                   ),
                 ),
@@ -280,9 +296,7 @@ class CountryCategory {
 
   List<String> returnCategoryAsList() {
     List<String> cl = new List();
-
     cl.add(category);
-
     return cl;
   }
 
@@ -290,7 +304,6 @@ class CountryCategory {
 
   CountryCategory(String category, CountryCapital countryCapital) {
     this.category = category;
-
     countryCapitalList = new List();
     countryCapitalList.add(countryCapital);
   }
