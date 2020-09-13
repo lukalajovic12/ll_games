@@ -1,3 +1,4 @@
+country,capital,continent,subcategory
 Abkhazia,Sukhumi,asia
 Afghanistan,Kabul,asia
 Akrotiri and Dhekelia,Episkopi Cantonment,europe,british teritory
@@ -84,7 +85,7 @@ Germany,Berlin,europe
 Ghana,Accra,afrika
 Gibraltar,Gibraltar,europe
 Greece,Athens,europe
-Greenland,Nuuk,north america
+Greenland,Nuuk,north america,danish teritory
 Grenada,St. George's,north america
 Guam,Hagåtña,oceania
 Guatemala,Guatemala City,north america
@@ -189,7 +190,7 @@ Samoa,Apia,oceania
 San Marino,San Marino,europe
 Saudi Arabia,Riyadh,asia
 Scotland,Edinburgh,europe
-Senegal,Dakar,europe
+Senegal,Dakar,afrika
 Serbia,Belgrade,europe
 Seychelles,Victoria,afrika
 Sierra Leone,Freetown,afrika

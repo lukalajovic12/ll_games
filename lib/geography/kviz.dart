@@ -7,11 +7,6 @@ import 'geo_main.dart';
 
 class Quiz extends StatefulWidget {
   List<CountryCapital> geoList;
-  int quizType = 1;
-
-  int time = 30;
-
-  List<String> categories = new List();
 
   List<CountryCapital> getGeoList() {
     if (geoList == null) {
@@ -20,17 +15,26 @@ class Quiz extends StatefulWidget {
     return geoList;
   }
 
+  int quizType = 1;
+
+  int time = 30;
+
+  List<String> categories = new List();
+
+  int questions = 3;
+
   Quiz(List<CountryCapital> geoList, int quizType, List<String> categories,
-      int time) {
+      int time, questions) {
     this.geoList = geoList;
     this.quizType = quizType;
     this.categories = categories;
     this.time = time;
+    this.questions = questions;
   }
 
   @override
   _QuizState createState() =>
-      _QuizState(getGeoList(), quizType, categories, time);
+      _QuizState(getGeoList(), quizType, categories, time, questions);
 }
 
 class _QuizState extends State<Quiz> {
@@ -55,10 +59,14 @@ class _QuizState extends State<Quiz> {
 
   List<String> correctlyAnwsered = new List();
 
+  int questions = 3;
+
   _QuizState(List<CountryCapital> geoList, int quizType,
-      List<String> categories, int time) {
+      List<String> categories, int time, int questions) {
     this.geoList = geoList;
     this.quizType = quizType;
+    this.time = time;
+    this.questions = questions;
     createGeo();
     runTimer();
     correctAnwsers = 0;
@@ -66,7 +74,6 @@ class _QuizState extends State<Quiz> {
     skipedAnwserrs = 0;
     this.categories = categories;
     this.correctlyAnwsered = new List();
-    this.time = time;
   }
 
   KvizQuestion kvizQuestion;
@@ -113,8 +120,11 @@ class _QuizState extends State<Quiz> {
     }
     List<CountryCapital> wrongAnwsers = new List();
     anwsers = new List();
-    wrongAnwsers.add(getGeoList()[1]);
-    wrongAnwsers.add(getGeoList()[2]);
+
+    for (int i = 1; i < questions; i++) {
+      wrongAnwsers.add(getGeoList()[i]);
+    }
+
     kvizQuestion = new KvizQuestion(rightAnwser, wrongAnwsers);
     for (CountryCapital cc in kvizQuestion.getPossibleAnwsers()) {
       if (quizType == 1) {
@@ -123,6 +133,11 @@ class _QuizState extends State<Quiz> {
         anwsers.add(cc.country);
       }
     }
+  }
+
+  void endGame() {
+    _insert();
+    Navigator.pop(context);
   }
 
   void runTimer() {
@@ -134,8 +149,7 @@ class _QuizState extends State<Quiz> {
         () {
           if (countDown < 1) {
             timer.cancel();
-            _insert();
-            Navigator.pop(context);
+            endGame();
           } else {
             if (timeCounting) {
               countDown -= 1;
@@ -192,7 +206,7 @@ class _QuizState extends State<Quiz> {
         correctAnwsers += 1;
         correctlyAnwsered.add(anwser);
         if (getGeoList().length == correctlyAnwsered.length) {
-          Navigator.pop(context);
+          endGame();
         }
       } else {
         wrongAnwsers += 1;
@@ -246,7 +260,7 @@ class _QuizState extends State<Quiz> {
           child: Column(
             children: <Widget>[
               Container(
-                padding: new EdgeInsets.only(top: 40,bottom: 40),
+                padding: new EdgeInsets.only(top: 40, bottom: 40),
                 width: double.infinity,
                 color: Color(hexColor('#0E629B')),
                 child: Center(
@@ -257,35 +271,39 @@ class _QuizState extends State<Quiz> {
                       )),
                 ),
               ),
-          Container(
-            padding: new EdgeInsets.only(top: 20),
-            child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: getAnwsers().length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    padding: new EdgeInsets.only(left: 40, right: 40, top:20,bottom: 20),
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      color: buttonCollor(getAnwsers()[index]),
-                      child: Text(
-                        getAnwsers()[index],
-                        style: TextStyle(color: Color(hexColor('#B7D7DA'))),
-                      ),
-                      onPressed: () {
-                        checkAnwser(getAnwsers()[index]);
-                      },
-                    ),
-                  );
-                }),
-
-          ),
-
+              Container(
+                padding: new EdgeInsets.only(top: 20),
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: getAnwsers().length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        padding: new EdgeInsets.only(
+                            left: 40,
+                            right: 40,
+                            bottom: 60 / questions.toDouble(),
+                            top: 60 / questions.toDouble()),
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          color: buttonCollor(getAnwsers()[index]),
+                          child: Text(
+                            getAnwsers()[index],
+                            style: TextStyle(color: Color(hexColor('#B7D7DA'))),
+                          ),
+                          onPressed: () {
+                            checkAnwser(getAnwsers()[index]);
+                          },
+                        ),
+                      );
+                    }),
+              ),
               Container(
                 padding: new EdgeInsets.only(
-                    left: 40, right: 40,),
+                  left: 40,
+                  right: 40,
+                ),
                 child: RaisedButton(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
