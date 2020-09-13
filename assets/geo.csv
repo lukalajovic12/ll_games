@@ -102,7 +102,7 @@ Indonesia,Jakarta,asia
 Iran,Tehran,asia
 Iraq,Baghdad,asia
 Ireland,Dublin,europe
-Isle of Man,Douglas,europe
+Isle of Man,Douglas,europe,british teritory
 Israel,Jerusalem,asia
 Italy,Rome,europe
 Jamaica,Kingston,north america
@@ -148,7 +148,7 @@ Namibia,Windhoek,afrika
 Nauru,Yaren,oceania
 Nepal,Kathmandu,asia
 Netherlands,Amsterdam,europe
-New Caledonia,Nouméa,oceania
+New Caledonia,Nouméa,oceania,french teritory
 New Zealand,Wellington,oceania
 Nicaragua,Managua,north america
 Niger,Niamey,afrika
@@ -231,7 +231,7 @@ Tuvalu,Funafuti,oceania
 Uganda,Kampala,afrika
 Ukraine,Kiev,europe
 United Arab Emirates,Abu Dhabi,asia
-United Kingdom England,London,europe
+United Kingdom,London,europe
 United States,Washington.D.C.,north america
 United States Virgin Islands,Charlotte Amalie,north america, us teritory
 Uruguay,Montevideo,south america
@@ -245,4 +245,4 @@ Wallis and Futuna,Mata-Utu,oceania,french teritory
 Western Sahara,El Aaiún,afrika
 Yemen,Sanaá,asia
 Zambia,Lusaka,afrika
-Zimbabwe,Harare,asia
+Zimbabwe,Harare,afrika
