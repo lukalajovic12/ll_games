@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import '../main.dart';
 import 'geo.dart';
@@ -21,20 +23,26 @@ class Quiz extends StatefulWidget {
 
   List<String> categories = new List();
 
-  int questions = 3;
+  int NumberOfQuestions = 3;
 
-  Quiz(List<CountryCapital> geoList, int quizType, List<String> categories,
-      int time, questions) {
+  Quiz(List<CountryCapital> geoList, Map<String, bool> selectedTypes,
+      List<String> categories, int time, int NumberOfQuestions) {
     this.geoList = geoList;
-    this.quizType = quizType;
     this.categories = categories;
     this.time = time;
-    this.questions = questions;
+    this.NumberOfQuestions = NumberOfQuestions;
+    if (selectedTypes['Countries'] == selectedTypes['Capitals']) {
+      quizType = 3;
+    } else if (selectedTypes['Countries']) {
+      quizType = 2;
+    } else {
+      quizType = 1;
+    }
   }
 
   @override
   _QuizState createState() =>
-      _QuizState(getGeoList(), quizType, categories, time, questions);
+      _QuizState(getGeoList(), quizType, categories, time, NumberOfQuestions);
 }
 
 class _QuizState extends State<Quiz> {
@@ -50,31 +58,9 @@ class _QuizState extends State<Quiz> {
 
   List<CountryCapital> geoList;
 
-  List<CountryCapital> getGeoList() {
-    if (geoList == null) {
-      geoList = new List();
-    }
-    return geoList;
-  }
-
   List<String> correctlyAnwsered = new List();
 
-  int questions = 3;
-
-  _QuizState(List<CountryCapital> geoList, int quizType,
-      List<String> categories, int time, int questions) {
-    this.geoList = geoList;
-    this.quizType = quizType;
-    this.time = time;
-    this.questions = questions;
-    createGeo();
-    runTimer();
-    correctAnwsers = 0;
-    wrongAnwsers = 0;
-    skipedAnwserrs = 0;
-    this.categories = categories;
-    this.correctlyAnwsered = new List();
-  }
+  int numberOfAnwsers = 3;
 
   KvizQuestion kvizQuestion;
 
@@ -98,10 +84,27 @@ class _QuizState extends State<Quiz> {
 
   String clickedAnwser = "";
 
+  bool askCountry = true;
+
+  _QuizState(List<CountryCapital> geoList, int quizType,
+      List<String> categories, int time, int numberOfAnwsers) {
+    this.geoList = geoList;
+    this.quizType = quizType;
+    this.time = time;
+    this.numberOfAnwsers = numberOfAnwsers;
+    correctAnwsers = 0;
+    wrongAnwsers = 0;
+    skipedAnwserrs = 0;
+    this.categories = categories;
+    this.correctlyAnwsered = new List();
+    this.quizType = quizType;
+    createGeo();
+    runTimer();
+  }
+
   void createGeo() {
     clickedAnwser = "";
     getGeoList().shuffle();
-
     CountryCapital rightAnwser = null;
     while (true) {
       if (correctlyAnwsered.contains(getGeoList()[0].capital) ||
@@ -115,13 +118,21 @@ class _QuizState extends State<Quiz> {
 
     if (quizType == 1) {
       _question = rightAnwser.country;
-    } else {
+    } else if (quizType == 2) {
       _question = rightAnwser.capital;
+    } else {
+      Random random = new Random();
+      askCountry = random.nextBool();
+      if (askCountry) {
+        _question = rightAnwser.country;
+      } else {
+        _question = rightAnwser.capital;
+      }
     }
     List<CountryCapital> wrongAnwsers = new List();
     anwsers = new List();
 
-    for (int i = 1; i < questions; i++) {
+    for (int i = 1; i < numberOfAnwsers; i++) {
       wrongAnwsers.add(getGeoList()[i]);
     }
 
@@ -129,8 +140,14 @@ class _QuizState extends State<Quiz> {
     for (CountryCapital cc in kvizQuestion.getPossibleAnwsers()) {
       if (quizType == 1) {
         anwsers.add(cc.capital);
-      } else {
+      } else if (quizType == 2) {
         anwsers.add(cc.country);
+      } else {
+        if (askCountry) {
+          anwsers.add(cc.capital);
+        } else {
+          anwsers.add(cc.country);
+        }
       }
     }
   }
@@ -189,11 +206,25 @@ class _QuizState extends State<Quiz> {
       } else {
         cor = false;
       }
-    } else {
+    } else if (quizType == 2) {
       if (anwser == kvizQuestion.corectAnwser.country) {
         cor = true;
       } else {
         cor = false;
+      }
+    } else {
+      if (askCountry) {
+        if (anwser == kvizQuestion.corectAnwser.capital) {
+          cor = true;
+        } else {
+          cor = false;
+        }
+      } else {
+        if (anwser == kvizQuestion.corectAnwser.country) {
+          cor = true;
+        } else {
+          cor = false;
+        }
       }
     }
     return cor;
@@ -236,21 +267,6 @@ class _QuizState extends State<Quiz> {
     });
   }
 
-  String getQuestion() {
-    if (quizType == 1) {
-      return 'The Capital of $_question is?';
-    } else {
-      return '$_question is the capital of?';
-    }
-  }
-
-  List<String> getAnwsers() {
-    if (anwsers == null) {
-      anwsers = new List();
-    }
-    return anwsers;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -281,8 +297,8 @@ class _QuizState extends State<Quiz> {
                         padding: new EdgeInsets.only(
                             left: 40,
                             right: 40,
-                            bottom: 60 / questions.toDouble(),
-                            top: 60 / questions.toDouble()),
+                            bottom: 60 / numberOfAnwsers.toDouble(),
+                            top: 60 / numberOfAnwsers.toDouble()),
                         child: RaisedButton(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
@@ -329,5 +345,33 @@ class _QuizState extends State<Quiz> {
             ],
           ),
         ));
+  }
+
+  List<CountryCapital> getGeoList() {
+    if (geoList == null) {
+      geoList = new List();
+    }
+    return geoList;
+  }
+
+  List<String> getAnwsers() {
+    if (anwsers == null) {
+      anwsers = new List();
+    }
+    return anwsers;
+  }
+
+  String getQuestion() {
+    if (quizType == 1) {
+      return 'The Capital of $_question is?';
+    } else if (quizType == 2) {
+      return '$_question is the capital of?';
+    } else {
+      if (askCountry) {
+        return 'The Capital of $_question is?';
+      } else {
+        return '$_question is the capital of?';
+      }
+    }
   }
 }

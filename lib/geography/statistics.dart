@@ -159,27 +159,24 @@ class _ScoreTableWidget extends State<ScoreTableWidget> {
 }
 
 class LastMaxWidget extends StatefulWidget {
-  List<Score> scoreist = new List();
+  List<Score> lastScoreList = new List();
 
-  LastMaxWidget(List<Score> scoreist) {
-    this.scoreist = scoreist;
+  LastMaxWidget(List<Score> lastScoreList) {
+    this.lastScoreList = lastScoreList;
   }
 
   @override
-  State createState() => new _LastMaxWidget(scoreist);
+  State createState() => new _LastMaxWidget(lastScoreList);
 }
 
 class _LastMaxWidget extends State<LastMaxWidget> {
-  List<Score> scoreist = new List();
+  List<Score> lastScoreList = new List();
 
   Score lastScore = new Score(0, 0, 0, 0);
 
-  _LastMaxWidget(List<Score> scoreist) {
-    this.scoreist = scoreist;
-    if (scoreist != null && !scoreist.isEmpty) {
-      lastScore = scoreist.last;
-      scoreist.clear();
-      scoreist.add(lastScore);
+  _LastMaxWidget(List<Score> ll) {
+    if (ll != null && !ll.isEmpty) {
+      lastScore = ll.last;
     }
   }
 
@@ -204,7 +201,7 @@ class _LastMaxWidget extends State<LastMaxWidget> {
             label: Text('type'),
           ),
         ],
-        rows: scoreist
+        rows: lastScoreList
             .map(
               (s) => DataRow(
                 cells: [

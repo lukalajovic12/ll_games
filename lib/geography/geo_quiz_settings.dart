@@ -11,21 +11,7 @@ import 'statistics.dart';
 class GeoQuizSettingsWidget extends StatefulWidget {
   List<CountryCapital> geoList;
 
-  List<CountryCapital> getGeoList() {
-    if (geoList == null) {
-      geoList = new List();
-    }
-    return geoList;
-  }
-
   List<String> categories = new List();
-
-  List<String> getCategories() {
-    if (categories == null) {
-      categories = new List();
-    }
-    return categories;
-  }
 
   GeoQuizSettingsWidget(List<CountryCapital> geoList, List<String> categories) {
     this.geoList = geoList;
@@ -35,21 +21,6 @@ class GeoQuizSettingsWidget extends StatefulWidget {
   @override
   State createState() =>
       new _GeoQuizSettingsWidget(getGeoList(), getCategories());
-}
-
-enum SingingCharacter { Countries, Capitals }
-
-class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
-  List<CountryCapital> geoList;
-
-  List<CountryCapital> getGeoList() {
-    if (geoList == null) {
-      geoList = new List();
-    }
-    return geoList;
-  }
-
-  List<String> categories = new List();
 
   List<String> getCategories() {
     if (categories == null) {
@@ -58,40 +29,32 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
     return categories;
   }
 
+  List<CountryCapital> getGeoList() {
+    if (geoList == null) {
+      geoList = new List();
+    }
+    return geoList;
+  }
+}
+
+class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
+  List<CountryCapital> geoList;
+
+  List<String> categories = new List();
+
+  double time = 30.0;
+
+  double numberOfAnwsers = 3.0;
+
+  Map<String, bool> selectedTypes = {};
+
   _GeoQuizSettingsWidget(
       List<CountryCapital> geoList, List<String> categories) {
     this.geoList = geoList;
     this.categories = categories;
-  }
-
-  SingingCharacter _character = SingingCharacter.Countries;
-
-  double time = 30.0;
-
-  int getTime() {
-    if (time == null) {
-      time = 30.0;
-    }
-    return time.round();
-  }
-
-  double questions = 3.0;
-
-  int getQuestions() {
-    if (questions == null) {
-      questions = 3.0;
-    }
-    return questions.round();
-  }
-
-  bool quizType = true;
-
-  int getType() {
-    if (quizType) {
-      return 1;
-    } else {
-      return 0;
-    }
+    selectedTypes = {};
+    selectedTypes['Countries'] = true;
+    selectedTypes['Capitals'] = false;
   }
 
   @override
@@ -135,7 +98,7 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
             Container(
               padding: EdgeInsets.only(top: 10, bottom: 10),
               child: Center(
-                child: Text('number of questions ${getQuestions()}',
+                child: Text('number of anwsers ${getNumberOfAnwsers()}',
                     style: TextStyle(
                       color: Color(hexColor('#0E629B')),
                       fontSize: 20.0,
@@ -143,64 +106,77 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
               ),
             ),
             Slider(
-              value: questions,
+              value: numberOfAnwsers,
               min: 2,
               max: 5,
               divisions: 3,
-              label: questions.round().toString(),
+              label: numberOfAnwsers.round().toString(),
               onChanged: (double value) {
                 setState(() {
-                  questions = value;
+                  numberOfAnwsers = value;
                 });
               },
             ),
-            ListTile(
-              title: const Text('Countries'),
-              leading: Radio(
-                value: SingingCharacter.Countries,
-                groupValue: _character,
-                onChanged: (SingingCharacter value) {
+            Container(
+              padding: new EdgeInsets.only(left: 40, right: 40),
+              child: CheckboxListTile(
+                title: new Text(
+                  'Countries',
+                  style: TextStyle(color: Color(hexColor('#0E629B'))),
+                ),
+                value: selectedTypes['Countries'],
+                onChanged: (bool value) {
                   setState(() {
-                    _character = value;
-                    quizType = true;
+                    selectedTypes['Countries'] = value;
                   });
                 },
-              ),
-            ),
-            ListTile(
-              title: const Text('Capitals'),
-              leading: Radio(
-                value: SingingCharacter.Capitals,
-                groupValue: _character,
-                onChanged: (SingingCharacter value) {
-                  setState(() {
-                    _character = value;
-                    quizType = false;
-                  });
-                },
+                activeColor: Color(hexColor('#0E629B')),
+                checkColor: Color(hexColor('#0E629B')),
               ),
             ),
             Container(
-              height: 150.0,
-              width: 550.0,
-              padding: new EdgeInsets.only(left: 40,right:40,top: 40,bottom: 40),
+              padding: new EdgeInsets.only(left: 40, right: 40),
+              child: CheckboxListTile(
+                title: new Text(
+                  'Capitals',
+                  style: TextStyle(color: Color(hexColor('#0E629B'))),
+                ),
+                value: selectedTypes['Capitals'],
+                onChanged: (bool value) {
+                  setState(() {
+                    selectedTypes['Capitals'] = value;
+                  });
+                },
+                activeColor: Color(hexColor('#0E629B')),
+                checkColor: Color(hexColor('#0E629B')),
+              ),
+            ),
+            Container(
+              padding:
+                  new EdgeInsets.only(top:20,left: 160),
               child: RaisedButton(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(90),
+                  borderRadius: BorderRadius.circular(30),
                 ),
                 color: Color(hexColor('#0E629B')),
                 child: Text(
-                  'Continue',
-                  style: TextStyle(          fontSize: 20.0,
-                      letterSpacing: 2.0,color: Color(hexColor('#B7D7DA'))),
+                  'Play',
+                  style: TextStyle(
+                      color: Color(hexColor('#B7D7DA'))),
                 ),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Quiz(getGeoList(), getType(),
-                            getCategories(), getTime(),getQuestions())),
-                  );
+                  if (selectedTypes['Countries'] || selectedTypes['Capitals']) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Quiz(
+                              getGeoList(),
+                              selectedTypes,
+                              getCategories(),
+                              getTime(),
+                              getNumberOfAnwsers())),
+                    );
+                  }
                 },
               ),
             ),
@@ -208,5 +184,33 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
         ),
       ),
     );
+  }
+
+  int getTime() {
+    if (time == null) {
+      time = 30.0;
+    }
+    return time.round();
+  }
+
+  int getNumberOfAnwsers() {
+    if (numberOfAnwsers == null) {
+      numberOfAnwsers = 3.0;
+    }
+    return numberOfAnwsers.round();
+  }
+
+  List<String> getCategories() {
+    if (categories == null) {
+      categories = new List();
+    }
+    return categories;
+  }
+
+  List<CountryCapital> getGeoList() {
+    if (geoList == null) {
+      geoList = new List();
+    }
+    return geoList;
   }
 }

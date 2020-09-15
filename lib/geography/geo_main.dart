@@ -92,33 +92,15 @@ class GeoTabWidget extends StatefulWidget {
 class _GeoTabWidget extends State<GeoTabWidget> {
   List<CountryCategory> countryCategoryList = new List();
 
-  List<CountryCategory> getCountryCategoryList() {
-    if (countryCategoryList == null) {
-      countryCategoryList = new List();
-    }
-    return countryCategoryList;
-  }
+
 
   List<String> categories = new List();
 
-  List<String> getCategories() {
-    if (categories == null) {
-      categories = new List();
-    }
-    return categories;
-  }
+
 
   Map<String, bool> selectedCategories = {};
 
-  List<CountryCapital> getSelectedCountryCapitals() {
-    List<CountryCapital> countryCapitals = new List();
-    for (CountryCategory cc in getCountryCategoryList()) {
-      if (selectedCategories[cc.category]) {
-        countryCapitals.addAll(cc.countryCapitalList);
-      }
-    }
-    return countryCapitals;
-  }
+
 
   void loadGeo() async {
     categories = new List();
@@ -215,6 +197,31 @@ class _GeoTabWidget extends State<GeoTabWidget> {
       ),
     );
   }
+
+  List<CountryCategory> getCountryCategoryList() {
+    if (countryCategoryList == null) {
+      countryCategoryList = new List();
+    }
+    return countryCategoryList;
+  }
+
+  List<String> getCategories() {
+    if (categories == null) {
+      categories = new List();
+    }
+    return categories;
+  }
+
+  List<CountryCapital> getSelectedCountryCapitals() {
+    List<CountryCapital> countryCapitals = new List();
+    for (CountryCategory cc in getCountryCategoryList()) {
+      if (selectedCategories[cc.category]) {
+        countryCapitals.addAll(cc.countryCapitalList);
+      }
+    }
+    return countryCapitals;
+  }
+
 }
 
 class CountryCategory {
@@ -237,4 +244,6 @@ class CountryCategory {
   void addCountryCapital(CountryCapital countryCapital) {
     countryCapitalList.add(countryCapital);
   }
+
+
 }
