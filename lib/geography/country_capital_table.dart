@@ -1,72 +1,166 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'geo.dart';
-class CountryCapitalList extends StatelessWidget{
+import 'geo_main.dart';
 
+class GeoDataWidget extends StatefulWidget {
+  @override
+  State createState() => new _GeoDataWidget();
+}
 
-  List<CountryCapital> geoList=new List();
+class _GeoDataWidget extends State<GeoDataWidget> {
+  List<String> categories = new List();
 
-
-  CountryCapitalList(List<CountryCapital> geoList){
-    this.geoList=geoList;
-  }
-
-  List<CountryCapital> getGeoList(){
-    if(geoList==null){
-      geoList=new List();
+  List<String> getCategories() {
+    if (categories == null) {
+      categories = new List();
     }
-    return geoList;
+    return categories;
   }
 
+  List<BottomNavigationBarItem> barItems() {
+    List<BottomNavigationBarItem> bl = new List();
+
+    for (String s in getCategories()) {
+      BottomNavigationBarItem b = new BottomNavigationBarItem(
+        title: Text(s),
+        icon: Icon(FontAwesomeIcons.globeAsia),
+      );
+      bl.add(b);
+    }
+
+    return bl;
+  }
+
+  List<CountryCategory> countryCategoryList = new List();
+
+  int selectedIndex = 0;
+
+  int getSelectedIndex() {
+    if (selectedIndex == null) {
+      selectedIndex = 0;
+    }
+    return selectedIndex;
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  }
+
+  List<CountryCapital> getGeoList() {
+    List<CountryCapital> ccl = new List();
+
+    if (countryCategoryList != null && !countryCategoryList.isEmpty) {
+      ccl = countryCategoryList[getSelectedIndex()].countryCapitalList;
+    }
+
+    return ccl;
+  }
+
+  _GeoDataWidget() {
+    loadGeo();
+  }
+
+  void loadGeo() async {
+    categories = new List();
+    List<CountryCategory> ccl = new List();
+    var geoString = await rootBundle.loadString('assets/geo.csv');
+    LineSplitter ls = new LineSplitter();
+    List<String> geoLines = ls.convert(geoString);
+    for (int i = 1; i < geoLines.length; i++) {
+      if (geoLines[i].split(",").length < 4) {
+        CountryCapital countryCapital = new CountryCapital(
+            country: geoLines[i].split(",")[0],
+            capital: geoLines[i].split(",")[1]);
+        String category = geoLines[i].split(",")[2];
+        bool newContinent = true;
+        for (int i = 0; i < ccl.length; i++) {
+          if (category == ccl[i].category) {
+            ccl[i].addCountryCapital(countryCapital);
+            newContinent = false;
+            break;
+          }
+        }
+        if (newContinent) {
+          getCategories().add(category);
+          CountryCategory countryCategory =
+              new CountryCategory(category, countryCapital);
+          ccl.add(countryCategory);
+        }
+      }
+    }
+    setState(() {
+      countryCategoryList = ccl;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[200],
-        appBar: AppBar(
-          title: Text('countries and capitals'),
-          centerTitle: true,
-          backgroundColor: Colors.red,
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: Text(
+          'Gemory',
+          style: TextStyle(fontStyle: FontStyle.italic),
+          textAlign: TextAlign.center,
         ),
-        body: Container(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: DataTable(
-                sortAscending: true,
-                columns: <DataColumn>[
-                  DataColumn(
-                    label: Text('country'),
-                  ),
-                  DataColumn(
-                    label: Text('capital'),
-                  ),
-                  DataColumn(
-                    label: Text('continent'),
-                  ),
-
-
-
-                ],
-                rows: getGeoList()
-                    .map(
-                      (cc) => DataRow(
-                    cells: [
-                      DataCell(
-                        Text(cc.country),
-                        showEditIcon: false,
-                        placeholder: false,
-                      ),
-                      DataCell(
-                        Text(cc.capital),
-                        showEditIcon: false,
-                        placeholder: false,
-                      ),
-                    ],
-                  ),
-                ).toList(),
-              ),
-
-            )
-        )
+        centerTitle: true,
+      ),
+      body: Container(
+          child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: DataTable(
+          sortAscending: true,
+          columns: <DataColumn>[
+            DataColumn(
+              label: Text('country'),
+            ),
+            DataColumn(
+              label: Text('capital'),
+            ),
+          ],
+          rows: getGeoList()
+              .map(
+                (cc) => DataRow(
+                  cells: [
+                    DataCell(
+                      Text(cc.country),
+                      showEditIcon: false,
+                      placeholder: false,
+                    ),
+                    DataCell(
+                      Text(cc.capital),
+                      showEditIcon: false,
+                      placeholder: false,
+                    ),
+                  ],
+                ),
+              )
+              .toList(),
+        ),
+      )),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: getSelectedIndex(),
+        selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped,
+        items: barItems(),
+      ),
     );
   }
+}
+
+class GeographyObject {
+  String country;
+  String capital;
+  String category;
+  String subCategory;
+
+  GeographyObject(
+      {this.country, this.capital, this.category, this.subCategory}) {}
 }

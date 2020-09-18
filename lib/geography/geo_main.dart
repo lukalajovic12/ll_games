@@ -4,9 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../main.dart';
+import 'country_capital_table.dart';
 import 'geo.dart';
 import 'geo_quiz_settings.dart';
-import 'kviz.dart';
 import 'statistics.dart';
 
 
@@ -66,6 +66,24 @@ class _GeoMainWidget extends State<GeoMainWidget> {
                 },
               ),
               ListTile(
+                title: Center(child: Text('data')),
+                onTap: () {
+                  // Update the state of the app
+                  // ...
+                  // Then close the drawer
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => GeoDataWidget()),
+                  );
+                },
+              ),
+
+
+
+
+
+              ListTile(
                 title: Center(child: Text('back')),
                 onTap: () {
                   // Update the state of the app
@@ -90,6 +108,7 @@ class GeoTabWidget extends StatefulWidget {
 }
 
 class _GeoTabWidget extends State<GeoTabWidget> {
+
   List<CountryCategory> countryCategoryList = new List();
 
 
