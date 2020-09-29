@@ -6,270 +6,130 @@ import 'geo_database.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 class ScoreList extends StatefulWidget {
-  int type = 1;
-
-  ScoreList(int type) {
-    this.type = type;
-  }
+  ScoreList() {}
 
   @override
-  _ScoreListState createState() => _ScoreListState(type);
+  _ScoreListState createState() => _ScoreListState();
 }
 
 class _ScoreListState extends State<ScoreList> {
-  int type = 1;
-
   List<Score> scoreist = new List();
-
-  _ScoreListState(int type) {
-    this.type = type;
-    this.scoreist = new List();
-    _query();
-  }
-
-  void _query() async {
-    scoreist = new List();
-    final allRows = await dbHelper.queryAllTypeRows(type);
-    List<Score> scl = new List();
-    if (allRows != null) {
-      allRows.forEach((row) => scl.add(new Score(
-          row[DatabaseHelper.columnCorrectAnwser],
-          row[DatabaseHelper.columnWrongAnwser],
-          row[DatabaseHelper.columnSkipedAnwser],
-          row[DatabaseHelper.columnType])));
-    }
-    setState(() {
-      scoreist = scl;
-    });
-  }
-
-  final dbHelper = DatabaseHelper.instance;
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        home: DefaultTabController(
-            length: 3,
-            child: Scaffold(
-                appBar: AppBar(
-                  iconTheme: IconThemeData(
-                    color: Colors.black, //change your color here
-                  ),
-                  title: Text('Memory'),
-                  centerTitle: true,
-                  backgroundColor: Colors.blue,
-                  bottom: TabBar(
-                    indicatorColor: Colors.white,
-                    tabs: [
-                      Tab(
-                        icon: Icon(FontAwesomeIcons.landmark),
-                        text: 'Last score',
-                      ),
-                      Tab(
-                        icon: Icon(FontAwesomeIcons.table),
-                        text: 'table',
-                      ),
-                      Tab(
-                        icon: Icon(FontAwesomeIcons.chartPie),
-                        text: 'pie',
-                      ),
-                    ],
-                  ),
-                ),
-                body: TabBarView(children: [
-                  LastMaxWidget(scoreist),
-                  ScoreTableWidget(scoreist),
-                  PieTableWidget(scoreist),
-                ]))));
-  }
-}
-
-class ScoreTableWidget extends StatefulWidget {
-  List<Score> scoreist = new List();
-
-  ScoreTableWidget(List<Score> scoreist) {
-    this.scoreist = scoreist;
-  }
-
-  @override
-  State createState() => new _ScoreTableWidget(scoreist);
-}
-
-class _ScoreTableWidget extends State<ScoreTableWidget> {
-  List<Score> scoreist = new List();
-
-  _ScoreTableWidget(List<Score> scoreist) {
-    this.scoreist = scoreist;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-
-
-        color: Color(hexColor('#B7D7DA')),
-        child: SingleChildScrollView(
-      child: DataTable(
-        sortAscending: true,
-        columns: <DataColumn>[
-          DataColumn(
-            label: Text('correct'),
-          ),
-          DataColumn(
-            label: Text('wrong'),
-          ),
-          DataColumn(
-            label: Text('skiped'),
-          ),
-          DataColumn(
-            label: Text('type'),
-          ),
-        ],
-        rows: scoreist
-            .map(
-              (s) => DataRow(
-                cells: [
-                  DataCell(
-                    Text('${s.correctAnwser}'),
-                    showEditIcon: false,
-                    placeholder: false,
-                  ),
-                  DataCell(
-                    Text('${s.wrongAnwser}'),
-                    showEditIcon: false,
-                    placeholder: false,
-                  ),
-                  DataCell(
-                    Text('${s.skipedAnwser}'),
-                    showEditIcon: false,
-                    placeholder: false,
-                  ),
-                  DataCell(
-                    Text('${s.type}'),
-                    showEditIcon: false,
-                    placeholder: false,
-                  ),
-                ],
-              ),
-            )
-            .toList(),
-      ),
-    ));
-  }
-}
-
-class LastMaxWidget extends StatefulWidget {
-  List<Score> lastScoreList = new List();
-
-  LastMaxWidget(List<Score> lastScoreList) {
-    this.lastScoreList = lastScoreList;
-  }
-
-  @override
-  State createState() => new _LastMaxWidget(lastScoreList);
-}
-
-class _LastMaxWidget extends State<LastMaxWidget> {
-  List<Score> lastScoreList = new List();
-
-  Score lastScore = new Score(0, 0, 0, 0);
-
-  _LastMaxWidget(List<Score> ll) {
-    if (ll != null && !ll.isEmpty) {
-      lastScore = ll.last;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        color: Color(hexColor('#B7D7DA')),
-        child: SingleChildScrollView(
-      child: DataTable(
-        sortAscending: true,
-        columns: <DataColumn>[
-          DataColumn(
-            label: Text('correct'),
-          ),
-          DataColumn(
-            label: Text('wrong'),
-          ),
-          DataColumn(
-            label: Text('skiped'),
-          ),
-          DataColumn(
-            label: Text('type'),
-          ),
-        ],
-        rows: lastScoreList
-            .map(
-              (s) => DataRow(
-                cells: [
-                  DataCell(
-                    Text('${s.correctAnwser}'),
-                    showEditIcon: false,
-                    placeholder: false,
-                  ),
-                  DataCell(
-                    Text('${s.wrongAnwser}'),
-                    showEditIcon: false,
-                    placeholder: false,
-                  ),
-                  DataCell(
-                    Text('${s.skipedAnwser}'),
-                    showEditIcon: false,
-                    placeholder: false,
-                  ),
-                  DataCell(
-                    Text('${s.type}'),
-                    showEditIcon: false,
-                    placeholder: false,
-                  ),
-                ],
-              ),
-            )
-            .toList(),
-      ),
-    ));
-  }
-}
-
-class PieTableWidget extends StatefulWidget {
-  List<Score> scoreist = new List();
-
-  PieTableWidget(List<Score> scoreist) {
-    this.scoreist = scoreist;
-  }
-
-  @override
-  State createState() => new _PieTableWidget(scoreist);
-}
-
-class _PieTableWidget extends State<PieTableWidget> {
-  _PieTableWidget(List<Score> scoreist) {
-    int co = 0;
-    int wr = 0;
-    int sk = 0;
-    for (Score s in scoreist) {
-      co += s.correctAnwser;
-      wr += s.wrongAnwser;
-      sk += s.skipedAnwser;
-    }
-    _generateData(co, wr, sk);
-  }
 
   final bool animate = true;
 
   List<charts.Series<TotalAnwsers, String>> _seriesPieData =
       List<charts.Series<TotalAnwsers, String>>();
 
-  _generateData(int correct, int wrong, int skipped) {
+  List<charts.Series<Score, int>> _seriesLineData =
+      List<charts.Series<Score, int>>();
+
+  List<charts.Series<Rezult, String>> _seriesColumnData =
+      new List<charts.Series<Rezult, String>>();
+
+  _ScoreListState() {
+    this.scoreist = new List();
+    _query();
+  }
+
+  void _query() async {
+    scoreist = new List();
+    final allRows = await dbHelper.queryAllRows();
+    List<Score> scl = new List();
+    if (allRows != null) {
+      allRows.forEach((row) => scl.add(new Score(
+          row[DatabaseHelper.columnId],
+          row[DatabaseHelper.columnCorrectAnwser],
+          row[DatabaseHelper.columnWrongAnwser],
+          row[DatabaseHelper.columnSkipedAnwser])));
+    }
+    setState(() {
+      this.scoreist = scl;
+    });
+  }
+
+  final dbHelper = DatabaseHelper.instance;
+
+  Container scoreTableContainer() {
+    return Container(
+        color: Color(hexColor('#B7D7DA')),
+        child: SingleChildScrollView(
+          child: DataTable(
+            sortAscending: true,
+            columns: <DataColumn>[
+              DataColumn(
+                label: Text('correct',
+                    style: TextStyle(
+                        color: Color(hexColor('#0E629B')),
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold)),
+              ),
+              DataColumn(
+                label: Text('wrong',
+                    style: TextStyle(
+                        color: Color(hexColor('#0E629B')),
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold)),
+              ),
+              DataColumn(
+                label: Text('skiped',
+                    style: TextStyle(
+                        color: Color(hexColor('#0E629B')),
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold)),
+              ),
+            ],
+            rows: getScoreList()
+                .map(
+                  (s) => DataRow(
+                    cells: [
+                      DataCell(
+                        Text('${s.correctAnwser}',
+                            style:
+                                TextStyle(color: Color(hexColor('#0E629B')))),
+                        showEditIcon: false,
+                        placeholder: false,
+                      ),
+                      DataCell(
+                        Text('${s.wrongAnwser}',
+                            style:
+                                TextStyle(color: Color(hexColor('#0E629B')))),
+                        showEditIcon: false,
+                        placeholder: false,
+                      ),
+                      DataCell(
+                        Text('${s.skipedAnwser}',
+                            style:
+                                TextStyle(color: Color(hexColor('#0E629B')))),
+                        showEditIcon: false,
+                        placeholder: false,
+                      ),
+                    ],
+                  ),
+                )
+                .toList(),
+          ),
+        ));
+  }
+
+  void generatePieChart() {
+    int co = 0;
+    int wr = 0;
+    int sk = 0;
+    for (Score s in getScoreList()) {
+      co += s.correctAnwser;
+      wr += s.wrongAnwser;
+      sk += s.skipedAnwser;
+    }
+    generatePieData(co, wr, sk);
+  }
+
+  void generatePieData(int correct, int wrong, int skipped) {
+    _seriesPieData = List<charts.Series<TotalAnwsers, String>>();
     var piedata = [
       new TotalAnwsers('correct', correct, Color(0xfffdbe19)),
       new TotalAnwsers('wrong', wrong, Color(0xffff9900)),
       new TotalAnwsers('skipped', skipped, Color(0xffdc3912)),
     ];
-
     _seriesPieData.add(
       charts.Series(
         domainFn: (TotalAnwsers a, _) => a.type,
@@ -283,52 +143,237 @@ class _PieTableWidget extends State<PieTableWidget> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Container pieContainer() {
+    generatePieChart();
     return Container(
-      padding: EdgeInsets.all(8.0),
-      child: Container(
-        color: Color(hexColor('#B7D7DA')),
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              Text(
-                'total points',
-                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Expanded(
-                child: charts.PieChart(_seriesPieData,
-                    animate: true,
-                    animationDuration: Duration(seconds: 5),
-                    behaviors: [
-                      new charts.DatumLegend(
-                        outsideJustification:
-                            charts.OutsideJustification.endDrawArea,
-                        horizontalFirst: false,
-                        desiredMaxRows: 2,
-                        cellPadding:
-                            new EdgeInsets.only(right: 4.0, bottom: 4.0),
-                        entryTextStyle: charts.TextStyleSpec(
-                            color: charts.MaterialPalette.purple.shadeDefault,
-                            fontFamily: 'Georgia',
-                            fontSize: 11),
-                      )
-                    ],
-                    defaultRenderer: new charts.ArcRendererConfig(
-                        arcWidth: 100,
-                        arcRendererDecorators: [
-                          new charts.ArcLabelDecorator(
-                              labelPosition: charts.ArcLabelPosition.inside)
-                        ])),
-              ),
-            ],
-          ),
+      color: Color(hexColor('#B7D7DA')),
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            Text(
+              'total points',
+              style: TextStyle(
+                  color: Color(hexColor('#0E629B')),
+                  fontSize: 40.0,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            Expanded(
+              child: charts.PieChart(_seriesPieData,
+                  animate: true,
+                  animationDuration: Duration(seconds: 1),
+                  behaviors: [
+                    new charts.DatumLegend(
+                      outsideJustification:
+                          charts.OutsideJustification.endDrawArea,
+                      horizontalFirst: false,
+                      desiredMaxRows: 2,
+                      cellPadding: new EdgeInsets.only(right: 4.0, bottom: 4.0),
+                      entryTextStyle: charts.TextStyleSpec(
+                          color: charts.MaterialPalette.purple.shadeDefault,
+                          fontFamily: 'Georgia',
+                          fontSize: 11),
+                    )
+                  ],
+                  defaultRenderer: new charts.ArcRendererConfig(
+                      arcWidth: 100,
+                      arcRendererDecorators: [
+                        new charts.ArcLabelDecorator(
+                            labelPosition: charts.ArcLabelPosition.inside)
+                      ])),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  void generateLineChart() {
+    List<Score> scl = new List();
+    Score s= new Score(0, 0, 0, 0);
+    scl.add(s);
+    scl.addAll(getScoreList());
+    _seriesLineData = List<charts.Series<Score, int>>();
+    _seriesLineData.add(
+      charts.Series(
+        colorFn: (__, _) => charts.ColorUtil.fromDartColor(Color(0xff990099)),
+        id: 'Game Line Scores',
+        data: scl,
+        domainFn: (Score s, _) => s.id,
+        measureFn: (Score s, _) => (s.correctAnwser - s.wrongAnwser),
+      ),
+    );
+  }
+
+  Container lineContainer() {
+    generateLineChart();
+    return Container(
+      color: Color(hexColor('#B7D7DA')),
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            Text('Your game progress in line',
+                style: TextStyle(
+                    color: Color(hexColor('#0E629B')),
+                    fontSize: 40.0,
+                    fontWeight: FontWeight.bold)),
+            Expanded(
+              child: charts.LineChart(_seriesLineData,
+                  defaultRenderer: new charts.LineRendererConfig(
+                      includeArea: true, stacked: true),
+                  animate: true,
+                  animationDuration: Duration(seconds: 1),
+                  behaviors: [
+                    new charts.ChartTitle('Id',
+                        behaviorPosition: charts.BehaviorPosition.bottom,
+                        titleOutsideJustification:
+                            charts.OutsideJustification.middleDrawArea),
+                    new charts.ChartTitle('Score',
+                        behaviorPosition: charts.BehaviorPosition.start,
+                        titleOutsideJustification:
+                            charts.OutsideJustification.middleDrawArea),
+                  ]),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Rezult> getCorrect() {
+    List<Rezult> correct = new List();
+    for (Score score in getScoreList()) {
+      Rezult r = new Rezult(score.id, 'c', score.correctAnwser);
+      correct.add(r);
+    }
+    return correct;
+  }
+
+  List<Rezult> getWrong() {
+    List<Rezult> wrong = new List();
+    for (Score score in getScoreList()) {
+      Rezult r = new Rezult(score.id, 'w', score.wrongAnwser);
+      wrong.add(r);
+    }
+    return wrong;
+  }
+
+  List<Rezult> getSkipped() {
+    List<Rezult> skipped = new List();
+    for (Score score in getScoreList()) {
+      Rezult r = new Rezult(score.id, 's', score.skipedAnwser);
+      skipped.add(r);
+    }
+    return skipped;
+  }
+
+  void generataColumnChart() {
+    _seriesColumnData = new List<charts.Series<Rezult, String>>();
+
+    _seriesColumnData.add(
+      charts.Series(
+        domainFn: (Rezult r, _) => '${r.categry}',
+        measureFn: (Rezult r, _) => r.points,
+        id: 'Score',
+        data: getCorrect(),
+        fillPatternFn: (_, __) => charts.FillPatternType.solid,
+        fillColorFn: (Rezult r, _) =>
+            charts.ColorUtil.fromDartColor(Colors.blue),
+      ),
+    );
+    _seriesColumnData.add(
+      charts.Series(
+        domainFn: (Rezult r, _) => '${r.categry}',
+        measureFn: (Rezult r, _) => r.points,
+        id: 'Score',
+        data: getWrong(),
+        fillPatternFn: (_, __) => charts.FillPatternType.solid,
+        fillColorFn: (Rezult r, _) =>
+            charts.ColorUtil.fromDartColor(Colors.red),
+      ),
+    );
+    _seriesColumnData.add(
+      charts.Series(
+        domainFn: (Rezult r, _) => '${r.categry}',
+        measureFn: (Rezult r, _) => r.points,
+        id: 'Score',
+        data: getSkipped(),
+        fillPatternFn: (_, __) => charts.FillPatternType.solid,
+        fillColorFn: (Rezult r, _) =>
+            charts.ColorUtil.fromDartColor(Colors.green),
+      ),
+    );
+  }
+
+  Container columnContainer() {
+    generataColumnChart();
+    return Container(
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            Text(
+              'Score in charts',
+              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+            ),
+            Expanded(
+              child: charts.BarChart(
+                _seriesColumnData,
+                animate: true,
+                barGroupingType: charts.BarGroupingType.grouped,
+                animationDuration: Duration(seconds: 1),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+        length: 3,
+        child: Scaffold(
+            appBar: AppBar(
+              leading: BackButton(color: Colors.white),
+              iconTheme: IconThemeData(
+                color: Colors.black, //change your color here
+              ),
+              title: Text('Gemory'),
+              centerTitle: true,
+              backgroundColor: Colors.blue,
+              bottom: TabBar(
+                indicatorColor: Colors.white,
+                tabs: [
+                  Tab(
+                    icon: Icon(FontAwesomeIcons.table),
+                    text: 'table',
+                  ),
+                  Tab(
+                    icon: Icon(FontAwesomeIcons.chartPie),
+                    text: 'pie',
+                  ),
+                  Tab(
+                    icon: Icon(FontAwesomeIcons.chartLine),
+                    text: 'line',
+                  ),
+                ],
+              ),
+            ),
+            body: TabBarView(children: [
+              scoreTableContainer(),
+              pieContainer(),
+              lineContainer(),
+            ])));
+  }
+
+  List<Score> getScoreList() {
+    if (scoreist == null) {
+      scoreist = new List();
+    }
+    return scoreist;
   }
 }
 

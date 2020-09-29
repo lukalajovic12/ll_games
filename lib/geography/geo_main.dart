@@ -3,28 +3,20 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../main.dart';
 import 'country_capital_table.dart';
 import 'geo.dart';
 import 'geo_quiz_settings.dart';
 import 'statistics.dart';
 
-
-
-
-
-
 class GeoMainWidget extends StatefulWidget {
   @override
   State createState() => new _GeoMainWidget();
 }
 
-
-
 class _GeoMainWidget extends State<GeoMainWidget> {
   _GeoMainWidget() {}
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +52,7 @@ class _GeoMainWidget extends State<GeoMainWidget> {
                   // Then close the drawer
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => ScoreList(1)),
+                    MaterialPageRoute(builder: (context) => ScoreList()),
                   );
                 },
               ),
@@ -73,16 +64,10 @@ class _GeoMainWidget extends State<GeoMainWidget> {
                   // Then close the drawer
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => GeoDataWidget()),
+                    MaterialPageRoute(builder: (context) => GeoDataWidget()),
                   );
                 },
               ),
-
-
-
-
-
               ListTile(
                 title: Center(child: Text('back')),
                 onTap: () {
@@ -108,18 +93,11 @@ class GeoTabWidget extends StatefulWidget {
 }
 
 class _GeoTabWidget extends State<GeoTabWidget> {
-
   List<CountryCategory> countryCategoryList = new List();
-
-
 
   List<String> categories = new List();
 
-
-
   Map<String, bool> selectedCategories = {};
-
-
 
   void loadGeo() async {
     categories = new List();
@@ -128,7 +106,7 @@ class _GeoTabWidget extends State<GeoTabWidget> {
     LineSplitter ls = new LineSplitter();
     List<String> geoLines = ls.convert(geoString);
     for (int i = 1; i < geoLines.length; i++) {
-      if(geoLines[i].split(",").length<4) {
+      if (geoLines[i].split(",").length < 4) {
         CountryCapital countryCapital = new CountryCapital(
             country: geoLines[i].split(",")[0],
             capital: geoLines[i].split(",")[1]);
@@ -145,7 +123,7 @@ class _GeoTabWidget extends State<GeoTabWidget> {
           getCategories().add(category);
           selectedCategories[category] = false;
           CountryCategory countryCategory =
-          new CountryCategory(category, countryCapital);
+              new CountryCategory(category, countryCapital);
           ccl.add(countryCategory);
         }
       }
@@ -190,7 +168,7 @@ class _GeoTabWidget extends State<GeoTabWidget> {
             },
           ),
           Container(
-            padding: new EdgeInsets.only(top:20,left: 160),
+            padding: new EdgeInsets.only(top: 20, left: 160),
             child: RaisedButton(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
@@ -240,7 +218,6 @@ class _GeoTabWidget extends State<GeoTabWidget> {
     }
     return countryCapitals;
   }
-
 }
 
 class CountryCategory {
@@ -263,6 +240,4 @@ class CountryCategory {
   void addCountryCapital(CountryCapital countryCapital) {
     countryCapitalList.add(countryCapital);
   }
-
-
 }

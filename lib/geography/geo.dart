@@ -33,15 +33,28 @@ class KvizQuestion{
 
 
 class Score{
+  int id=-1;
   int correctAnwser=0;
   int wrongAnwser=0;
   int skipedAnwser=0;
-  int type=1;
 
-  Score(int correctAnwser,int wrongAnwser, int skipedAnwser,int type){
+  Score(int id,int correctAnwser,int wrongAnwser, int skipedAnwser){
+    this.id=id;
     this.correctAnwser=correctAnwser;
     this.wrongAnwser=wrongAnwser;
     this.skipedAnwser=skipedAnwser;
-    this.type=type;
+  }
+
+}
+
+class Rezult{
+  int id=-1;
+  String categry="";
+  int points=0;
+  Rezult(int id,String category,int points){
+    this.id=id;
+    this.categry=categry;
+    this.points=points;
+
   }
 }

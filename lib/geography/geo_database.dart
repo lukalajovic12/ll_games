@@ -20,7 +20,6 @@ class DatabaseHelper {
   static final columnSkipedAnwser = 'skipedAnwsers';
 
 
-  static final columnType = 'type';
 
 
   // make this a singleton class
@@ -53,8 +52,7 @@ class DatabaseHelper {
             $columnId INTEGER PRIMARY KEY,
             $columnCorrectAnwser INTEGER NOT NULL,
             $columnWrongAnwser INTEGER NOT NULL,
-            $columnSkipedAnwser INTEGER NOT NULL,
-            $columnType INTEGER NOT NULL
+            $columnSkipedAnwser INTEGER NOT NULL
           )
           ''');
   }
@@ -90,17 +88,6 @@ class DatabaseHelper {
   Future<int> queryRowCount() async {
     Database db = await instance.database;
     return Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM $table'));
-  }
-
-  Future<List<Map<String, dynamic>>> queryAllTypeRows(int type) async {
-    Database db = await instance.database;
-    if(!db.isOpen){
-      Directory documentsDirectory = await getApplicationDocumentsDirectory();
-      String path = join(documentsDirectory.path, _databaseName);
-      await openDatabase(path,version: _databaseVersion, onCreate: _onCreate);
-    }
-    String sql='SELECT * FROM $table WHERE $columnType = $type';
-    return await db.rawQuery(sql);
   }
 
   // We are assuming here that the id column in the map is set. The other

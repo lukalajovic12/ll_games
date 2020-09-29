@@ -193,7 +193,6 @@ class _QuizState extends State<Quiz> {
       DatabaseHelper.columnCorrectAnwser: correctAnwsers,
       DatabaseHelper.columnWrongAnwser: wrongAnwsers,
       DatabaseHelper.columnSkipedAnwser: skipedAnwserrs,
-      DatabaseHelper.columnType: quizType
     };
     final id = await dbHelper.insert(row);
   }
@@ -276,7 +275,7 @@ class _QuizState extends State<Quiz> {
           child: Column(
             children: <Widget>[
               Container(
-                padding: new EdgeInsets.only(top: 40, bottom: 40),
+                padding: new EdgeInsets.only(top: 10,bottom: 10),
                 width: double.infinity,
                 color: Color(hexColor('#0E629B')),
                 child: Center(

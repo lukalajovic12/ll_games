@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../main.dart';
 import 'geo.dart';
 import 'geo_main.dart';
 
@@ -31,7 +32,6 @@ class _GeoDataWidget extends State<GeoDataWidget> {
       );
       bl.add(b);
     }
-
     return bl;
   }
 
@@ -50,6 +50,14 @@ class _GeoDataWidget extends State<GeoDataWidget> {
     setState(() {
       selectedIndex = index;
     });
+  }
+
+  String getTitle() {
+    String title = "";
+    if (countryCategoryList != null && !countryCategoryList.isEmpty) {
+      title = countryCategoryList[getSelectedIndex()].category;
+    }
+    return title;
   }
 
   List<CountryCapital> getGeoList() {
@@ -105,46 +113,65 @@ class _GeoDataWidget extends State<GeoDataWidget> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          'Gemory',
+          getTitle(),
           style: TextStyle(fontStyle: FontStyle.italic),
           textAlign: TextAlign.center,
         ),
         centerTitle: true,
       ),
       body: Container(
-          child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: DataTable(
-          sortAscending: true,
-          columns: <DataColumn>[
-            DataColumn(
-              label: Text('country'),
-            ),
-            DataColumn(
-              label: Text('capital'),
-            ),
-          ],
-          rows: getGeoList()
-              .map(
-                (cc) => DataRow(
-                  cells: [
-                    DataCell(
-                      Text(cc.country),
-                      showEditIcon: false,
-                      placeholder: false,
-                    ),
-                    DataCell(
-                      Text(cc.capital),
-                      showEditIcon: false,
-                      placeholder: false,
-                    ),
-                  ],
-                ),
-              )
-              .toList(),
-        ),
-      )),
+        color: Color(hexColor('#B7D7DA')),
+        child: Container(
+                width: double.infinity,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: DataTable(
+                    sortAscending: true,
+                    columns: <DataColumn>[
+                      DataColumn(
+                        label: Text('country',
+                            style: TextStyle(
+                              color: Color(hexColor('#0E629B')),
+                              fontSize: 20.0,
+                            )),
+                      ),
+                      DataColumn(
+                        label: Text('capital',
+                            style: TextStyle(
+                              color: Color(hexColor('#0E629B')),
+                              fontSize: 20.0,
+                            )),
+                      ),
+                    ],
+                    rows: getGeoList()
+                        .map(
+                          (cc) => DataRow(
+                            cells: [
+                              DataCell(
+                                Text(cc.country,
+                                    style: TextStyle(
+                                      color: Color(hexColor('#0E629B')),
+                                    )),
+                                showEditIcon: false,
+                                placeholder: false,
+                              ),
+                              DataCell(
+                                Text(cc.capital,
+                                    style: TextStyle(
+                                      color: Color(hexColor('#0E629B')),
+                                    )),
+                                showEditIcon: false,
+                                placeholder: false,
+                              ),
+                            ],
+                          ),
+                        )
+                        .toList(),
+                  ),
+                )),
+      ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color(hexColor('#B7D7DA')),
         type: BottomNavigationBarType.fixed,
         currentIndex: getSelectedIndex(),
         selectedItemColor: Colors.amber[800],

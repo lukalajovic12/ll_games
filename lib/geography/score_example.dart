@@ -23,13 +23,19 @@ class _ScoreExample extends State<ScoreExample> {
     ];
     var data2 = [
       new Pollution(1985, 'USA', 100),
-      new Pollution(1980, 'Asia', 150),
+      new Pollution(1985, 'Asia', 150),
       new Pollution(1985, 'Europe', 80),
     ];
     var data3 = [
-      new Pollution(1985, 'USA', 200),
-      new Pollution(1980, 'Asia', 300),
-      new Pollution(1985, 'Europe', 180),
+      new Pollution(1990, 'USA', 200),
+      new Pollution(1990, 'Asia', 300),
+      new Pollution(1990, 'Europe', 180),
+    ];
+
+    var data4 = [
+      new Pollution(1990, 'USA', 600),
+      new Pollution(1990, 'Asia', 700),
+      new Pollution(1990, 'Europe', 980),
     ];
 
     var piedata = [
@@ -100,6 +106,18 @@ class _ScoreExample extends State<ScoreExample> {
         fillPatternFn: (_, __) => charts.FillPatternType.solid,
         fillColorFn: (Pollution pollution, _) =>
             charts.ColorUtil.fromDartColor(Color(0xffff9900)),
+      ),
+    );
+
+    _seriesData.add(
+      charts.Series(
+        domainFn: (Pollution pollution, _) => pollution.place,
+        measureFn: (Pollution pollution, _) => pollution.quantity,
+        id: '2020',
+        data: data4,
+        fillPatternFn: (_, __) => charts.FillPatternType.solid,
+        fillColorFn: (Pollution pollution, _) =>
+            charts.ColorUtil.fromDartColor(Colors.red),
       ),
     );
 
@@ -191,7 +209,7 @@ class _ScoreExample extends State<ScoreExample> {
                             animate: true,
                             barGroupingType: charts.BarGroupingType.grouped,
                             //behaviors: [new charts.SeriesLegend()],
-                            animationDuration: Duration(seconds: 5),
+                            animationDuration: Duration(seconds: 1),
                           ),
                         ),
                       ],
@@ -212,7 +230,7 @@ class _ScoreExample extends State<ScoreExample> {
                           child: charts.PieChart(
                               _seriesPieData,
                               animate: true,
-                              animationDuration: Duration(seconds: 5),
+                              animationDuration: Duration(seconds: 1),
                               behaviors: [
                                 new charts.DatumLegend(
                                   outsideJustification: charts.OutsideJustification.endDrawArea,
@@ -251,7 +269,7 @@ class _ScoreExample extends State<ScoreExample> {
                               defaultRenderer: new charts.LineRendererConfig(
                                   includeArea: true, stacked: true),
                               animate: true,
-                              animationDuration: Duration(seconds: 5),
+                              animationDuration: Duration(seconds: 1),
                               behaviors: [
                                 new charts.ChartTitle('Years',
                                     behaviorPosition: charts.BehaviorPosition.bottom,
