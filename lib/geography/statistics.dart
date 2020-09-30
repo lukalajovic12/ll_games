@@ -40,7 +40,9 @@ class _ScoreListState extends State<ScoreList> {
           row[DatabaseHelper.columnId],
           row[DatabaseHelper.columnCorrectAnwser],
           row[DatabaseHelper.columnWrongAnwser],
-          row[DatabaseHelper.columnSkipedAnwser])));
+          row[DatabaseHelper.columnSkipedAnwser],
+        row[DatabaseHelper.columnTime],
+        row[DatabaseHelper.columnPossibleAnwsers],)));
     }
     setState(() {
       this.scoreist = scl;
@@ -57,21 +59,21 @@ class _ScoreListState extends State<ScoreList> {
             sortAscending: true,
             columns: <DataColumn>[
               DataColumn(
-                label: Text('correct',
+                label: Text('score',
                     style: TextStyle(
                         color: Color(hexColor('#0E629B')),
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold)),
               ),
               DataColumn(
-                label: Text('wrong',
+                label: Text('time',
                     style: TextStyle(
                         color: Color(hexColor('#0E629B')),
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold)),
               ),
               DataColumn(
-                label: Text('skiped',
+                label: Text('anwsers',
                     style: TextStyle(
                         color: Color(hexColor('#0E629B')),
                         fontSize: 20.0,
@@ -83,23 +85,23 @@ class _ScoreListState extends State<ScoreList> {
                   (s) => DataRow(
                     cells: [
                       DataCell(
-                        Text('${s.correctAnwser}',
+                        Text('${s.correctAnwser-s.wrongAnwser}',
                             style:
                                 TextStyle(color: Color(hexColor('#0E629B')))),
                         showEditIcon: false,
                         placeholder: false,
                       ),
                       DataCell(
-                        Text('${s.wrongAnwser}',
+                        Text('${s.time}',
                             style:
-                                TextStyle(color: Color(hexColor('#0E629B')))),
+                            TextStyle(color: Color(hexColor('#0E629B')))),
                         showEditIcon: false,
                         placeholder: false,
                       ),
                       DataCell(
-                        Text('${s.skipedAnwser}',
+                        Text('${s.possibleAnwsers}',
                             style:
-                                TextStyle(color: Color(hexColor('#0E629B')))),
+                            TextStyle(color: Color(hexColor('#0E629B')))),
                         showEditIcon: false,
                         placeholder: false,
                       ),
@@ -111,14 +113,22 @@ class _ScoreListState extends State<ScoreList> {
         ));
   }
 
-  void generatePieChart() {
+  void generatePieChart(bool totalScore) {
     int co = 0;
     int wr = 0;
     int sk = 0;
-    for (Score s in getScoreList()) {
-      co += s.correctAnwser;
-      wr += s.wrongAnwser;
-      sk += s.skipedAnwser;
+    if(totalScore) {
+      for (Score s in getScoreList()) {
+        co += s.correctAnwser;
+        wr += s.wrongAnwser;
+        sk += s.skipedAnwser;
+      }
+    }
+    else{
+      co=getScoreList()[ getScoreList().length-1].correctAnwser;
+      wr=getScoreList()[ getScoreList().length-1].wrongAnwser;
+      sk=getScoreList()[ getScoreList().length-1].skipedAnwser;
+
     }
     generatePieData(co, wr, sk);
   }
@@ -143,15 +153,20 @@ class _ScoreListState extends State<ScoreList> {
     );
   }
 
-  Container pieContainer() {
-    generatePieChart();
+  Container pieContainer(bool totalPoints) {
+    generatePieChart(totalPoints);
+    String sco='previous score';
+    if(totalPoints){
+      sco='Total points';
+    }
+
     return Container(
       color: Color(hexColor('#B7D7DA')),
       child: Center(
         child: Column(
           children: <Widget>[
             Text(
-              'total points',
+              '$sco',
               style: TextStyle(
                   color: Color(hexColor('#0E629B')),
                   fontSize: 40.0,
@@ -192,7 +207,7 @@ class _ScoreListState extends State<ScoreList> {
 
   void generateLineChart() {
     List<Score> scl = new List();
-    Score s= new Score(0, 0, 0, 0);
+    Score s= new Score(0, 0, 0, 0,0,0);
     scl.add(s);
     scl.addAll(getScoreList());
     _seriesLineData = List<charts.Series<Score, int>>();
@@ -334,7 +349,7 @@ class _ScoreListState extends State<ScoreList> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 3,
+        length: 4,
         child: Scaffold(
             appBar: AppBar(
               leading: BackButton(color: Colors.white),
@@ -356,6 +371,10 @@ class _ScoreListState extends State<ScoreList> {
                     text: 'pie',
                   ),
                   Tab(
+                    icon: Icon(FontAwesomeIcons.chartPie),
+                    text: 'lastScore',
+                  ),
+                  Tab(
                     icon: Icon(FontAwesomeIcons.chartLine),
                     text: 'line',
                   ),
@@ -364,7 +383,8 @@ class _ScoreListState extends State<ScoreList> {
             ),
             body: TabBarView(children: [
               scoreTableContainer(),
-              pieContainer(),
+              pieContainer(true),
+              pieContainer(false),
               lineContainer(),
             ])));
   }

@@ -37,12 +37,16 @@ class Score{
   int correctAnwser=0;
   int wrongAnwser=0;
   int skipedAnwser=0;
+  int time=0;
+  int possibleAnwsers=0;
 
-  Score(int id,int correctAnwser,int wrongAnwser, int skipedAnwser){
+  Score(int id,int correctAnwser,int wrongAnwser, int skipedAnwser,int time,possibleAnwsers){
     this.id=id;
     this.correctAnwser=correctAnwser;
     this.wrongAnwser=wrongAnwser;
     this.skipedAnwser=skipedAnwser;
+    this.time=time;
+    this.possibleAnwsers=possibleAnwsers;
   }
 
 }

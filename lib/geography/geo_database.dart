@@ -13,13 +13,16 @@ class DatabaseHelper {
   static final table = 'geo_game';
 
   static final columnId = '_id';
+
+  static final columnTime = 'time';
+
   static final columnCorrectAnwser = 'correctAnwsers';
 
   static final columnWrongAnwser = 'wrongAnwsers';
 
   static final columnSkipedAnwser = 'skipedAnwsers';
 
-
+  static final columnPossibleAnwsers='possibleAnwsers';
 
 
   // make this a singleton class
@@ -50,7 +53,9 @@ class DatabaseHelper {
     await db.execute('''
           CREATE TABLE IF NOT EXISTS  $table (
             $columnId INTEGER PRIMARY KEY,
-            $columnCorrectAnwser INTEGER NOT NULL,
+            $columnTime INTEGER NOT NULL,
+            $columnPossibleAnwsers INTEGER NOT NULL,
+            $columnCorrectAnwser INTEGER NOT NULL,          
             $columnWrongAnwser INTEGER NOT NULL,
             $columnSkipedAnwser INTEGER NOT NULL
           )

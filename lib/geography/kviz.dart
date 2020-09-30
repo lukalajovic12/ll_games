@@ -190,6 +190,8 @@ class _QuizState extends State<Quiz> {
 
   void _insert() async {
     Map<String, dynamic> row = {
+      DatabaseHelper.columnTime:time,
+      DatabaseHelper.columnPossibleAnwsers:numberOfAnwsers,
       DatabaseHelper.columnCorrectAnwser: correctAnwsers,
       DatabaseHelper.columnWrongAnwser: wrongAnwsers,
       DatabaseHelper.columnSkipedAnwser: skipedAnwserrs,
