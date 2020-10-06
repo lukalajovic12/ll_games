@@ -2,12 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../main.dart';
 import 'geo.dart';
 import 'kviz.dart';
-import 'statistics.dart';
-
+import 'geo_main.dart';
+import 'left_menu.dart';
 class GeoQuizSettingsWidget extends StatefulWidget {
   List<CountryCapital> geoList;
 
@@ -183,6 +182,7 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
           ],
         ),
       ),
+      drawer: leftMenu(context),
     );
   }
 

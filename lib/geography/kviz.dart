@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:llgames/geography/single_game_statistics.dart';
 import '../main.dart';
 import 'geo.dart';
 import 'dart:async';
@@ -46,7 +47,7 @@ class Quiz extends StatefulWidget {
 }
 
 class _QuizState extends State<Quiz> {
-  final dbHelper = DatabaseHelper.instance;
+  final dbGameHelper = DatabaseGameHelper.instance;
 
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
@@ -68,12 +69,6 @@ class _QuizState extends State<Quiz> {
 
   List<String> anwsers = new List();
 
-  int correctAnwsers = 0;
-
-  int wrongAnwsers = 0;
-
-  int skipedAnwserrs = 0;
-
   Timer _timer;
 
   int countDown;
@@ -86,20 +81,20 @@ class _QuizState extends State<Quiz> {
 
   bool askCountry = true;
 
+  List<Anwser> listAnwsers = new List();
+
   _QuizState(List<CountryCapital> geoList, int quizType,
       List<String> categories, int time, int numberOfAnwsers) {
     this.geoList = geoList;
     this.quizType = quizType;
     this.time = time;
     this.numberOfAnwsers = numberOfAnwsers;
-    correctAnwsers = 0;
-    wrongAnwsers = 0;
-    skipedAnwserrs = 0;
     this.categories = categories;
     this.correctlyAnwsered = new List();
     this.quizType = quizType;
     createGeo();
     runTimer();
+    listAnwsers = new List();
   }
 
   void createGeo() {
@@ -155,6 +150,13 @@ class _QuizState extends State<Quiz> {
   void endGame() {
     _insert();
     Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SingleGameStatistics(lastGameAnwsers: listAnwsers),
+      ),
+    );
+
   }
 
   void runTimer() {
@@ -190,13 +192,20 @@ class _QuizState extends State<Quiz> {
 
   void _insert() async {
     Map<String, dynamic> row = {
-      DatabaseHelper.columnTime:time,
-      DatabaseHelper.columnPossibleAnwsers:numberOfAnwsers,
-      DatabaseHelper.columnCorrectAnwser: correctAnwsers,
-      DatabaseHelper.columnWrongAnwser: wrongAnwsers,
-      DatabaseHelper.columnSkipedAnwser: skipedAnwserrs,
+      DatabaseGameHelper.gameColumnTime: time,
+      DatabaseGameHelper.gameColumnPossibleAnwsers: numberOfAnwsers,
     };
-    final id = await dbHelper.insert(row);
+    final id = await dbGameHelper.insert(row);
+    for (Anwser a in listAnwsers) {
+      Map<String, dynamic> rr = {
+        DatabaseGameHelper.gameColumnQuestion: a.question,
+        DatabaseGameHelper.gameColumnCorrectAnwser: a.correctAnwser,
+        DatabaseGameHelper.gameColumnAnwser: a.anwser,
+        DatabaseGameHelper.gameColumnType: quizType,
+        DatabaseGameHelper.gameId: id
+      };
+      final idA = await dbGameHelper.insertQuestion(rr);
+    }
   }
 
   bool checkingAnwser(String anwser) {
@@ -228,6 +237,7 @@ class _QuizState extends State<Quiz> {
         }
       }
     }
+
     return cor;
   }
 
@@ -235,14 +245,30 @@ class _QuizState extends State<Quiz> {
     clickedAnwser = anwser;
     setState(() {
       if (checkingAnwser(anwser)) {
-        correctAnwsers += 1;
         correctlyAnwsered.add(anwser);
         if (getGeoList().length == correctlyAnwsered.length) {
           endGame();
         }
-      } else {
-        wrongAnwsers += 1;
       }
+      int qt = 1;
+      String corAnw = "";
+      if (quizType == 1) {
+        qt = quizType;
+        corAnw = kvizQuestion.corectAnwser.capital;
+      } else if (quizType == 2) {
+        corAnw = kvizQuestion.corectAnwser.country;
+        qt = quizType;
+      } else {
+        if (askCountry) {
+          corAnw = kvizQuestion.corectAnwser.capital;
+          qt = quizType;
+        } else {
+          qt = quizType;
+          corAnw = kvizQuestion.corectAnwser.country;
+        }
+      }
+      Anwser a = new Anwser(getQuestion(), corAnw, anwser, qt);
+      listAnwsers.add(a);
       startWait();
     });
   }
@@ -262,8 +288,27 @@ class _QuizState extends State<Quiz> {
   }
 
   void skipAnwser() {
+    String corAnw = "";
+    int qt = 1;
+    if (quizType == 1) {
+      qt = quizType;
+      corAnw = kvizQuestion.corectAnwser.capital;
+    } else if (quizType == 2) {
+      qt = quizType;
+      corAnw = kvizQuestion.corectAnwser.country;
+    } else {
+      if (askCountry) {
+        qt = quizType;
+        corAnw = kvizQuestion.corectAnwser.capital;
+      } else {
+        qt = quizType;
+        corAnw = kvizQuestion.corectAnwser.country;
+      }
+    }
+    corAnw = kvizQuestion.corectAnwser.country;
+    Anwser a = new Anwser(getQuestion(), corAnw, 'Skipped', qt);
+    listAnwsers.add(a);
     setState(() {
-      skipedAnwserrs += 1;
       createGeo();
     });
   }
@@ -277,7 +322,7 @@ class _QuizState extends State<Quiz> {
           child: Column(
             children: <Widget>[
               Container(
-                padding: new EdgeInsets.only(top: 10,bottom: 10),
+                padding: new EdgeInsets.only(top: 10, bottom: 10),
                 width: double.infinity,
                 color: Color(hexColor('#0E629B')),
                 child: Center(

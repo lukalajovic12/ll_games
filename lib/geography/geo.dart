@@ -62,3 +62,24 @@ class Rezult{
 
   }
 }
+
+class Anwser{
+
+  String question="";
+  String correctAnwser="";
+  String anwser="";
+  int type=1;
+
+
+
+
+  Anwser(String question,String correctAnwser,String anwser,int type){
+    this.question=question;
+    this.correctAnwser=correctAnwser;
+    this.anwser=anwser;
+    this.type=type;
+  }
+
+
+
+}

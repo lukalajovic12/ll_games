@@ -1,14 +1,14 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import '../main.dart';
-import 'country_capital_table.dart';
 import 'geo.dart';
 import 'geo_quiz_settings.dart';
-import 'statistics.dart';
+import 'left_menu.dart';
+
+
+
 
 class GeoMainWidget extends StatefulWidget {
   @override
@@ -31,56 +31,7 @@ class _GeoMainWidget extends State<GeoMainWidget> {
         centerTitle: true,
       ),
       body: GeoTabWidget(),
-      drawer: Drawer(
-        child: Container(
-          color: Color(hexColor('#B7D7DA')),
-          child: ListView(
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                child: Text('Settings'),
-                decoration: BoxDecoration(
-                  color: Color(hexColor('#B7D7DA')),
-                ),
-              ),
-              ListTile(
-                title: Center(child: Text('statistics')),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ScoreList()),
-                  );
-                },
-              ),
-              ListTile(
-                title: Center(child: Text('data')),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => GeoDataWidget()),
-                  );
-                },
-              ),
-              ListTile(
-                title: Center(child: Text('back')),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
+      drawer: leftMenu(context),
     );
   }
 }

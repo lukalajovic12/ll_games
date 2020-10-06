@@ -70,20 +70,20 @@ Equatorial Guinea,Malabo,afrika
 Eritrea,Asmara,afrika
 Estonia,Tallinn,europe
 Ethiopia,Addis Ababa,afrika
-Falkland Islands,Stanley,south america
+Falkland Islands,Stanley,south america,british teritory
 Faroe Islands,Tórshavn,europe,dutch teritory
 Federated States of Micronesia,Palikir,oceania
 Fiji,Suva,oceania
 Finland,Helsinki,europe
 France,Paris,europe
-French Guiana,Cayenne,south america
+French Guiana,Cayenne,south america,french teritory
 French Polynesia,Papeete,oceania
 Gabon,Libreville,afrika
 Gambia,Banjul,afrika
 Georgia,Tbilisi,asia
 Germany,Berlin,europe
 Ghana,Accra,afrika
-Gibraltar,Gibraltar,europe
+Gibraltar,Gibraltar,europe,british teritory
 Greece,Athens,europe
 Greenland,Nuuk,north america,danish teritory
 Grenada,St. George's,north america
@@ -120,7 +120,7 @@ Latvia,Riga,europe
 Lebanon,Beirut,asia
 Lesotho,Maseru,afrika
 Liberia,Monrovia,afrika
-Libya,Tripoli,asia
+Libya,Tripoli,afrika
 Liechtenstein,Vaduz,europe
 Lithuania,Vilnius,europe
 Luxembourg,Luxembourg,europe
@@ -163,7 +163,7 @@ Norway,Oslo,europe
 Oman,Muscat,asia
 Pakistan,Islamabad,asia
 Palau,Ngerulmud,oceania
-Palestine,Jerusalem,asia
+Palestine,Jerusalem,asia,ocupied
 Panama,Panama City,south america
 Papua New Guinea,Port Moresby,asia
 Paraguay,Asunción,south america
@@ -242,7 +242,7 @@ Venezuela,Caracas,south america
 Vietnam,Hanoi,asia
 Wales,Cardiff,europe
 Wallis and Futuna,Mata-Utu,oceania,french teritory
-Western Sahara,El Aaiún,afrika
+Western Sahara,El Aaiún,afrika,ocupied
 Yemen,Sanaá,asia
 Zambia,Lusaka,afrika
 Zimbabwe,Harare,afrika
