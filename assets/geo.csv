@@ -24,7 +24,7 @@ Belarus,Minsk,europe
 Belgium,Brussels,europe
 Belize,Belmopan,north america
 Benin,Porto-Novo,afrika
-Bermuda,Hamilton,north america
+Bermuda,Hamilton,north america,british teritory
 Bhutan,Thimphu,asia
 Bolivia,La Paz,south america
 Bosnia and Herzegovina,Sarajevo,europe
@@ -77,7 +77,7 @@ Fiji,Suva,oceania
 Finland,Helsinki,europe
 France,Paris,europe
 French Guiana,Cayenne,south america,french teritory
-French Polynesia,Papeete,oceania
+French Polynesia,Papeete,oceania, french teritory
 Gabon,Libreville,afrika
 Gambia,Banjul,afrika
 Georgia,Tbilisi,asia
@@ -153,7 +153,7 @@ New Zealand,Wellington,oceania
 Nicaragua,Managua,north america
 Niger,Niamey,afrika
 Nigeria,Abuja,afrika
-Niue,Alofi,oceania
+Niue,Alofi,oceania,new Zealand teritory
 Norfolk Island,Kingston,oceania,australian teritory
 North Korea,Pyongyang,asia
 Northern Cyprus,Nicosia,europe
@@ -172,7 +172,7 @@ Philippines,Manila,asia
 Pitcairn Islands,Adamstown,oceania,british teritory
 Poland,Warsaw,europe
 Portugal,Lisbon,europe
-Puerto Rico,San Juan,north america
+Puerto Rico,San Juan,north america, us teritory
 Qatar,Doha,asia
 Taiwan,Taipei,asia
 Republic of the Congo,Brazzaville,afrika

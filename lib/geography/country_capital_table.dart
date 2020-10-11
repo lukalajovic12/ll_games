@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../main.dart';
 import 'geo.dart';
 import 'geo_main.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GeoDataWidget extends StatefulWidget {
   @override
@@ -62,11 +63,9 @@ class _GeoDataWidget extends State<GeoDataWidget> {
 
   List<CountryCapital> getGeoList() {
     List<CountryCapital> ccl = new List();
-
     if (countryCategoryList != null && !countryCategoryList.isEmpty) {
       ccl = countryCategoryList[getSelectedIndex()].countryCapitalList;
     }
-
     return ccl;
   }
 
@@ -119,57 +118,7 @@ class _GeoDataWidget extends State<GeoDataWidget> {
         ),
         centerTitle: true,
       ),
-      body: Container(
-        color: Color(hexColor('#B7D7DA')),
-        child: Container(
-                width: double.infinity,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: DataTable(
-                    sortAscending: true,
-                    columns: <DataColumn>[
-                      DataColumn(
-                        label: Text('country',
-                            style: TextStyle(
-                              color: Color(hexColor('#0E629B')),
-                              fontSize: 20.0,
-                            )),
-                      ),
-                      DataColumn(
-                        label: Text('capital',
-                            style: TextStyle(
-                              color: Color(hexColor('#0E629B')),
-                              fontSize: 20.0,
-                            )),
-                      ),
-                    ],
-                    rows: getGeoList()
-                        .map(
-                          (cc) => DataRow(
-                            cells: [
-                              DataCell(
-                                Text(cc.country,
-                                    style: TextStyle(
-                                      color: Color(hexColor('#0E629B')),
-                                    )),
-                                showEditIcon: false,
-                                placeholder: false,
-                              ),
-                              DataCell(
-                                Text(cc.capital,
-                                    style: TextStyle(
-                                      color: Color(hexColor('#0E629B')),
-                                    )),
-                                showEditIcon: false,
-                                placeholder: false,
-                              ),
-                            ],
-                          ),
-                        )
-                        .toList(),
-                  ),
-                )),
-      ),
+      body: countryList(),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Color(hexColor('#B7D7DA')),
         type: BottomNavigationBarType.fixed,
@@ -179,6 +128,58 @@ class _GeoDataWidget extends State<GeoDataWidget> {
         items: barItems(),
       ),
     );
+  }
+
+  Container countryList() {
+    return Container(
+        color: Color(hexColor('#B7D7DA')),
+        child: ListView.builder(
+          itemCount: getGeoList().length,
+          itemBuilder: (context, index) {
+            CountryCapital country = getGeoList()[index];
+            return ListTile(
+              leading: IconButton(
+                color: Color(hexColor('#0E629B')),
+                icon: Icon(FontAwesomeIcons.mapMarker),
+                onPressed: () {
+                  goToGoogleMaps(country.country);
+                },
+              ),
+              title: Text(
+                country.country,
+                style: TextStyle(color: Color(hexColor('#0E629B'))),
+              ),
+              subtitle: Text(country.capital,
+                  style: TextStyle(color: Color(hexColor('#0E629B')))),
+              isThreeLine: true,
+              trailing: IconButton(
+                color: Color(hexColor('#0E629B')),
+                icon: Icon(FontAwesomeIcons.wikipediaW),
+                onPressed: () {
+                  goToWikipedia(country.country);
+                },
+              ),
+            );
+          },
+        ));
+  }
+}
+
+void goToWikipedia(String country) {
+  String url = 'https://en.wikipedia.org/wiki/$country';
+  launchUrl(url);
+}
+
+void goToGoogleMaps(String country) {
+  String url = 'https://www.google.com/maps/place/$country';
+  launchUrl(url);
+}
+
+Future<bool> launchUrl(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
   }
 }
 

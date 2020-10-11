@@ -21,7 +21,7 @@ Container leftMenu(BuildContext context){
           ),
         ),
         ListTile(
-          title: Center(child: Text('statistics')),
+          title: Center(child: Text('Statistics')),
           onTap: () {
             // Update the state of the app
             // ...
@@ -33,7 +33,7 @@ Container leftMenu(BuildContext context){
           },
         ),
         ListTile(
-          title: Center(child: Text('data')),
+          title: Center(child: Text('Data')),
           onTap: () {
             // Update the state of the app
             // ...
@@ -46,14 +46,14 @@ Container leftMenu(BuildContext context){
         ),
 
         ListTile(
-          title: Center(child: Text('last game')),
+          title: Center(child: Text('Last game')),
           onTap: () {
             pushLastGame(context);
           },
         ),
 
         ListTile(
-          title: Center(child: Text('back')),
+          title: Center(child: Text('Back')),
           onTap: () {
             // Update the state of the app
             // ...

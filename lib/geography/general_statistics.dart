@@ -93,13 +93,6 @@ class _ScoreListState extends State<ScoreList> {
                         fontWeight: FontWeight.bold)),
               ),
               DataColumn(
-                label: Text('time',
-                    style: TextStyle(
-                        color: Color(hexColor('#0E629B')),
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold)),
-              ),
-              DataColumn(
                 label: Text('anwsers',
                     style: TextStyle(
                         color: Color(hexColor('#0E629B')),
@@ -119,13 +112,6 @@ class _ScoreListState extends State<ScoreList> {
                           placeholder: false,
                         ),
                         DataCell(
-                          Text('${s.time}',
-                              style:
-                                  TextStyle(color: Color(hexColor('#0E629B')))),
-                          showEditIcon: false,
-                          placeholder: false,
-                        ),
-                        DataCell(
                           Text('${s.possibleAnwsers}',
                               style:
                                   TextStyle(color: Color(hexColor('#0E629B')))),
@@ -135,9 +121,8 @@ class _ScoreListState extends State<ScoreList> {
                       ],
                       onSelectChanged: (bool selected) {
                         if (selected) {
-                          goToDetailScreen(s.id);
-                        }
-                        ;
+                          goToSingleGameStatisticslScreen(s.id, s.time,s.possibleAnwsers);
+                        };
                       }),
                 )
                 .toList(),
@@ -145,12 +130,12 @@ class _ScoreListState extends State<ScoreList> {
         ));
   }
 
-  Future<void> goToDetailScreen(int idGame) async {
+  Future<void> goToSingleGameStatisticslScreen(int idGame,int time,int anwsers) async {
     List<Anwser> anl = await queryGameAnwsers(idGame);
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SingleGameStatistics(lastGameAnwsers: anl),
+        builder: (context) => SingleGameStatistics(lastGameAnwsers: anl,time: time,),
       ),
     );
   }

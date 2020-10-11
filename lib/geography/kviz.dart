@@ -150,10 +150,11 @@ class _QuizState extends State<Quiz> {
   void endGame() {
     _insert();
     Navigator.pop(context);
+    Navigator.pop(context);
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SingleGameStatistics(lastGameAnwsers: listAnwsers),
+        builder: (context) => SingleGameStatistics(lastGameAnwsers: listAnwsers,time: time,anwsers: numberOfAnwsers,),
       ),
     );
 
@@ -237,7 +238,6 @@ class _QuizState extends State<Quiz> {
         }
       }
     }
-
     return cor;
   }
 
