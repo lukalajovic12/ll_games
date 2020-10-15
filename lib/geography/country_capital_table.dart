@@ -118,7 +118,7 @@ class _GeoDataWidget extends State<GeoDataWidget> {
         ),
         centerTitle: true,
       ),
-      body: countryList(),
+      body: countryList(context),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Color(hexColor('#B7D7DA')),
         type: BottomNavigationBarType.fixed,
@@ -130,34 +130,94 @@ class _GeoDataWidget extends State<GeoDataWidget> {
     );
   }
 
-  Container countryList() {
+  Container countryList(BuildContext context) {
+    double c_width = MediaQuery.of(context).size.width;
     return Container(
         color: Color(hexColor('#B7D7DA')),
         child: ListView.builder(
           itemCount: getGeoList().length,
           itemBuilder: (context, index) {
-            CountryCapital country = getGeoList()[index];
-            return ListTile(
-              leading: IconButton(
-                color: Color(hexColor('#0E629B')),
-                icon: Icon(FontAwesomeIcons.mapMarker),
-                onPressed: () {
-                  goToGoogleMaps(country.country);
-                },
-              ),
-              title: Text(
-                country.country,
-                style: TextStyle(color: Color(hexColor('#0E629B'))),
-              ),
-              subtitle: Text(country.capital,
-                  style: TextStyle(color: Color(hexColor('#0E629B')))),
-              isThreeLine: true,
-              trailing: IconButton(
-                color: Color(hexColor('#0E629B')),
-                icon: Icon(FontAwesomeIcons.wikipediaW),
-                onPressed: () {
-                  goToWikipedia(country.country);
-                },
+            CountryCapital cc = getGeoList()[index];
+            return Container(
+              padding: new EdgeInsets.only(top: 10, bottom: 10),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        child: Text(cc.country,
+                            style: TextStyle(
+                                color: Color(hexColor('#0E629B')),
+                                fontSize: 25.0,
+                                fontWeight: FontWeight.bold)),
+                      )
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        padding: new EdgeInsets.only(left: 40),
+                        width: c_width / 2,
+                        child: Text('Capital:',
+                            style: TextStyle(
+                                color: Color(hexColor('#0E629B')),
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                      Container(
+                          width: c_width / 2,
+                          padding: new EdgeInsets.only(left: 65),
+                          child: Text(cc.capital,
+                              style: TextStyle(
+                                  color: Color(hexColor('#0E629B')),
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold))),
+                    ],
+                  ),
+                  Row(children: <Widget>[
+                    Container(
+                      padding: new EdgeInsets.only(left: 40),
+                      width: c_width / 2,
+                      child: Text('Wikipedia:',
+                          style: TextStyle(
+                              color: Color(hexColor('#0E629B')),
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                    Container(
+                      width: c_width / 2,
+                      child: IconButton(
+                        color: Color(hexColor('#0E629B')),
+                        icon: Icon(FontAwesomeIcons.wikipediaW),
+                        onPressed: () {
+                          goToWikipedia(cc.country);
+                        },
+                      ),
+                    ),
+                  ]),
+                  Row(children: <Widget>[
+                    Container(
+                      padding: new EdgeInsets.only(left: 40),
+                      width: c_width / 2,
+                      child: Text('Google maps:',
+                          style: TextStyle(
+                              color: Color(hexColor('#0E629B')),
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                    Container(
+                      width: c_width / 2,
+                      child: IconButton(
+                        color: Color(hexColor('#0E629B')),
+                        icon: Icon(FontAwesomeIcons.mapMarker),
+                        onPressed: () {
+                          goToGoogleMaps(cc.country);
+                        },
+                      ),
+                    ),
+                  ]),
+                ],
               ),
             );
           },
@@ -172,6 +232,11 @@ void goToWikipedia(String country) {
 
 void goToGoogleMaps(String country) {
   String url = 'https://www.google.com/maps/place/$country';
+  launchUrl(url);
+}
+
+void goToBritanica(String country) {
+  String url = 'https://www.britannica.com/place/$country';
   launchUrl(url);
 }
 

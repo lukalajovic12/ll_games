@@ -340,7 +340,27 @@ Container anwserListContainer(List<Anwser> lastGameAnwsers,BuildContext context)
                   ]),
 
 
-
+              Row(
+                  children: <Widget>[
+                    Container(
+                      width: c_width/3,
+                      child: Text('Britanica:',
+                          style: TextStyle(
+                              color: Color(hexColor('#0E629B')),
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                    Container(
+                      width: c_width/2,
+                      child: IconButton(
+                        color: Color(hexColor('#0E629B')),
+                        icon: Icon(FontAwesomeIcons.book),
+                        onPressed: () {
+                          goToBritanica(anwser.correctAnwser);
+                        },
+                      ),
+                    ),
+                  ]),
 
 
 

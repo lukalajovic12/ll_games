@@ -242,35 +242,37 @@ class _QuizState extends State<Quiz> {
   }
 
   void checkAnwser(String anwser) {
-    clickedAnwser = anwser;
-    setState(() {
-      if (checkingAnwser(anwser)) {
-        correctlyAnwsered.add(anwser);
-        if (getGeoList().length == correctlyAnwsered.length) {
-          endGame();
+    if(timeCounting) {
+      clickedAnwser = anwser;
+      setState(() {
+        if (checkingAnwser(anwser)) {
+          correctlyAnwsered.add(anwser);
+          if (getGeoList().length == correctlyAnwsered.length) {
+            endGame();
+          }
         }
-      }
-      int qt = 1;
-      String corAnw = "";
-      if (quizType == 1) {
-        qt = quizType;
-        corAnw = kvizQuestion.corectAnwser.capital;
-      } else if (quizType == 2) {
-        corAnw = kvizQuestion.corectAnwser.country;
-        qt = quizType;
-      } else {
-        if (askCountry) {
+        int qt = 1;
+        String corAnw = "";
+        if (quizType == 1) {
+          qt = quizType;
           corAnw = kvizQuestion.corectAnwser.capital;
+        } else if (quizType == 2) {
+          corAnw = kvizQuestion.corectAnwser.country;
           qt = quizType;
         } else {
-          qt = quizType;
-          corAnw = kvizQuestion.corectAnwser.country;
+          if (askCountry) {
+            corAnw = kvizQuestion.corectAnwser.capital;
+            qt = quizType;
+          } else {
+            qt = quizType;
+            corAnw = kvizQuestion.corectAnwser.country;
+          }
         }
-      }
-      Anwser a = new Anwser(getQuestion(), corAnw, anwser, qt);
-      listAnwsers.add(a);
-      startWait();
-    });
+        Anwser a = new Anwser(getQuestion(), corAnw, anwser, qt);
+        listAnwsers.add(a);
+        startWait();
+      });
+    }
   }
 
   Color buttonCollor(String anwser) {
@@ -288,29 +290,31 @@ class _QuizState extends State<Quiz> {
   }
 
   void skipAnwser() {
-    String corAnw = "";
-    int qt = 1;
-    if (quizType == 1) {
-      qt = quizType;
-      corAnw = kvizQuestion.corectAnwser.capital;
-    } else if (quizType == 2) {
-      qt = quizType;
-      corAnw = kvizQuestion.corectAnwser.country;
-    } else {
-      if (askCountry) {
+    if(timeCounting) {
+      String corAnw = "";
+      int qt = 1;
+      if (quizType == 1) {
         qt = quizType;
         corAnw = kvizQuestion.corectAnwser.capital;
-      } else {
+      } else if (quizType == 2) {
         qt = quizType;
         corAnw = kvizQuestion.corectAnwser.country;
+      } else {
+        if (askCountry) {
+          qt = quizType;
+          corAnw = kvizQuestion.corectAnwser.capital;
+        } else {
+          qt = quizType;
+          corAnw = kvizQuestion.corectAnwser.country;
+        }
       }
+      corAnw = kvizQuestion.corectAnwser.country;
+      Anwser a = new Anwser(getQuestion(), corAnw, 'Skipped', qt);
+      listAnwsers.add(a);
+      setState(() {
+        createGeo();
+      });
     }
-    corAnw = kvizQuestion.corectAnwser.country;
-    Anwser a = new Anwser(getQuestion(), corAnw, 'Skipped', qt);
-    listAnwsers.add(a);
-    setState(() {
-      createGeo();
-    });
   }
 
   @override
