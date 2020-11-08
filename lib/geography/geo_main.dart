@@ -6,7 +6,7 @@ import '../main.dart';
 import 'geo.dart';
 import 'geo_quiz_settings.dart';
 import 'left_menu.dart';
-
+import 'package:flutter/material.dart';
 
 
 
@@ -44,11 +44,23 @@ class GeoTabWidget extends StatefulWidget {
 }
 
 class _GeoTabWidget extends State<GeoTabWidget> {
+
+  final ScrollController scrollController = ScrollController();
+
   List<CountryCategory> countryCategoryList = new List();
 
   List<String> categories = new List();
 
   Map<String, bool> selectedCategories = {};
+
+
+  _GeoTabWidget() {
+    loadGeo();
+    loadStates('assets/us_state_capitals.csv','USA');
+    loadStates('assets/german_state_capitals.csv','Deutschland');
+    loadStates('assets/austrian_state_capitals.csv','Austria');
+
+  }
 
   void loadGeo() async {
     categories = new List();
@@ -84,17 +96,50 @@ class _GeoTabWidget extends State<GeoTabWidget> {
     });
   }
 
-  _GeoTabWidget() {
-    loadGeo();
+
+
+  void loadStates(String file,String category) async {
+    List<CountryCapital> countryCapitalList=new List();
+    var geoString = await rootBundle.loadString(file);
+    LineSplitter ls = new LineSplitter();
+    List<String> geoLines = ls.convert(geoString);
+    for (int i = 1; i < geoLines.length; i++) {
+        CountryCapital countryCapital = new CountryCapital(
+            country: geoLines[i].split(",")[0],
+            capital: geoLines[i].split(",")[1]);
+        countryCapitalList.add(countryCapital);
+
+    }
+    selectedCategories[category] = false;
+    CountryCategory countryCategory=new CountryCategory(category, null);
+    countryCategory.countryCapitalList=countryCapitalList;
+    setState(() {
+      if(countryCategoryList!=null) {
+        countryCategoryList.add(countryCategory);
+      }
+      else{
+        countryCategoryList= new List();
+        countryCategoryList.add(countryCategory);
+      }
+    });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
+    double c_height = MediaQuery.of(context).size.height;
     return Container(
       color: Color(hexColor('#B7D7DA')),
       child: Column(
         children: <Widget>[
-          ListView.builder(
+      SizedBox(
+        height: c_height*0.7,
+        child:Scrollbar(
+          controller: scrollController,
+          child:ListView.builder(
+            controller: scrollController,
+            scrollDirection: Axis.vertical,
             shrinkWrap: true,
             itemCount: countryCategoryList.length,
             itemBuilder: (context, i) {
@@ -118,8 +163,15 @@ class _GeoTabWidget extends State<GeoTabWidget> {
               );
             },
           ),
+        ),
+
+
+
+
+      ),
+
           Container(
-            padding: new EdgeInsets.only(top: 20, left: 160),
+            padding: new EdgeInsets.only(top:20, left: 160),
             child: RaisedButton(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
@@ -135,7 +187,7 @@ class _GeoTabWidget extends State<GeoTabWidget> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => GeoQuizSettingsWidget(
-                            getSelectedCountryCapitals(), getCategories())),
+                            getSelectedCountryCapitals(), getSelectedCategories())),
                   );
                 }
               },
@@ -169,6 +221,17 @@ class _GeoTabWidget extends State<GeoTabWidget> {
     }
     return countryCapitals;
   }
+
+  List<String> getSelectedCategories() {
+    List<String> sc=new List();
+    for(String s in selectedCategories.keys){
+      if(selectedCategories[s]){
+        sc.add(s);
+      }
+    }
+    return sc;
+  }
+
 }
 
 class CountryCategory {
@@ -185,8 +248,12 @@ class CountryCategory {
   CountryCategory(String category, CountryCapital countryCapital) {
     this.category = category;
     countryCapitalList = new List();
-    countryCapitalList.add(countryCapital);
+    if (countryCapital != null){
+      countryCapitalList.add(countryCapital);
   }
+  }
+
+
 
   void addCountryCapital(CountryCapital countryCapital) {
     countryCapitalList.add(countryCapital);

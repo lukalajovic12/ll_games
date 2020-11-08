@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:llgames/geography/single_game_statistics.dart';
-import '../main.dart';
-import 'geo.dart';
-import 'geo_database.dart';
+import 'package:llgames/geography/statistics/single_game_statistics.dart';
+import '../../main.dart';
+import '../constants.dart';
+import '../geo.dart';
+import '../database/geo_database.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 class ScoreList extends StatefulWidget {
@@ -48,9 +49,7 @@ class _ScoreListState extends State<ScoreList> {
             row[DatabaseGameHelper.gameColumnId],
             0,
             0,
-            0,
-            row[DatabaseGameHelper.gameColumnTime],
-            row[DatabaseGameHelper.gameColumnPossibleAnwsers],
+            0
           )));
       for (int i = 0; i < scl.length; i++) {
         Score s = scl[i];
@@ -59,12 +58,19 @@ class _ScoreListState extends State<ScoreList> {
         s.wrongAnwser = await dbGameHelper.queryWrongAnwsersCount(s.id);
         s.skipedAnwser = await dbGameHelper.querySkippedAnwsersCount(s.id);
       }
-      anl = await queryGameAnwsers(idGame);
     }
     setState(() {
       this.scoreist = scl;
       this.lastGameAnwsers = anl;
     });
+  }
+
+
+  Future<List<GameConstantInstance>> queryGameConstants(int idGame) async {
+    List<GameConstantInstance> properties=new List();
+    final constantRows = await dbGameHelper.queryConstantRows(idGame);
+    constantRows.forEach((row) =>properties.add(new GameConstantInstance(row[DatabaseGameHelper.propertyTypeColumn],row[DatabaseGameHelper.propertyTypeColumn])));
+
   }
 
   Future<List<Anwser>> queryGameAnwsers(int idGame) async {
@@ -73,8 +79,7 @@ class _ScoreListState extends State<ScoreList> {
     anwserRows.forEach((row) => anl.add(new Anwser(
         row[DatabaseGameHelper.gameColumnQuestion],
         row[DatabaseGameHelper.gameColumnCorrectAnwser],
-        row[DatabaseGameHelper.gameColumnAnwser],
-        row[DatabaseGameHelper.gameColumnType])));
+        row[DatabaseGameHelper.gameColumnAnwser])));
     return anl;
   }
 
@@ -111,17 +116,10 @@ class _ScoreListState extends State<ScoreList> {
                           showEditIcon: false,
                           placeholder: false,
                         ),
-                        DataCell(
-                          Text('${s.possibleAnwsers}',
-                              style:
-                                  TextStyle(color: Color(hexColor('#0E629B')))),
-                          showEditIcon: false,
-                          placeholder: false,
-                        ),
                       ],
                       onSelectChanged: (bool selected) {
                         if (selected) {
-                          goToSingleGameStatisticslScreen(s.id, s.time,s.possibleAnwsers);
+                          goToSingleGameStatisticslScreen(s.id);
                         };
                       }),
                 )
@@ -130,12 +128,13 @@ class _ScoreListState extends State<ScoreList> {
         ));
   }
 
-  Future<void> goToSingleGameStatisticslScreen(int idGame,int time,int anwsers) async {
+  Future<void> goToSingleGameStatisticslScreen(int idGame) async {
     List<Anwser> anl = await queryGameAnwsers(idGame);
+    List<GameConstantInstance> gp=await queryGameConstants(idGame);
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SingleGameStatistics(lastGameAnwsers: anl,time: time,),
+        builder: (context) => SingleGameStatistics(lastGameAnwsers: anl,gameProperties:gp),
       ),
     );
   }
@@ -164,7 +163,7 @@ class _ScoreListState extends State<ScoreList> {
 
   void generateLineChart() {
     List<Score> scl = new List();
-    Score s = new Score(0, 0, 0, 0, 0, 0);
+    Score s = new Score(0, 0, 0, 0);
     scl.add(s);
     scl.addAll(getScoreList());
     _seriesLineData = List<charts.Series<Score, int>>();

@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'geography/geo_main.dart';
-import 'memory/memory_main.dart';
-import 'memory/memory_score_chart.dart';
+
 
 void main() {
   runApp(new MyApp());
@@ -97,58 +95,14 @@ class _MenuButtonWidget extends State<MenuButtonWidget> {
           letterSpacing: 2.0,
         ),),
         onPressed: () {
-          changeScreen();
         },
       ),
     );
   }
 
-  void changeScreen() {
-    if (name == 'memory') {
-      Navigator.of(context).push(_createRoute());
-    } else {
-      Navigator.of(context).push(_createRoute2());
-    }
-  }
 
 
 
-  Route _createRoute() {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => MemoryMainWidget(),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = Offset(0.0, 1.0);
-        var end = Offset.zero;
-        var curve = Curves.ease;
-
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-        return SlideTransition(
-          position: animation.drive(tween),
-          child: child,
-        );
-      },
-    );
-  }
-
-
-  Route _createRoute2() {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => GeoMainWidget(),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = Offset(0.0, 1.0);
-        var end = Offset.zero;
-        var curve = Curves.ease;
-
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-        return SlideTransition(
-          position: animation.drive(tween),
-          child: child,
-        );
-      },
-    );
-  }
 
 
 }

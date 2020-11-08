@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:llgames/geography/single_game_statistics.dart';
+import 'package:llgames/geography/statistics/single_game_statistics.dart';
 import '../main.dart';
 import 'country_capital_table.dart';
-import 'general_statistics.dart';
+import 'statistics/general_statistics.dart';
 import 'geo.dart';
-import 'geo_database.dart';
+import 'database/geo_database.dart';
 
 Container leftMenu(BuildContext context){
   return Container(
@@ -73,8 +73,7 @@ Future<void> pushLastGame(BuildContext context) async {
   anwserRows.forEach((row) => anl.add(new Anwser(
       row[DatabaseGameHelper.gameColumnQuestion],
       row[DatabaseGameHelper.gameColumnCorrectAnwser],
-      row[DatabaseGameHelper.gameColumnAnwser],
-      row[DatabaseGameHelper.gameColumnType])));
+      row[DatabaseGameHelper.gameColumnAnwser])));
   Navigator.push(
     context,
     MaterialPageRoute(

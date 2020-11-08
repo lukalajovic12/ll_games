@@ -71,6 +71,10 @@ class _GeoDataWidget extends State<GeoDataWidget> {
 
   _GeoDataWidget() {
     loadGeo();
+    loadStates('assets/us_state_capitals.csv','USA');
+    loadStates('assets/german_state_capitals.csv','Deutschland');
+    loadStates('assets/austrian_state_capitals.csv','Austria');
+
   }
 
   void loadGeo() async {
@@ -103,6 +107,32 @@ class _GeoDataWidget extends State<GeoDataWidget> {
     }
     setState(() {
       countryCategoryList = ccl;
+    });
+  }
+
+  void loadStates(String file,String category) async {
+    List<CountryCapital> countryCapitalList=new List();
+    var geoString = await rootBundle.loadString(file);
+    LineSplitter ls = new LineSplitter();
+    List<String> geoLines = ls.convert(geoString);
+    for (int i = 1; i < geoLines.length; i++) {
+      CountryCapital countryCapital = new CountryCapital(
+          country: geoLines[i].split(",")[0],
+          capital: geoLines[i].split(",")[1]);
+      countryCapitalList.add(countryCapital);
+
+    }
+    CountryCategory countryCategory=new CountryCategory(category, null);
+    countryCategory.countryCapitalList=countryCapitalList;
+    setState(() {
+      getCategories().add(category);
+      if(countryCategoryList!=null) {
+        countryCategoryList.add(countryCategory);
+      }
+      else{
+        countryCategoryList= new List();
+        countryCategoryList.add(countryCategory);
+      }
     });
   }
 

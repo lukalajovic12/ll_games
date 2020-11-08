@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'constants.dart';
+
 class CountryCapital{
   String country;
   String capital;
@@ -37,16 +39,15 @@ class Score{
   int correctAnwser=0;
   int wrongAnwser=0;
   int skipedAnwser=0;
-  int time=0;
-  int possibleAnwsers=0;
 
-  Score(int id,int correctAnwser,int wrongAnwser, int skipedAnwser,int time,possibleAnwsers){
+
+
+
+  Score(int id,int correctAnwser,int wrongAnwser, int skipedAnwser){
     this.id=id;
     this.correctAnwser=correctAnwser;
     this.wrongAnwser=wrongAnwser;
     this.skipedAnwser=skipedAnwser;
-    this.time=time;
-    this.possibleAnwsers=possibleAnwsers;
   }
 
 }
@@ -68,16 +69,15 @@ class Anwser{
   String question="";
   String correctAnwser="";
   String anwser="";
-  int type=1;
 
 
 
 
-  Anwser(String question,String correctAnwser,String anwser,int type){
+
+  Anwser(String question,String correctAnwser,String anwser){
     this.question=question;
     this.correctAnwser=correctAnwser;
     this.anwser=anwser;
-    this.type=type;
   }
 
 

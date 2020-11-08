@@ -1,12 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:llgames/geography/single_game_statistics.dart';
+import 'package:llgames/geography/statistics/single_game_statistics.dart';
 import '../main.dart';
+import 'constants.dart';
 import 'geo.dart';
 import 'dart:async';
-import 'geo_database.dart';
-import 'geo_main.dart';
+import 'database/geo_database.dart';
+
 
 class Quiz extends StatefulWidget {
   List<CountryCapital> geoList;
@@ -154,7 +155,7 @@ class _QuizState extends State<Quiz> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SingleGameStatistics(lastGameAnwsers: listAnwsers,time: time,anwsers: numberOfAnwsers,),
+        builder: (context) => SingleGameStatistics(lastGameAnwsers: listAnwsers, gameProperties:generateGameProperties()),
       ),
     );
 
@@ -191,22 +192,61 @@ class _QuizState extends State<Quiz> {
     wait = 2;
   }
 
+
+
+  List<GameConstantInstance> generateGameProperties(){
+    List<GameConstantInstance> gameProperties=new List();
+    gameProperties.add(new GameConstantInstance(GameConstants.game_time,'${time}'));
+    gameProperties.add(new GameConstantInstance(GameConstants.game_possible_anwsers,'${numberOfAnwsers}'));
+    for(String cat in categories){
+      gameProperties.add(new GameConstantInstance(GameConstants.game_category,'${cat}'));
+    }
+    return gameProperties;
+  }
+
   void _insert() async {
-    Map<String, dynamic> row = {
-      DatabaseGameHelper.gameColumnTime: time,
-      DatabaseGameHelper.gameColumnPossibleAnwsers: numberOfAnwsers,
-    };
-    final id = await dbGameHelper.insert(row);
+    Map<String, dynamic> row = {};
+    final id = await dbGameHelper.insertNewGame();
     for (Anwser a in listAnwsers) {
       Map<String, dynamic> rr = {
         DatabaseGameHelper.gameColumnQuestion: a.question,
         DatabaseGameHelper.gameColumnCorrectAnwser: a.correctAnwser,
         DatabaseGameHelper.gameColumnAnwser: a.anwser,
-        DatabaseGameHelper.gameColumnType: quizType,
         DatabaseGameHelper.gameId: id
       };
       final idA = await dbGameHelper.insertQuestion(rr);
+
+      for(GameConstantInstance gci in generateGameProperties()){
+        Map<String, dynamic> cc = {
+          DatabaseGameHelper.propertyTypeColumn: gci.type,
+          DatabaseGameHelper.propertyValueColumn: gci.value,
+          DatabaseGameHelper.gameId: id
+        };
+        final idcc = await dbGameHelper.insertProperty(cc);
+      }
+
+
+      for(String cat in categories){
+        Map<String, dynamic> cc = {
+          DatabaseGameHelper.propertyTypeColumn: GameConstants.game_category,
+          DatabaseGameHelper.propertyValueColumn:'${cat}',
+          DatabaseGameHelper.gameId: id
+        };
+        final idc3 = await dbGameHelper.insertProperty(cc);
+
+
+      }
+
+
+
+
     }
+
+
+
+
+
+
   }
 
   bool checkingAnwser(String anwser) {
@@ -268,7 +308,7 @@ class _QuizState extends State<Quiz> {
             corAnw = kvizQuestion.corectAnwser.country;
           }
         }
-        Anwser a = new Anwser(getQuestion(), corAnw, anwser, qt);
+        Anwser a = new Anwser(getQuestion(), corAnw, anwser);
         listAnwsers.add(a);
         startWait();
       });
@@ -309,7 +349,7 @@ class _QuizState extends State<Quiz> {
         }
       }
       corAnw = kvizQuestion.corectAnwser.country;
-      Anwser a = new Anwser(getQuestion(), corAnw, 'Skipped', qt);
+      Anwser a = new Anwser(getQuestion(), corAnw, 'Skipped');
       listAnwsers.add(a);
       setState(() {
         createGeo();
