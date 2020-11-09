@@ -82,8 +82,8 @@ class DatabaseGameHelper {
           CREATE TABLE IF NOT EXISTS  $propertiesTable (
             $questionColumnId INTEGER PRIMARY KEY,
             $gameId INTEGER NOT NULL,      
-            $propertyTypeColumn INTEGER NOT NULL,
-            $propertyValueColumn INTEGER NOT NULL           
+            $propertyTypeColumn TEXT NOT NULL,
+            $propertyValueColumn TEXT NOT NULL           
           )
           ''';
 
@@ -116,6 +116,15 @@ class DatabaseGameHelper {
     Database db = await instance.database;
     return Sqflite.firstIntValue(await db.rawQuery(
         'SELECT COUNT(*) FROM $questionsTable WHERE $gameId=$gId AND $gameColumnAnwser LIKE "Skipped"'));
+  }
+
+
+  Future<int> queryLastGameId() async {
+    Database db = await instance.database;
+    String sql = '''
+          Select $questionColumnId FROM  $questionsTable WHERE $gameId=(SELECT MAX($gameColumnId) FROM $gameTable)
+          ''';
+    return Sqflite.firstIntValue(await db.rawQuery(sql));
   }
 
   Future<int> insertNewGame() async {
@@ -160,6 +169,17 @@ class DatabaseGameHelper {
           ''';
     return await db.rawQuery(sql);
   }
+
+  Future<List<Map<String, dynamic>>> queryLastGameProperties() async {
+    Database db = await instance.database;
+    String sql = '''
+          Select * FROM  $propertiesTable WHERE $gameId=(SELECT MAX($gameColumnId) FROM $gameTable)
+          
+          ''';
+    return await db.rawQuery(sql);
+  }
+
+
 
   Future<int> queryRowCount() async {
     Database db = await instance.database;

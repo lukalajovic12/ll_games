@@ -36,18 +36,27 @@ class KvizQuestion{
 
 class Score{
   int id=-1;
-  int correctAnwser=0;
-  int wrongAnwser=0;
-  int skipedAnwser=0;
+  String datePlayed="";
+  int score=0;
 
 
+  String displayDate(){
+    if(datePlayed==null || datePlayed==""){
+      return "";
+    }
+    else{
+      DateTime dateTime = DateTime.parse(datePlayed);
+
+      return "${dateTime.year}:${dateTime.month}:${dateTime.day}:${dateTime.hour}:${dateTime.minute}";
 
 
-  Score(int id,int correctAnwser,int wrongAnwser, int skipedAnwser){
+    }
+  }
+
+  Score(int id,String datePlayed,int score){
     this.id=id;
-    this.correctAnwser=correctAnwser;
-    this.wrongAnwser=wrongAnwser;
-    this.skipedAnwser=skipedAnwser;
+    this.datePlayed=datePlayed;
+    this.score=score;
   }
 
 }

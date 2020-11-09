@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:llgames/geography/statistics/single_game_statistics.dart';
 import '../main.dart';
+import 'constants.dart';
 import 'country_capital_table.dart';
 import 'statistics/general_statistics.dart';
 import 'geo.dart';
@@ -74,10 +75,16 @@ Future<void> pushLastGame(BuildContext context) async {
       row[DatabaseGameHelper.gameColumnQuestion],
       row[DatabaseGameHelper.gameColumnCorrectAnwser],
       row[DatabaseGameHelper.gameColumnAnwser])));
+
+  List<GameConstantInstance> gamePropertiesList=new List();
+  final propertyRows = await dbGameHelper.queryLastGameProperties();
+  propertyRows.forEach((row) =>gamePropertiesList.add(
+    new GameConstantInstance(row[DatabaseGameHelper.propertyTypeColumn],row[DatabaseGameHelper.propertyValueColumn])
+  ));
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => SingleGameStatistics(lastGameAnwsers: anl),
+      builder: (context) => SingleGameStatistics(lastGameAnwsers: anl,gameProperties:gamePropertiesList),
     ),
   );
 

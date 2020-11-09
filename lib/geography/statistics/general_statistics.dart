@@ -47,16 +47,15 @@ class _ScoreListState extends State<ScoreList> {
     if (gameRows != null) {
       gameRows.forEach((row) => scl.add(new Score(
             row[DatabaseGameHelper.gameColumnId],
-            0,
-            0,
+          row[DatabaseGameHelper.gameColumnDate],
             0
           )));
       for (int i = 0; i < scl.length; i++) {
         Score s = scl[i];
         idGame = s.id;
-        s.correctAnwser = await dbGameHelper.queryCorrectAnwsersCount(s.id);
-        s.wrongAnwser = await dbGameHelper.queryWrongAnwsersCount(s.id);
-        s.skipedAnwser = await dbGameHelper.querySkippedAnwsersCount(s.id);
+        int correctAnwser = await dbGameHelper.queryCorrectAnwsersCount(s.id);
+        int wrongAnwser = await dbGameHelper.queryWrongAnwsersCount(s.id);
+        s.score=correctAnwser-wrongAnwser;
       }
     }
     setState(() {
@@ -70,7 +69,7 @@ class _ScoreListState extends State<ScoreList> {
     List<GameConstantInstance> properties=new List();
     final constantRows = await dbGameHelper.queryConstantRows(idGame);
     constantRows.forEach((row) =>properties.add(new GameConstantInstance(row[DatabaseGameHelper.propertyTypeColumn],row[DatabaseGameHelper.propertyTypeColumn])));
-
+    return properties;
   }
 
   Future<List<Anwser>> queryGameAnwsers(int idGame) async {
@@ -91,14 +90,14 @@ class _ScoreListState extends State<ScoreList> {
             sortAscending: true,
             columns: <DataColumn>[
               DataColumn(
-                label: Text('score',
+                label: Text('date',
                     style: TextStyle(
                         color: Color(hexColor('#0E629B')),
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold)),
               ),
               DataColumn(
-                label: Text('anwsers',
+                label: Text('score',
                     style: TextStyle(
                         color: Color(hexColor('#0E629B')),
                         fontSize: 20.0,
@@ -110,12 +109,22 @@ class _ScoreListState extends State<ScoreList> {
                   (s) => DataRow(
                       cells: [
                         DataCell(
-                          Text('${s.correctAnwser - s.wrongAnwser}',
+                          Text('${s.displayDate()}',
                               style:
                                   TextStyle(color: Color(hexColor('#0E629B')))),
                           showEditIcon: false,
                           placeholder: false,
                         ),
+                        DataCell(
+                          Text('${s.score}',
+                              style:
+                              TextStyle(color: Color(hexColor('#0E629B')))),
+                          showEditIcon: false,
+                          placeholder: false,
+                        ),
+
+
+
                       ],
                       onSelectChanged: (bool selected) {
                         if (selected) {
@@ -139,31 +148,21 @@ class _ScoreListState extends State<ScoreList> {
     );
   }
 
-  Container totalPie() {
-    int co = 0;
-    int wr = 0;
-    int sk = 0;
-    for (Score s in getScoreList()) {
-      co += s.correctAnwser;
-      wr += s.wrongAnwser;
-      sk += s.skipedAnwser;
-    }
-    return pieContainer(co, wr, sk, 'Total points');
-  }
 
-  Container lastPie() {
-    int co = 0;
-    int wr = 0;
-    int sk = 0;
-    co = getScoreList()[getScoreList().length - 1].correctAnwser;
-    wr = getScoreList()[getScoreList().length - 1].wrongAnwser;
-    sk = getScoreList()[getScoreList().length - 1].skipedAnwser;
-    return pieContainer(co, wr, sk, 'Last points');
+
+  Future<Container> lastPie() async {
+
+    int idGame= await dbGameHelper.queryLastGameId();
+    int correctAnwser = await dbGameHelper.queryCorrectAnwsersCount(idGame);
+    int wrongAnwser = await dbGameHelper.queryWrongAnwsersCount(idGame);
+    int skipedAnwser= await dbGameHelper.querySkippedAnwsersCount(idGame);
+
+    return pieContainer(correctAnwser, wrongAnwser, skipedAnwser, 'Last points');
   }
 
   void generateLineChart() {
     List<Score> scl = new List();
-    Score s = new Score(0, 0, 0, 0);
+    Score s = new Score(0, "", 0);
     scl.add(s);
     scl.addAll(getScoreList());
     _seriesLineData = List<charts.Series<Score, int>>();
@@ -173,7 +172,7 @@ class _ScoreListState extends State<ScoreList> {
         id: 'Game Line Scores',
         data: scl,
         domainFn: (Score s, _) => s.id,
-        measureFn: (Score s, _) => (s.correctAnwser - s.wrongAnwser),
+        measureFn: (Score s, _) => (s.score),
       ),
     );
   }
@@ -213,37 +212,12 @@ class _ScoreListState extends State<ScoreList> {
     );
   }
 
-  List<Rezult> getCorrect() {
-    List<Rezult> correct = new List();
-    for (Score score in getScoreList()) {
-      Rezult r = new Rezult(score.id, 'c', score.correctAnwser);
-      correct.add(r);
-    }
-    return correct;
-  }
 
-  List<Rezult> getWrong() {
-    List<Rezult> wrong = new List();
-    for (Score score in getScoreList()) {
-      Rezult r = new Rezult(score.id, 'w', score.wrongAnwser);
-      wrong.add(r);
-    }
-    return wrong;
-  }
-
-  List<Rezult> getSkipped() {
-    List<Rezult> skipped = new List();
-    for (Score score in getScoreList()) {
-      Rezult r = new Rezult(score.id, 's', score.skipedAnwser);
-      skipped.add(r);
-    }
-    return skipped;
-  }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 3,
+        length: 2,
         child: Scaffold(
             appBar: AppBar(
               leading: BackButton(color: Colors.white),
@@ -264,17 +238,12 @@ class _ScoreListState extends State<ScoreList> {
                     icon: Icon(FontAwesomeIcons.chartLine),
                     text: 'line',
                   ),
-                  Tab(
-                    icon: Icon(FontAwesomeIcons.chartPie),
-                    text: 'pie',
-                  ),
                 ],
               ),
             ),
             body: TabBarView(children: [
               scoreTableContainer(),
               lineContainer(),
-              totalPie(),
             ])));
   }
 
