@@ -1,25 +1,44 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
 import 'geo.dart';
 import 'kviz.dart';
-import 'geo_main.dart';
 import 'left_menu.dart';
 class GeoQuizSettingsWidget extends StatefulWidget {
-  List<CountryCapital> geoList;
+
+
+  String type='';
+
+  String getType(){
+    if(type==null){
+      type='';
+    }
+    return type;
+  }
+
+  String secondaryType='';
+
+  String getSecondaryType(){
+    if(secondaryType==null){
+      secondaryType='';
+    }
+    return secondaryType;
+  }
+
+  List<QuizObject> geoList;
 
   List<String> categories = new List();
 
-  GeoQuizSettingsWidget(List<CountryCapital> geoList, List<String> categories) {
+  GeoQuizSettingsWidget(List<QuizObject> geoList, List<String> categories,String type,String secondaryType) {
     this.geoList = geoList;
     this.categories = categories;
+    this.type=type;
+    this.secondaryType=secondaryType;
   }
 
   @override
   State createState() =>
-      new _GeoQuizSettingsWidget(getGeoList(), getCategories());
+      new _GeoQuizSettingsWidget(getGeoList(), getCategories(),getType(),getSecondaryType());
 
   List<String> getCategories() {
     if (categories == null) {
@@ -28,7 +47,7 @@ class GeoQuizSettingsWidget extends StatefulWidget {
     return categories;
   }
 
-  List<CountryCapital> getGeoList() {
+  List<QuizObject> getGeoList() {
     if (geoList == null) {
       geoList = new List();
     }
@@ -37,7 +56,17 @@ class GeoQuizSettingsWidget extends StatefulWidget {
 }
 
 class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
-  List<CountryCapital> geoList;
+
+  String secondaryType='';
+
+  String getSecondaryType(){
+    if(secondaryType==null){
+      secondaryType='';
+    }
+    return secondaryType;
+  }
+
+  List<QuizObject> geoList;
 
   List<String> categories = new List();
 
@@ -47,13 +76,24 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
 
   Map<String, bool> selectedTypes = {};
 
+  String type='';
+
+  String getType(){
+    if(type==null){
+      type='';
+    }
+    return type;
+  }
+
   _GeoQuizSettingsWidget(
-      List<CountryCapital> geoList, List<String> categories) {
+      List<QuizObject> geoList, List<String> categories,String type,String secondaryType) {
     this.geoList = geoList;
     this.categories = categories;
     selectedTypes = {};
-    selectedTypes['Countries'] = true;
-    selectedTypes['Capitals'] = false;
+    this.type=type;
+    this.secondaryType=secondaryType;
+    selectedTypes[getType()] = true;
+    selectedTypes[getSecondaryType()] = false;
   }
 
   @override
@@ -120,13 +160,13 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
               padding: new EdgeInsets.only(left: 40, right: 40),
               child: CheckboxListTile(
                 title: new Text(
-                  'Countries',
+                  getType(),
                   style: TextStyle(color: Color(hexColor('#0E629B'))),
                 ),
-                value: selectedTypes['Countries'],
+                value: selectedTypes[getType()],
                 onChanged: (bool value) {
                   setState(() {
-                    selectedTypes['Countries'] = value;
+                    selectedTypes[getType()] = value;
                   });
                 },
                 activeColor: Color(hexColor('#0E629B')),
@@ -137,13 +177,13 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
               padding: new EdgeInsets.only(left: 40, right: 40),
               child: CheckboxListTile(
                 title: new Text(
-                  'Capitals',
+                  getSecondaryType(),
                   style: TextStyle(color: Color(hexColor('#0E629B'))),
                 ),
-                value: selectedTypes['Capitals'],
+                value: selectedTypes[getSecondaryType()],
                 onChanged: (bool value) {
                   setState(() {
-                    selectedTypes['Capitals'] = value;
+                    selectedTypes[getSecondaryType()] = value;
                   });
                 },
                 activeColor: Color(hexColor('#0E629B')),
@@ -164,16 +204,17 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
                       color: Color(hexColor('#B7D7DA'))),
                 ),
                 onPressed: () {
-                  if (selectedTypes['Countries'] || selectedTypes['Capitals']) {
+                  if (selectedTypes[getType()] || selectedTypes[getSecondaryType()]) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => Quiz(
                               getGeoList(),
-                              selectedTypes,
+                              isReverse(),
                               getCategories(),
                               getTime(),
-                              getNumberOfAnwsers())),
+                              getNumberOfAnwsers(),
+                              getType(),generatequestionStrings()[0],generatequestionStrings()[1])),
                     );
                   }
                 },
@@ -182,8 +223,55 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
           ],
         ),
       ),
-      drawer: leftMenu(context),
+      drawer: leftMenu(context,getType(),getSecondaryType()),
     );
+  }
+
+
+  List<String> generatequestionStrings(){
+    List<String> questionStrings=new List();
+    if(type=='Presidents'){
+      if(selectedTypes[getType()]) {
+        questionStrings.add('%s became president in the year:');
+        questionStrings.add('Who became president in the year %s?');
+      }
+      else{
+        questionStrings.add('Who became president in the year %s?');
+        questionStrings.add('%s became president in the year:');
+      }
+    }
+    else {
+      if (selectedTypes[getType()]) {
+        questionStrings.add('The capital of %s is?');
+        questionStrings.add(' %s is the capital of?');
+      }
+      else {
+        questionStrings.add(' %s is the capital of?');
+        questionStrings.add('The capital of %s is?');
+      }
+    }
+
+    return questionStrings;
+
+
+
+
+
+  }
+
+
+  int isReverse(){
+    if(selectedTypes[getType()] == selectedTypes[getSecondaryType()]){
+      return 3;
+    }
+    else{
+      if(selectedTypes[getType()]){
+        return 1;
+      }
+      else{
+        return 2;
+      }
+    }
   }
 
   int getTime() {
@@ -207,7 +295,7 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
     return categories;
   }
 
-  List<CountryCapital> getGeoList() {
+  List<QuizObject> getGeoList() {
     if (geoList == null) {
       geoList = new List();
     }

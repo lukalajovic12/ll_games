@@ -8,16 +8,45 @@ import '../database/geo_database.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 class ScoreList extends StatefulWidget {
-  ScoreList() {}
+
+  String type='';
+
+  String getType(){
+    if(type==null){
+      type='Countries';
+    }
+    return type;
+  }
+
+
+  ScoreList(String type) {
+    this.type=type;
+  }
 
   @override
-  _ScoreListState createState() => _ScoreListState();
+  _ScoreListState createState() => _ScoreListState(getType());
 }
 
 class _ScoreListState extends State<ScoreList> {
   List<Score> scoreist = new List();
 
   final bool animate = true;
+
+
+  String type='Countries';
+
+  String getType(){
+    if(type==null){
+      type='Countries';
+    }
+    return type;
+  }
+
+  _ScoreListState(String type) {
+    this.type=type;
+    this.scoreist = new List();
+    _query();
+  }
 
   List<charts.Series<Score, int>> _seriesLineData =
       List<charts.Series<Score, int>>();
@@ -33,22 +62,18 @@ class _ScoreListState extends State<ScoreList> {
     return lastGameAnwsers;
   }
 
-  _ScoreListState() {
-    this.scoreist = new List();
-    _query();
-  }
+
 
   void _query() async {
     scoreist = new List();
-    final gameRows = await dbGameHelper.queryGameRows();
+    final gameRows = await dbGameHelper.queryGameRows(getType());
     List<Score> scl = new List();
     List<Anwser> anl = new List();
     int idGame = -1;
     if (gameRows != null) {
-      gameRows.forEach((row) => scl.add(new Score(
-            row[DatabaseGameHelper.gameColumnId],
-          row[DatabaseGameHelper.gameColumnDate],
-            0
+      gameRows.forEach((row) => scl.add(new Score(id: row[DatabaseGameHelper.gameColumnId],
+          datePlayed:row[DatabaseGameHelper.gameColumnDate],
+            score:0
           )));
       for (int i = 0; i < scl.length; i++) {
         Score s = scl[i];
@@ -122,9 +147,6 @@ class _ScoreListState extends State<ScoreList> {
                           showEditIcon: false,
                           placeholder: false,
                         ),
-
-
-
                       ],
                       onSelectChanged: (bool selected) {
                         if (selected) {
@@ -152,17 +174,16 @@ class _ScoreListState extends State<ScoreList> {
 
   Future<Container> lastPie() async {
 
-    int idGame= await dbGameHelper.queryLastGameId();
-    int correctAnwser = await dbGameHelper.queryCorrectAnwsersCount(idGame);
-    int wrongAnwser = await dbGameHelper.queryWrongAnwsersCount(idGame);
-    int skipedAnwser= await dbGameHelper.querySkippedAnwsersCount(idGame);
+    int correctAnwser = await dbGameHelper.queryCorrectAnwsersCountLast();
+    int wrongAnwser = await dbGameHelper.queryWrongAnwsersLast();
+    int skipedAnwser= await dbGameHelper.querySkippedAnwsersCountLast();
 
     return pieContainer(correctAnwser, wrongAnwser, skipedAnwser, 'Last points');
   }
 
   void generateLineChart() {
     List<Score> scl = new List();
-    Score s = new Score(0, "", 0);
+    Score s = new Score(id:0, datePlayed:"", score:0);
     scl.add(s);
     scl.addAll(getScoreList());
     _seriesLineData = List<charts.Series<Score, int>>();

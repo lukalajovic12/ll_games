@@ -8,7 +8,7 @@ import 'statistics/general_statistics.dart';
 import 'geo.dart';
 import 'database/geo_database.dart';
 
-Container leftMenu(BuildContext context){
+Container leftMenu(BuildContext context,String type,String secondaryType){
   return Container(
     color: Color(hexColor('#B7D7DA')),
     child: ListView(
@@ -29,7 +29,7 @@ Container leftMenu(BuildContext context){
             // Then close the drawer
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ScoreList()),
+              MaterialPageRoute(builder: (context) => ScoreList(type)),
             );
           },
         ),
@@ -41,7 +41,7 @@ Container leftMenu(BuildContext context){
             // Then close the drawer
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => GeoDataWidget()),
+              MaterialPageRoute(builder: (context) => GeoDataWidget(type,secondaryType)),
             );
           },
         ),

@@ -5,12 +5,39 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../main.dart';
 import 'geo.dart';
-import 'geo_main.dart';
+import '../main_classes/geo_main.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GeoDataWidget extends StatefulWidget {
+
+
+  String type='';
+
+  String getType(){
+    if(type==null){
+      type='';
+    }
+    return type;
+  }
+
+
+  String secondaryType='';
+
+  String getSecondaryType(){
+    if(secondaryType==null){
+      secondaryType='';
+    }
+    return secondaryType;
+  }
+
+  GeoDataWidget(String type,String secondaryType){
+    this.type=type;
+    this.secondaryType=secondaryType;
+  }
+
+
   @override
-  State createState() => new _GeoDataWidget();
+  State createState() => new _GeoDataWidget(getType(),getSecondaryType());
 }
 
 class _GeoDataWidget extends State<GeoDataWidget> {
@@ -61,33 +88,59 @@ class _GeoDataWidget extends State<GeoDataWidget> {
     return title;
   }
 
-  List<CountryCapital> getGeoList() {
-    List<CountryCapital> ccl = new List();
+  List<QuizObject> getGeoList() {
+    List<QuizObject> ccl = new List();
     if (countryCategoryList != null && !countryCategoryList.isEmpty) {
       ccl = countryCategoryList[getSelectedIndex()].countryCapitalList;
     }
     return ccl;
   }
 
-  _GeoDataWidget() {
-    loadGeo();
-    loadStates('assets/us_state_capitals.csv','USA');
-    loadStates('assets/german_state_capitals.csv','Deutschland');
-    loadStates('assets/austrian_state_capitals.csv','Austria');
+  String type='';
 
+  String getType(){
+    if(type==null){
+      type='';
+    }
+    return type;
+  }
+
+  String secondaryType='';
+
+  String getSecondaryType(){
+    if(secondaryType==null){
+      secondaryType='';
+    }
+    return secondaryType;
+  }
+
+  _GeoDataWidget(String type,String secondaryType) {
+    this.type=type;
+    this.secondaryType=secondaryType;
+    if(getType()=='Countries'){
+      loadGeo();
+    }
+    if(getType()=='States'){
+      loadStates('assets/states/us_state_capitals.csv','USA');
+      loadStates('assets/states/german_state_capitals.csv','Deutschland');
+      loadStates('assets/states/austrian_state_capitals.csv','Austria');
+    }
+    if(getType()=='Presidents'){
+      loadPresidents();
+    }
   }
 
   void loadGeo() async {
     categories = new List();
     List<CountryCategory> ccl = new List();
-    var geoString = await rootBundle.loadString('assets/geo.csv');
+    var geoString = await rootBundle.loadString('assets/countries/geo.csv');
     LineSplitter ls = new LineSplitter();
     List<String> geoLines = ls.convert(geoString);
     for (int i = 1; i < geoLines.length; i++) {
       if (geoLines[i].split(",").length < 4) {
-        CountryCapital countryCapital = new CountryCapital(
-            country: geoLines[i].split(",")[0],
-            capital: geoLines[i].split(",")[1]);
+        QuizObject countryCapital = new QuizObject(
+            type: geoLines[i].split(",")[0],
+            secondaryType: geoLines[i].split(",")[1]);
         String category = geoLines[i].split(",")[2];
         bool newContinent = true;
         for (int i = 0; i < ccl.length; i++) {
@@ -111,14 +164,14 @@ class _GeoDataWidget extends State<GeoDataWidget> {
   }
 
   void loadStates(String file,String category) async {
-    List<CountryCapital> countryCapitalList=new List();
+    List<QuizObject> countryCapitalList=new List();
     var geoString = await rootBundle.loadString(file);
     LineSplitter ls = new LineSplitter();
     List<String> geoLines = ls.convert(geoString);
     for (int i = 1; i < geoLines.length; i++) {
-      CountryCapital countryCapital = new CountryCapital(
-          country: geoLines[i].split(",")[0],
-          capital: geoLines[i].split(",")[1]);
+      QuizObject countryCapital = new QuizObject(
+          type: geoLines[i].split(",")[0],
+          secondaryType: geoLines[i].split(",")[1]);
       countryCapitalList.add(countryCapital);
 
     }
@@ -135,6 +188,60 @@ class _GeoDataWidget extends State<GeoDataWidget> {
       }
     });
   }
+
+
+  void loadPresidents() async {
+    List<QuizObject> first15=new List();
+    List<QuizObject> second15=new List();
+    List<QuizObject> other=new List();
+    List<CountryCategory> ccl = new List();
+    var geoString = await rootBundle.loadString('assets/presidents/american_presidents.csv');
+    LineSplitter ls = new LineSplitter();
+    List<String> geoLines = ls.convert(geoString);
+    for (int i = 1; i < geoLines.length; i++) {
+      QuizObject countryCapital = new QuizObject(
+          type: geoLines[i].split(",")[1],
+          secondaryType: geoLines[i].split(",")[2]);
+      if(i<15){
+        first15.add(countryCapital);
+      } else if(i<30){
+        second15.add(countryCapital);
+      }
+      else{
+        first15.add(countryCapital);
+      }
+      other.add(countryCapital);
+
+    }
+
+
+
+    getCategories().add('First 15');
+    getCategories().add('Second 15');
+    getCategories().add('Other');
+    CountryCategory countryCategory1=new CountryCategory(getCategories()[0], null);
+    countryCategory1.countryCapitalList=first15;
+    ccl.add(countryCategory1);
+
+    CountryCategory countryCategory2=new CountryCategory(getCategories()[1], null);
+    countryCategory2.countryCapitalList=second15;
+    ccl.add(countryCategory2);
+
+
+
+    CountryCategory countryCategory3=new CountryCategory(getCategories()[2], null);
+    countryCategory3.countryCapitalList=other;
+    ccl.add(countryCategory3);
+
+
+
+
+
+    setState(() {
+      countryCategoryList = ccl;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +274,7 @@ class _GeoDataWidget extends State<GeoDataWidget> {
         child: ListView.builder(
           itemCount: getGeoList().length,
           itemBuilder: (context, index) {
-            CountryCapital cc = getGeoList()[index];
+            QuizObject cc = getGeoList()[index];
             return Container(
               padding: new EdgeInsets.only(top: 10, bottom: 10),
               child: Column(
@@ -176,20 +283,9 @@ class _GeoDataWidget extends State<GeoDataWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Container(
-                        child: Text(cc.country,
-                            style: TextStyle(
-                                color: Color(hexColor('#0E629B')),
-                                fontSize: 25.0,
-                                fontWeight: FontWeight.bold)),
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Container(
                         padding: new EdgeInsets.only(left: 40),
                         width: c_width / 2,
-                        child: Text('Capital:',
+                        child: Text('${getType()}:',
                             style: TextStyle(
                                 color: Color(hexColor('#0E629B')),
                                 fontSize: 20.0,
@@ -198,7 +294,28 @@ class _GeoDataWidget extends State<GeoDataWidget> {
                       Container(
                           width: c_width / 2,
                           padding: new EdgeInsets.only(left: 65),
-                          child: Text(cc.capital,
+                          child: Text(cc.type,
+                              style: TextStyle(
+                                  color: Color(hexColor('#0E629B')),
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold))),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        padding: new EdgeInsets.only(left: 40),
+                        width: c_width / 2,
+                        child: Text('${getSecondaryType()}:',
+                            style: TextStyle(
+                                color: Color(hexColor('#0E629B')),
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                      Container(
+                          width: c_width / 2,
+                          padding: new EdgeInsets.only(left: 65),
+                          child: Text(cc.secondaryType,
                               style: TextStyle(
                                   color: Color(hexColor('#0E629B')),
                                   fontSize: 20.0,
@@ -221,7 +338,7 @@ class _GeoDataWidget extends State<GeoDataWidget> {
                         color: Color(hexColor('#0E629B')),
                         icon: Icon(FontAwesomeIcons.wikipediaW),
                         onPressed: () {
-                          goToWikipedia(cc.country);
+                          goToWikipedia(cc.type);
                         },
                       ),
                     ),
@@ -242,7 +359,7 @@ class _GeoDataWidget extends State<GeoDataWidget> {
                         color: Color(hexColor('#0E629B')),
                         icon: Icon(FontAwesomeIcons.mapMarker),
                         onPressed: () {
-                          goToGoogleMaps(cc.country);
+                          goToGoogleMaps(cc.type);
                         },
                       ),
                     ),

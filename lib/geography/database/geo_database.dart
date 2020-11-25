@@ -11,9 +11,12 @@ class DatabaseGameHelper {
   static final _databaseName = "MyDatabase.db";
   static final _databaseVersion = 1;
 
-  static final gameTable = 'geo_game';
+  static final gameTable = 'quiz_game';
 
   static final gameColumnId = '_id';
+
+  static final gameColumnType = 'type';
+
 
   static final gameColumnDate = 'gameDate';
 
@@ -23,7 +26,7 @@ class DatabaseGameHelper {
 
   static final gameColumnQuestion = 'question';
 
-  static final gameColumnCorrectAnwser = 'correctAnwsers';
+  static final gameColumnCorrectAnwser = 'correctAnwser';
 
   static final gameColumnAnwser = 'anwsered';
 
@@ -64,6 +67,7 @@ class DatabaseGameHelper {
     String sql1 = '''
           CREATE TABLE IF NOT EXISTS  $gameTable (
             $gameColumnId INTEGER PRIMARY KEY,
+            $gameColumnType TEXT,
             $gameColumnDate TEXT
           )
           ''';
@@ -106,16 +110,38 @@ class DatabaseGameHelper {
         'SELECT COUNT(*) FROM $questionsTable WHERE $gameId=$gId AND $gameColumnCorrectAnwser=$gameColumnAnwser'));
   }
 
+  Future<int> queryCorrectAnwsersCountLast() async {
+    Database db = await instance.database;
+    return Sqflite.firstIntValue(await db.rawQuery(
+        'SELECT COUNT(*) FROM $questionsTable WHERE $gameId=(SELECT MAX($gameColumnId) FROM $gameTable) AND $gameColumnCorrectAnwser=$gameColumnAnwser'));
+
+  }
+
+
   Future<int> queryWrongAnwsersCount(int gId) async {
     Database db = await instance.database;
     return Sqflite.firstIntValue(await db.rawQuery(
         'SELECT COUNT(*) FROM $questionsTable WHERE $gameId=$gId AND ($gameColumnCorrectAnwser != $gameColumnAnwser AND $gameColumnAnwser NOT LIKE "Skipped")'));
   }
+  Future<int> queryWrongAnwsersLast() async {
+    Database db = await instance.database;
+    return Sqflite.firstIntValue(await db.rawQuery(
+        'SELECT COUNT(*) FROM $questionsTable WHERE $gameId=(SELECT MAX($gameColumnId) FROM $gameTable) AND ($gameColumnCorrectAnwser != $gameColumnAnwser AND $gameColumnAnwser NOT LIKE "Skipped")'));
+  }
+
+
+
 
   Future<int> querySkippedAnwsersCount(int gId) async {
     Database db = await instance.database;
     return Sqflite.firstIntValue(await db.rawQuery(
         'SELECT COUNT(*) FROM $questionsTable WHERE $gameId=$gId AND $gameColumnAnwser LIKE "Skipped"'));
+  }
+
+  Future<int> querySkippedAnwsersCountLast() async {
+    Database db = await instance.database;
+    return Sqflite.firstIntValue(await db.rawQuery(
+        'SELECT COUNT(*) FROM $questionsTable WHERE $gameId=(SELECT MAX($gameColumnId) FROM $gameTable)AND $gameColumnAnwser LIKE "Skipped"'));
   }
 
 
@@ -127,18 +153,21 @@ class DatabaseGameHelper {
     return Sqflite.firstIntValue(await db.rawQuery(sql));
   }
 
-  Future<int> insertNewGame() async {
+
+
+
+  Future<int> insertNewGame(String type) async {
     Map<String, dynamic> row = {};
     Database db = await instance.database;
-
     DateTime dateTime = DateTime.now();
     Map<String, dynamic> values = {
-      gameColumnDate: dateTime.toIso8601String()
+      gameColumnDate: dateTime.toIso8601String(),
+      gameColumnType:type
     };
     return await db.insert(gameTable, values);
   }
 
-  Future<List<Map<String, dynamic>>> queryGameRows() async {
+  Future<List<Map<String, dynamic>>> queryGameRows(String type) async {
     Database db = await instance.database;
     if (!db.isOpen) {
       Directory documentsDirectory = await getApplicationDocumentsDirectory();
@@ -146,8 +175,11 @@ class DatabaseGameHelper {
       String path = join(documentsDirectory.path, _databaseName);
       await openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
     }
-    return await db.query(gameTable);
+    return await db.query(gameTable,where: '$gameColumnType=$type');
   }
+
+
+
 
 
   Future<List<Map<String, dynamic>>> queryAnwserRows(int idG) async {

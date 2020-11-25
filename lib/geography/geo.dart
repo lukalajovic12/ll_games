@@ -3,27 +3,34 @@ import 'dart:math';
 
 import 'constants.dart';
 
-class CountryCapital{
-  String country;
-  String capital;
-  CountryCapital({ this.country,this.capital}){
+
+
+
+
+class QuizObject{
+  String type;
+  String secondaryType;
+  QuizObject({this.type,this.secondaryType}){
+    print("type: $type, secondaryType: $secondaryType");
   }
+
+
 }
+
+
 
 class KvizQuestion{
 
-  CountryCapital corectAnwser;
-  List<CountryCapital> wrongAnwsers;
+  QuizObject corectAnwser;
+  List<QuizObject> wrongAnwsers;
 
 
-  KvizQuestion(CountryCapital corectAnwser,List<CountryCapital> wrongAnwsers){
-    this.corectAnwser=corectAnwser;
-    this.wrongAnwsers=wrongAnwsers;
+  KvizQuestion({this.corectAnwser,this.wrongAnwsers}){
   }
 
-  List<CountryCapital> getPossibleAnwsers() {
-    List<CountryCapital> allAnwsers = new List();
-    for (CountryCapital cc in wrongAnwsers) {
+  List<QuizObject> getPossibleAnwsers() {
+    List<QuizObject> allAnwsers = new List();
+    for (QuizObject cc in wrongAnwsers) {
       allAnwsers.add(cc);
     }
     allAnwsers.add(corectAnwser);
@@ -46,17 +53,11 @@ class Score{
     }
     else{
       DateTime dateTime = DateTime.parse(datePlayed);
-
       return "${dateTime.year}:${dateTime.month}:${dateTime.day}:${dateTime.hour}:${dateTime.minute}";
-
-
     }
   }
 
-  Score(int id,String datePlayed,int score){
-    this.id=id;
-    this.datePlayed=datePlayed;
-    this.score=score;
+  Score({this.id,this.score,this.datePlayed}){
   }
 
 }
@@ -65,7 +66,7 @@ class Rezult{
   int id=-1;
   String categry="";
   int points=0;
-  Rezult(int id,String category,int points){
+  Rezult({this.id,this.categry,this.points}){
     this.id=id;
     this.categry=categry;
     this.points=points;

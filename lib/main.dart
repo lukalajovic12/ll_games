@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'geography/geo_main.dart';
+import 'main_classes/geo_main.dart';
 
 
 void main() {
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home: new GeoMainWidget(),
+      home: new MyHomePage(),
     );
   }
 }
@@ -33,6 +33,9 @@ class MyHomePage extends StatefulWidget {
 class MyHomePageState extends State<MyHomePage> {
 
 
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,8 +54,10 @@ class MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            MenuButtonWidget('memory'),
-            MenuButtonWidget('geo'),
+            MenuButtonWidget('Countries','Capitals'),
+            MenuButtonWidget('States','Capitals'),
+            MenuButtonWidget('Presidents','Year'),
+            //MenuButtonWidget('usPresidents'),
           ],
         ),
       ),
@@ -62,20 +67,26 @@ class MyHomePageState extends State<MyHomePage> {
 
 class MenuButtonWidget extends StatefulWidget {
   String name = "";
+  String secondaryName;
 
-  MenuButtonWidget(String name) {
+  MenuButtonWidget(String name,secondaryName) {
     this.name = name;
+    this.secondaryName=secondaryName;
   }
 
   @override
-  State createState() => new _MenuButtonWidget(name);
+  State createState() => new _MenuButtonWidget(name,secondaryName);
 }
 
 class _MenuButtonWidget extends State<MenuButtonWidget> {
+
+  String secondaryName;
+
   String name = "";
 
-  _MenuButtonWidget(String name) {
+  _MenuButtonWidget(String name,String secondaryName) {
     this.name = name;
+    this.secondaryName=secondaryName;
   }
 
   @override
@@ -95,6 +106,8 @@ class _MenuButtonWidget extends State<MenuButtonWidget> {
           letterSpacing: 2.0,
         ),),
         onPressed: () {
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => GeoMainWidget(name,secondaryName)));
         },
       ),
     );
