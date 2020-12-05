@@ -4,17 +4,22 @@ import 'dart:math';
 import 'constants.dart';
 
 
+class QuizObjectData{
+  String type;
+  String secondaryType;
+  String category;
+  QuizObjectData({this.type,this.secondaryType,this.category}){
 
+  }
+}
 
 
 class QuizObject{
   String type;
   String secondaryType;
   QuizObject({this.type,this.secondaryType}){
-    print("type: $type, secondaryType: $secondaryType");
+
   }
-
-
 }
 
 

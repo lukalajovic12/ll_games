@@ -33,19 +33,22 @@ class _ScoreListState extends State<ScoreList> {
   final bool animate = true;
 
 
-  String type='Countries';
+  String type='';
 
   String getType(){
     if(type==null){
-      type='Countries';
+      type='';
     }
     return type;
   }
 
+  bool isLoading=true;
+
+
   _ScoreListState(String type) {
     this.type=type;
     this.scoreist = new List();
-    _query();
+    loadData();
   }
 
   List<charts.Series<Score, int>> _seriesLineData =
@@ -64,7 +67,8 @@ class _ScoreListState extends State<ScoreList> {
 
 
 
-  void _query() async {
+  void loadData() async {
+    isLoading=true;
     scoreist = new List();
     final gameRows = await dbGameHelper.queryGameRows(getType());
     List<Score> scl = new List();
@@ -86,6 +90,7 @@ class _ScoreListState extends State<ScoreList> {
     setState(() {
       this.scoreist = scl;
       this.lastGameAnwsers = anl;
+      isLoading=false;
     });
   }
 
@@ -239,7 +244,11 @@ class _ScoreListState extends State<ScoreList> {
   Widget build(BuildContext context) {
     return DefaultTabController(
         length: 2,
-        child: Scaffold(
+        child:isLoading
+            ? Center(
+          child: CircularProgressIndicator(),
+        )
+        :Scaffold(
             appBar: AppBar(
               leading: BackButton(color: Colors.white),
               iconTheme: IconThemeData(

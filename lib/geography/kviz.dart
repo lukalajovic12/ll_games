@@ -12,8 +12,6 @@ import 'database/geo_database.dart';
 class Quiz extends StatefulWidget {
   String type = '';
 
-  List<QuizObject> geoList;
-
   int quizType = 1;
 
   int time = 30;
@@ -22,43 +20,34 @@ class Quiz extends StatefulWidget {
 
   int numberOfQuestions = 3;
 
-  String questionString;
 
-  String reverseQuestionString;
+
+
 
   Quiz(
-      List<QuizObject> geoList,
       int quizType,
       List<String> categories,
       int time,
       int numberOfQuestions,
-      String type,
-      String questionString,
-      String reverseQuestionString) {
-    this.geoList = geoList;
+      String type,) {
     this.categories = categories;
     this.time = time;
     this.numberOfQuestions = numberOfQuestions;
     this.quizType = quizType;
     this.type = type;
-    this.questionString = questionString;
-    this.reverseQuestionString = reverseQuestionString;
   }
 
   @override
-  _QuizState createState() => _QuizState(getGeoList(), quizType, categories,
-      time, numberOfQuestions, type, questionString, reverseQuestionString);
+  _QuizState createState() => _QuizState(quizType, categories,
+      time, numberOfQuestions, type);
 
-  List<QuizObject> getGeoList() {
-    if (geoList == null) {
-      geoList = new List();
-    }
-    return geoList;
-  }
 }
 
 class _QuizState extends State<Quiz> {
   final dbGameHelper = DatabaseGameHelper.instance;
+
+
+  bool isLoading = false;
 
   int quizType = 1;
 
@@ -99,27 +88,44 @@ class _QuizState extends State<Quiz> {
   Timer _timer;
 
   _QuizState(
-      List<QuizObject> geoList,
       int quizType,
       List<String> categories,
       int time,
       int numberOfAnwsers,
       String type,
-      questionString,
-      String reverseQuestionString) {
+      ) {
     this.geoList = geoList;
     this.quizType = quizType;
     this.time = time;
     this.numberOfAnwsers = numberOfAnwsers;
     this.categories = categories;
     this.correctlyAnwsered = new List();
-    createQuestion();
-    runTimer();
     listAnwsers = new List();
     this.type = type;
-    this.questionString = questionString;
-    this.reverseQuestionString = reverseQuestionString;
+    this.geoList=new List();
+    loadData();
+
   }
+
+
+  Future<void> loadData() async {
+    isLoading=true;
+    final categoryRows=await dbGameHelper.queryQuestionsDataByTypeCategory(type,categories);
+    List<QuizObject> ql=new List();
+    if(categoryRows!=null){
+      categoryRows.forEach((row) => ql.add(new QuizObject(type: row[DatabaseGameHelper.primaryQuestionData],secondaryType: row[DatabaseGameHelper.secondaryQuestionData])));
+    }
+
+    questionString=await dbGameHelper.queryAtributesDataByType(type,DatabaseGameHelper.primaryQuestionColumn);
+    reverseQuestionString=await dbGameHelper.queryAtributesDataByType(type,DatabaseGameHelper.secondaryQuestionColumn);
+      geoList=ql;
+    createQuestion();
+    isLoading=false;
+    runTimer();
+  }
+
+
+
 
   void createQuestion() {
     clickedAnwser = "";
@@ -365,7 +371,10 @@ class _QuizState extends State<Quiz> {
         appBar: AppBar(title: Text('GEO')),
         body: Container(
           color: Color(hexColor('#B7D7DA')),
-          child: Column(
+          child:isLoading ? Center(
+            child: CircularProgressIndicator(),
+          )
+          : Column(
             children: <Widget>[
               Container(
                 padding: new EdgeInsets.only(top: 10, bottom: 10),
@@ -460,9 +469,9 @@ class _QuizState extends State<Quiz> {
       return sprintf(reverseQuestionString, [_question]);
     } else {
       if (askCountry) {
-        return sprintf(reverseQuestionString, [_question]);
-      } else {
         return sprintf(questionString, [_question]);
+      } else {
+        return sprintf(reverseQuestionString, [_question]);
       }
     }
   }

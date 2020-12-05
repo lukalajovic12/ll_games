@@ -1,44 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
+import 'database/geo_database.dart';
 import 'geo.dart';
 import 'kviz.dart';
 import 'left_menu.dart';
+
 class GeoQuizSettingsWidget extends StatefulWidget {
+  String type = '';
 
-
-  String type='';
-
-  String getType(){
-    if(type==null){
-      type='';
+  String getType() {
+    if (type == null) {
+      type = '';
     }
     return type;
   }
 
-  String secondaryType='';
-
-  String getSecondaryType(){
-    if(secondaryType==null){
-      secondaryType='';
-    }
-    return secondaryType;
-  }
-
-  List<QuizObject> geoList;
-
   List<String> categories = new List();
 
-  GeoQuizSettingsWidget(List<QuizObject> geoList, List<String> categories,String type,String secondaryType) {
-    this.geoList = geoList;
+  GeoQuizSettingsWidget(List<String> categories, String type) {
     this.categories = categories;
-    this.type=type;
-    this.secondaryType=secondaryType;
+    this.type = type;
   }
 
   @override
-  State createState() =>
-      new _GeoQuizSettingsWidget(getGeoList(), getCategories(),getType(),getSecondaryType());
+  State createState() => new _GeoQuizSettingsWidget(getCategories(), getType());
 
   List<String> getCategories() {
     if (categories == null) {
@@ -46,27 +32,10 @@ class GeoQuizSettingsWidget extends StatefulWidget {
     }
     return categories;
   }
-
-  List<QuizObject> getGeoList() {
-    if (geoList == null) {
-      geoList = new List();
-    }
-    return geoList;
-  }
 }
 
 class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
-
-  String secondaryType='';
-
-  String getSecondaryType(){
-    if(secondaryType==null){
-      secondaryType='';
-    }
-    return secondaryType;
-  }
-
-  List<QuizObject> geoList;
+  final ScrollController scrollController = ScrollController();
 
   List<String> categories = new List();
 
@@ -76,28 +45,50 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
 
   Map<String, bool> selectedTypes = {};
 
-  String type='';
 
-  String getType(){
-    if(type==null){
-      type='';
+  bool isLoading=false;
+
+  Map<String, bool> getSelectedTypes(){
+    if(selectedTypes==null){
+      selectedTypes={};
     }
-    return type;
+    return selectedTypes;
   }
 
-  _GeoQuizSettingsWidget(
-      List<QuizObject> geoList, List<String> categories,String type,String secondaryType) {
-    this.geoList = geoList;
+  List<String> types = new List();
+
+  List<String> getTypes(){
+    if(types==null){
+      types=new List();
+    }
+    return types;
+  }
+
+  final dbGameHelper = DatabaseGameHelper.instance;
+
+  _GeoQuizSettingsWidget(List<String> categories, String type) {
     this.categories = categories;
     selectedTypes = {};
-    this.type=type;
-    this.secondaryType=secondaryType;
-    selectedTypes[getType()] = true;
-    selectedTypes[getSecondaryType()] = false;
+    types = [type];
+    selectedTypes[type]=false;
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    isLoading=true;
+    String secondaryType = await dbGameHelper.queryAtributesDataByType(
+        getTypes()[0], DatabaseGameHelper.questionSecondaryType);
+
+    setState(() {
+      isLoading=false;
+      getSelectedTypes()[secondaryType] = false;
+      getTypes().add(secondaryType);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -110,7 +101,16 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
       ),
       body: Container(
         color: Color(hexColor('#B7D7DA')),
-        child: Column(
+
+
+
+
+        child: isLoading
+            ? Center(
+          child: CircularProgressIndicator(),
+        )
+
+        :Column(
           children: <Widget>[
             Container(
               padding: EdgeInsets.only(top: 10, bottom: 10),
@@ -156,43 +156,36 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
                 });
               },
             ),
-            Container(
-              padding: new EdgeInsets.only(left: 40, right: 40),
-              child: CheckboxListTile(
-                title: new Text(
-                  getType(),
-                  style: TextStyle(color: Color(hexColor('#0E629B'))),
-                ),
-                value: selectedTypes[getType()],
-                onChanged: (bool value) {
-                  setState(() {
-                    selectedTypes[getType()] = value;
-                  });
+            SizedBox(
+              height: screenHeight * 0.2,
+              child: ListView.builder(
+                controller: scrollController,
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: getTypes().length,
+                itemBuilder: (context, i) {
+                  return Container(
+                    padding: new EdgeInsets.only(left: 40, right: 40),
+                    child: CheckboxListTile(
+                      title: new Text(
+                        getTypes()[i],
+                        style: TextStyle(color: Color(hexColor('#0E629B'))),
+                      ),
+                      value: getSelectedTypes()[getTypes()[i]],
+                      onChanged: (bool value) {
+                        setState(() {
+                          getSelectedTypes()[getTypes()[i]] = value;
+                        });
+                      },
+                      activeColor: Color(hexColor('#0E629B')),
+                      checkColor: Color(hexColor('#0E629B')),
+                    ),
+                  );
                 },
-                activeColor: Color(hexColor('#0E629B')),
-                checkColor: Color(hexColor('#0E629B')),
               ),
             ),
             Container(
-              padding: new EdgeInsets.only(left: 40, right: 40),
-              child: CheckboxListTile(
-                title: new Text(
-                  getSecondaryType(),
-                  style: TextStyle(color: Color(hexColor('#0E629B'))),
-                ),
-                value: selectedTypes[getSecondaryType()],
-                onChanged: (bool value) {
-                  setState(() {
-                    selectedTypes[getSecondaryType()] = value;
-                  });
-                },
-                activeColor: Color(hexColor('#0E629B')),
-                checkColor: Color(hexColor('#0E629B')),
-              ),
-            ),
-            Container(
-              padding:
-                  new EdgeInsets.only(top:20,left: 160),
+              padding: new EdgeInsets.only(top: 20, left: 160),
               child: RaisedButton(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
@@ -200,21 +193,20 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
                 color: Color(hexColor('#0E629B')),
                 child: Text(
                   'Play',
-                  style: TextStyle(
-                      color: Color(hexColor('#B7D7DA'))),
+                  style: TextStyle(color: Color(hexColor('#B7D7DA'))),
                 ),
                 onPressed: () {
-                  if (selectedTypes[getType()] || selectedTypes[getSecondaryType()]) {
+                  if (types.length == 2 &&
+                      (getSelectedTypes()[types[0]] || getSelectedTypes()[types[1]])) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => Quiz(
-                              getGeoList(),
                               isReverse(),
                               getCategories(),
                               getTime(),
                               getNumberOfAnwsers(),
-                              getType(),generatequestionStrings()[0],generatequestionStrings()[1])),
+                              types[0])),
                     );
                   }
                 },
@@ -223,52 +215,18 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
           ],
         ),
       ),
-      drawer: leftMenu(context,getType(),getSecondaryType()),
+      drawer: leftMenu(context, types[0]),
     );
   }
 
-
-  List<String> generatequestionStrings(){
-    List<String> questionStrings=new List();
-    if(type=='Presidents'){
-      if(selectedTypes[getType()]) {
-        questionStrings.add('%s became president in the year:');
-        questionStrings.add('Who became president in the year %s?');
-      }
-      else{
-        questionStrings.add('Who became president in the year %s?');
-        questionStrings.add('%s became president in the year:');
-      }
-    }
-    else {
-      if (selectedTypes[getType()]) {
-        questionStrings.add('The capital of %s is?');
-        questionStrings.add(' %s is the capital of?');
-      }
-      else {
-        questionStrings.add(' %s is the capital of?');
-        questionStrings.add('The capital of %s is?');
-      }
-    }
-
-    return questionStrings;
-
-
-
-
-
-  }
-
-
-  int isReverse(){
-    if(selectedTypes[getType()] == selectedTypes[getSecondaryType()]){
+  int isReverse() {
+    if (types.length == 2 &&
+        (selectedTypes[types[0]] == selectedTypes[types[1]])) {
       return 3;
-    }
-    else{
-      if(selectedTypes[getType()]){
+    } else {
+      if (selectedTypes[types[0]]) {
         return 1;
-      }
-      else{
+      } else {
         return 2;
       }
     }
@@ -293,12 +251,5 @@ class _GeoQuizSettingsWidget extends State<GeoQuizSettingsWidget> {
       categories = new List();
     }
     return categories;
-  }
-
-  List<QuizObject> getGeoList() {
-    if (geoList == null) {
-      geoList = new List();
-    }
-    return geoList;
   }
 }

@@ -8,7 +8,7 @@ import 'statistics/general_statistics.dart';
 import 'geo.dart';
 import 'database/geo_database.dart';
 
-Container leftMenu(BuildContext context,String type,String secondaryType){
+Container leftMenu(BuildContext context,String type){
   return Container(
     color: Color(hexColor('#B7D7DA')),
     child: ListView(
@@ -41,7 +41,7 @@ Container leftMenu(BuildContext context,String type,String secondaryType){
             // Then close the drawer
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => GeoDataWidget(type,secondaryType)),
+              MaterialPageRoute(builder: (context) => GeoDataWidget(type)),
             );
           },
         ),
