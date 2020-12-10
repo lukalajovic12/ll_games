@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'geography/database/geo_database.dart';
+import 'geography/edit_atributes.dart';
 import 'main_classes/geo_main.dart';
-
 
 void main() {
   runApp(new MyApp());
@@ -22,46 +22,40 @@ class MyHomePage extends StatefulWidget {
   State createState() => new _MyHomePage();
 }
 
-
-  hexColor(String chc){
-  String cn='0xff'+chc;
-  cn=cn.replaceAll('#', '');
-  int ci=int.parse(cn);
+hexColor(String chc) {
+  String cn = '0xff' + chc;
+  cn = cn.replaceAll('#', '');
+  int ci = int.parse(cn);
   return ci;
-  }
-
+}
 
 class _MyHomePage extends State<MyHomePage> {
-
   final dbGameHelper = DatabaseGameHelper.instance;
 
-  List<String> types=new List();
+  List<String> types = new List();
 
   final ScrollController scrollController = ScrollController();
 
-  bool isLoading=false;
+  bool isLoading = false;
 
   Future<void> loadData() async {
-    isLoading=true;
+    isLoading = true;
     await dbGameHelper.create();
-    final categoryRows=await dbGameHelper.selectAllTypes();
-    List<String> ty=new List();
+    final categoryRows = await dbGameHelper.selectAllTypes();
+    List<String> ty = new List();
     if (categoryRows != null) {
-      categoryRows.forEach((row) => ty.add(row[DatabaseGameHelper.questionType]));
+      categoryRows
+          .forEach((row) => ty.add(row[DatabaseGameHelper.questionType]));
     }
     setState(() {
-      isLoading=false;
-      types=ty;
-
+      isLoading = false;
+      types = ty;
     });
-
-
   }
 
-  _MyHomePage(){
+  _MyHomePage() {
     loadData();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -76,45 +70,77 @@ class _MyHomePage extends State<MyHomePage> {
         ),
         centerTitle: true,
       ),
-      body:
-    SizedBox(
-    height: screenHeight,
-
-    child:  Container(
-        color: Color(hexColor('#B7D7DA')),
-        child: Scrollbar(
-          controller: scrollController,
-          child: ListView.builder(
+      drawer: mainLeftMenu(context),
+      body: SizedBox(
+        height: screenHeight,
+        child: Container(
+          color: Color(hexColor('#B7D7DA')),
+          child: Scrollbar(
             controller: scrollController,
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            itemCount: types.length,
-            itemBuilder: (context, i) {
-              return Container(
-                height: 150.0,
-                padding: new EdgeInsets.only(left: 40,right:40,top: 40,bottom: 40 ),
-                child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(90),
+            child: ListView.builder(
+              controller: scrollController,
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: types.length,
+              itemBuilder: (context, i) {
+                return Container(
+                  height: 150.0,
+                  padding: new EdgeInsets.only(
+                      left: 40, right: 40, top: 40, bottom: 40),
+                  child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(90),
+                    ),
+                    color: Color(hexColor('#0E629B')),
+                    child: Text(
+                      '${types[i]}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(hexColor('#B7D7DA')),
+                        fontSize: 40.0,
+                        letterSpacing: 2.0,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => GeoMainWidget(types[i])));
+                    },
                   ),
-                  color: Color(hexColor('#0E629B')),
-                  child: Text('${types[i]}',style:TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(hexColor('#B7D7DA')),
-                    fontSize: 40.0,
-                    letterSpacing: 2.0,
-                  ),),
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => GeoMainWidget(types[i])));
-                  },
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),
-    ),
     );
   }
+}
+
+Container mainLeftMenu(BuildContext context) {
+  return Container(
+    color: Color(hexColor('#B7D7DA')),
+    child: ListView(
+      // Important: Remove any padding from the ListView.
+      padding: EdgeInsets.zero,
+      children: <Widget>[
+        DrawerHeader(
+          child: Text('Settings'),
+          decoration: BoxDecoration(
+            color: Color(hexColor('#B7D7DA')),
+          ),
+        ),
+        ListTile(
+          title: Center(child: Text('add type')),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AttributesEditWidget('')),
+            );
+          },
+        ),
+      ],
+    ),
+  );
 }

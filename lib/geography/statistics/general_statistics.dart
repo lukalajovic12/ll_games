@@ -75,7 +75,7 @@ class _ScoreListState extends State<ScoreList> {
     List<Anwser> anl = new List();
     int idGame = -1;
     if (gameRows != null) {
-      gameRows.forEach((row) => scl.add(new Score(id: row[DatabaseGameHelper.gameColumnId],
+      gameRows.forEach((row) => scl.add(new Score(id: row[DatabaseGameHelper.columnId],
           datePlayed:row[DatabaseGameHelper.gameColumnDate],
             score:0
           )));

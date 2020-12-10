@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../main.dart';
 import 'database/geo_database.dart';
+import 'edit_data.dart';
 import 'geo.dart';
 import '../main_classes/geo_main.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -78,8 +79,8 @@ class _GeoDataWidget extends State<GeoDataWidget> {
     return title;
   }
 
-  List<QuizObject> getGeoList() {
-    List<QuizObject> ccl = new List();
+  List<QuizObjectData> getGeoList() {
+    List<QuizObjectData> ccl = new List();
     if (countryCategoryList != null && !countryCategoryList.isEmpty) {
       ccl = countryCategoryList[getSelectedIndex()].countryCapitalList;
     }
@@ -118,6 +119,7 @@ class _GeoDataWidget extends State<GeoDataWidget> {
 
     if (questionRows != null) {
       questionRows.forEach((row) => countryCapitalList.add(new QuizObjectData(
+            id: row[DatabaseGameHelper.columnId],
             type: row[DatabaseGameHelper.primaryQuestionData],
             secondaryType: row[DatabaseGameHelper.secondaryQuestionData],
             category: row[DatabaseGameHelper.category],
@@ -125,21 +127,18 @@ class _GeoDataWidget extends State<GeoDataWidget> {
     }
 
     for (QuizObjectData qod in countryCapitalList) {
-      QuizObject qq =
-          new QuizObject(type: qod.type, secondaryType: qod.secondaryType);
       String category = qod.category;
-
       bool newContinent = true;
       for (int i = 0; i < ccl.length; i++) {
         if (category == ccl[i].category) {
-          ccl[i].addCountryCapital(qq);
+          ccl[i].addCountryCapital(qod);
           newContinent = false;
           break;
         }
       }
       if (newContinent) {
         getCategories().add(category);
-        CountryCategory countryCategory = new CountryCategory(category, qq);
+        CountryCategory countryCategory = new CountryCategory(category, qod);
         ccl.add(countryCategory);
       }
     }
@@ -164,123 +163,208 @@ class _GeoDataWidget extends State<GeoDataWidget> {
         centerTitle: true,
       ),
       body: countryList(context),
-      bottomNavigationBar:  isLoading ?null
-        :BottomNavigationBar(
-        backgroundColor: Color(hexColor('#B7D7DA')),
-        type: BottomNavigationBarType.fixed,
-        currentIndex: getSelectedIndex(),
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
-        items: barItems(),
-      ),
+
+      bottomNavigationBar: getCategories().length<2 || isLoading
+          ? null
+          : BottomNavigationBar(
+              backgroundColor: Color(hexColor('#B7D7DA')),
+              type: BottomNavigationBarType.fixed,
+              currentIndex: getSelectedIndex(),
+              selectedItemColor: Colors.amber[800],
+              onTap: _onItemTapped,
+              items: barItems(),
+            ),
     );
   }
 
+  final ScrollController scrollController = ScrollController();
+
   Container countryList(BuildContext context) {
     double c_width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Container(
         color: Color(hexColor('#B7D7DA')),
         child: isLoading
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            : ListView.builder(
-                itemCount: getGeoList().length,
-                itemBuilder: (context, index) {
-                  QuizObject cc = getGeoList()[index];
-                  return Container(
-                    padding: new EdgeInsets.only(top: 10, bottom: 10),
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              padding: new EdgeInsets.only(left: 40),
-                              width: c_width / 2,
-                              child: Text('${getType()}:',
-                                  style: TextStyle(
-                                      color: Color(hexColor('#0E629B')),
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                            Container(
-                                width: c_width / 2,
-                                padding: new EdgeInsets.only(left: 65),
-                                child: Text(cc.type,
-                                    style: TextStyle(
-                                        color: Color(hexColor('#0E629B')),
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.bold))),
-                          ],
+            : Container(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: height * 0.65,
+                      child: Scrollbar(
+                        controller: scrollController,
+                        child: ListView.builder(
+                          itemCount: getGeoList().length,
+                          itemBuilder: (context, index) {
+                            QuizObjectData cc = getGeoList()[index];
+                            return Container(
+                              padding: new EdgeInsets.only(top: 10, bottom: 10),
+                              child: Container(
+                                child: Column(
+                                  children: <Widget>[
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Container(
+                                          padding:
+                                              new EdgeInsets.only(left: 40),
+                                          width: c_width / 2,
+                                          child: Text('${getType()}:',
+                                              style: TextStyle(
+                                                  color: Color(
+                                                      hexColor('#0E629B')),
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                        Container(
+                                            width: c_width / 2,
+                                            padding:
+                                                new EdgeInsets.only(left: 65),
+                                            child: Text(cc.type,
+                                                style: TextStyle(
+                                                    color: Color(
+                                                        hexColor('#0E629B')),
+                                                    fontSize: 20.0,
+                                                    fontWeight:
+                                                        FontWeight.bold))),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: <Widget>[
+                                        Container(
+                                          padding:
+                                              new EdgeInsets.only(left: 40),
+                                          width: c_width / 2,
+                                          child: Text('${getSecondaryType()}:',
+                                              style: TextStyle(
+                                                  color: Color(
+                                                      hexColor('#0E629B')),
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                        Container(
+                                            width: c_width / 2,
+                                            padding:
+                                                new EdgeInsets.only(left: 65),
+                                            child: Text(cc.secondaryType,
+                                                style: TextStyle(
+                                                    color: Color(
+                                                        hexColor('#0E629B')),
+                                                    fontSize: 20.0,
+                                                    fontWeight:
+                                                        FontWeight.bold))),
+                                      ],
+                                    ),
+                                    Row(children: <Widget>[
+                                      Container(
+                                        padding: new EdgeInsets.only(left: 40),
+                                        width: c_width / 2,
+                                        child: Text('EDIT',
+                                            style: TextStyle(
+                                                color:
+                                                    Color(hexColor('#0E629B')),
+                                                fontSize: 20.0,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      Container(
+                                        width: c_width / 2,
+                                        child: IconButton(
+                                          color: Color(hexColor('#0E629B')),
+                                          icon: Icon(FontAwesomeIcons.pen),
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        GeoDataEditWidget(
+                                                            cc.id,
+                                                            cc.type,
+                                                            cc.secondaryType,
+                                                            cc.category,
+                                                            getType())));
+                                          },
+                                        ),
+                                      ),
+                                    ]),
+                                    Row(children: <Widget>[
+                                      Container(
+                                        padding: new EdgeInsets.only(left: 40),
+                                        width: c_width / 2,
+                                        child: Text('Wikipedia:',
+                                            style: TextStyle(
+                                                color:
+                                                    Color(hexColor('#0E629B')),
+                                                fontSize: 20.0,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      Container(
+                                        width: c_width / 2,
+                                        child: IconButton(
+                                          color: Color(hexColor('#0E629B')),
+                                          icon:
+                                              Icon(FontAwesomeIcons.wikipediaW),
+                                          onPressed: () {
+                                            goToWikipedia(cc.type);
+                                          },
+                                        ),
+                                      ),
+                                    ]),
+                                    Row(children: <Widget>[
+                                      Container(
+                                        padding: new EdgeInsets.only(left: 40),
+                                        width: c_width / 2,
+                                        child: Text('Google maps:',
+                                            style: TextStyle(
+                                                color:
+                                                    Color(hexColor('#0E629B')),
+                                                fontSize: 20.0,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      Container(
+                                        width: c_width / 2,
+                                        child: IconButton(
+                                          color: Color(hexColor('#0E629B')),
+                                          icon:
+                                              Icon(FontAwesomeIcons.mapMarker),
+                                          onPressed: () {
+                                            goToGoogleMaps(cc.type);
+                                          },
+                                        ),
+                                      ),
+                                    ]),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              padding: new EdgeInsets.only(left: 40),
-                              width: c_width / 2,
-                              child: Text('${getSecondaryType()}:',
-                                  style: TextStyle(
-                                      color: Color(hexColor('#0E629B')),
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                            Container(
-                                width: c_width / 2,
-                                padding: new EdgeInsets.only(left: 65),
-                                child: Text(cc.secondaryType,
-                                    style: TextStyle(
-                                        color: Color(hexColor('#0E629B')),
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.bold))),
-                          ],
-                        ),
-                        Row(children: <Widget>[
-                          Container(
-                            padding: new EdgeInsets.only(left: 40),
-                            width: c_width / 2,
-                            child: Text('Wikipedia:',
-                                style: TextStyle(
-                                    color: Color(hexColor('#0E629B')),
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                          Container(
-                            width: c_width / 2,
-                            child: IconButton(
-                              color: Color(hexColor('#0E629B')),
-                              icon: Icon(FontAwesomeIcons.wikipediaW),
-                              onPressed: () {
-                                goToWikipedia(cc.type);
-                              },
-                            ),
-                          ),
-                        ]),
-                        Row(children: <Widget>[
-                          Container(
-                            padding: new EdgeInsets.only(left: 40),
-                            width: c_width / 2,
-                            child: Text('Google maps:',
-                                style: TextStyle(
-                                    color: Color(hexColor('#0E629B')),
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                          Container(
-                            width: c_width / 2,
-                            child: IconButton(
-                              color: Color(hexColor('#0E629B')),
-                              icon: Icon(FontAwesomeIcons.mapMarker),
-                              onPressed: () {
-                                goToGoogleMaps(cc.type);
-                              },
-                            ),
-                          ),
-                        ]),
-                      ],
+                      ),
                     ),
-                  );
-                },
+                    Container(
+                      padding: new EdgeInsets.only(top: 20, left: 160),
+                      child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        color: Color(hexColor('#0E629B')),
+                        child: Text(
+                          'Add',
+                          style: TextStyle(color: Color(hexColor('#B7D7DA'))),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => GeoDataEditWidget(
+                                      -1, "", "", "", getType())));
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ));
   }
 }

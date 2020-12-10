@@ -117,6 +117,11 @@ class _GeoTabWidget extends State<GeoTabWidget> {
         categories.add(cat);
       }
       isLoading = false;
+      if (categories.length < 2) {
+        MaterialPageRoute(
+          builder: (context) => GeoQuizSettingsWidget(categories, getType()),
+        );
+      }
     });
   }
 
@@ -129,66 +134,68 @@ class _GeoTabWidget extends State<GeoTabWidget> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : Column(
-              children: <Widget>[
-                SizedBox(
-                  height: height * 0.7,
-                  child: Scrollbar(
-                    controller: scrollController,
-                    child: ListView.builder(
+          : Container(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: height * 0.7,
+                    child: Scrollbar(
                       controller: scrollController,
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: selectedCategories.length,
-                      itemBuilder: (context, i) {
-                        return Container(
-                          padding: new EdgeInsets.only(left: 40, right: 40),
-                          child: CheckboxListTile(
-                            title: new Text(
-                              selectedCategories.keys.toList()[i],
-                              style:
-                                  TextStyle(color: Color(hexColor('#0E629B'))),
+                      child: ListView.builder(
+                        controller: scrollController,
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: selectedCategories.length,
+                        itemBuilder: (context, i) {
+                          return Container(
+                            padding: new EdgeInsets.only(left: 40, right: 40),
+                            child: CheckboxListTile(
+                              title: new Text(
+                                selectedCategories.keys.toList()[i],
+                                style: TextStyle(
+                                    color: Color(hexColor('#0E629B'))),
+                              ),
+                              value: selectedCategories[
+                                  selectedCategories.keys.toList()[i]],
+                              onChanged: (bool value) {
+                                setState(() {
+                                  selectedCategories[selectedCategories.keys
+                                      .toList()[i]] = value;
+                                });
+                              },
+                              activeColor: Color(hexColor('#0E629B')),
+                              checkColor: Color(hexColor('#0E629B')),
                             ),
-                            value: selectedCategories[
-                                selectedCategories.keys.toList()[i]],
-                            onChanged: (bool value) {
-                              setState(() {
-                                selectedCategories[selectedCategories.keys
-                                    .toList()[i]] = value;
-                              });
-                            },
-                            activeColor: Color(hexColor('#0E629B')),
-                            checkColor: Color(hexColor('#0E629B')),
-                          ),
-                        );
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: new EdgeInsets.only(top: 20, left: 160),
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      color: Color(hexColor('#0E629B')),
+                      child: Text(
+                        'PLAY',
+                        style: TextStyle(color: Color(hexColor('#B7D7DA'))),
+                      ),
+                      onPressed: () {
+                        if (selectedCategories.containsValue(true)) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => GeoQuizSettingsWidget(
+                                    getSelectedCategories(), getType()),
+                              ));
+                        }
                       },
                     ),
                   ),
-                ),
-                Container(
-                  padding: new EdgeInsets.only(top: 20, left: 160),
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    color: Color(hexColor('#0E629B')),
-                    child: Text(
-                      'PLAY',
-                      style: TextStyle(color: Color(hexColor('#B7D7DA'))),
-                    ),
-                    onPressed: () {
-                      if (selectedCategories.containsValue(true)) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => GeoQuizSettingsWidget(
-                                  getSelectedCategories(), getType()),
-                            ));
-                      }
-                    },
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
     );
   }
@@ -220,9 +227,9 @@ class CountryCategory {
     return cl;
   }
 
-  List<QuizObject> countryCapitalList = new List();
+  List<QuizObjectData> countryCapitalList = new List();
 
-  CountryCategory(String category, QuizObject countryCapital) {
+  CountryCategory(String category, QuizObjectData countryCapital) {
     this.category = category;
     countryCapitalList = new List();
     if (countryCapital != null) {
@@ -230,7 +237,7 @@ class CountryCategory {
     }
   }
 
-  void addCountryCapital(QuizObject countryCapital) {
+  void addCountryCapital(QuizObjectData countryCapital) {
     countryCapitalList.add(countryCapital);
   }
 }

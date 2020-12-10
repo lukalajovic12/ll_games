@@ -1,14 +1,12 @@
-import 'dart:convert';
+
 import 'dart:io';
 
-import 'package:flutter/services.dart';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 
-import '../geo.dart';
+import 'fill_database.dart';
 
 class DatabaseGameHelper {
   static final _databaseName = "MyDatabase.db";
@@ -16,13 +14,11 @@ class DatabaseGameHelper {
 
   static final gameTable = 'quiz_game';
 
-  static final gameColumnId = '_id';
+  static final columnId = '_id';
 
   static final gameColumnType = 'type';
 
   static final gameColumnDate = 'gameDate';
-
-  static final questionColumnId = '_id';
 
   static final gameId = 'gameId';
 
@@ -85,7 +81,7 @@ class DatabaseGameHelper {
   Future _onCreate(Database db, int version) async {
     String sql1 = '''
           CREATE TABLE IF NOT EXISTS  $gameTable (
-            $gameColumnId INTEGER PRIMARY KEY,
+            $columnId INTEGER PRIMARY KEY,
             $gameColumnType TEXT,
             $gameColumnDate TEXT
           )
@@ -93,7 +89,7 @@ class DatabaseGameHelper {
     await db.execute(sql1);
     String sql2 = '''
           CREATE TABLE IF NOT EXISTS  $questionsTable (
-            $questionColumnId INTEGER PRIMARY KEY,
+            $columnId INTEGER PRIMARY KEY,
             $gameId INTEGER NOT NULL,
             $gameColumnQuestion TEXT NOT NULL,  
             $gameColumnCorrectAnwser TEXT NOT NULL,
@@ -103,7 +99,7 @@ class DatabaseGameHelper {
     await db.execute(sql2);
     String sql3 = '''
           CREATE TABLE IF NOT EXISTS  $propertiesTable (
-            $questionColumnId INTEGER PRIMARY KEY,
+            $columnId INTEGER PRIMARY KEY,
             $gameId INTEGER NOT NULL,      
             $propertyTypeColumn TEXT NOT NULL,
             $propertyValueColumn TEXT NOT NULL           
@@ -113,7 +109,7 @@ class DatabaseGameHelper {
 
     String sql4 = '''
           CREATE TABLE IF NOT EXISTS  $questionDataTable (
-          $questionColumnId INTEGER PRIMARY KEY,
+          $columnId INTEGER PRIMARY KEY,
             $primaryQuestionData TEXT NOT NULL,     
             $secondaryQuestionData TEXT NOT NULL,
             $questionType TEXT NOT NULL,
@@ -140,7 +136,7 @@ class DatabaseGameHelper {
 
     String sql1 = '''
           CREATE TABLE IF NOT EXISTS  $gameTable (
-            $gameColumnId INTEGER PRIMARY KEY,
+            $columnId INTEGER PRIMARY KEY,
             $gameColumnType TEXT,
             $gameColumnDate TEXT
           )
@@ -148,7 +144,7 @@ class DatabaseGameHelper {
     await db.execute(sql1);
     String sql2 = '''
           CREATE TABLE IF NOT EXISTS  $questionsTable (
-            $questionColumnId INTEGER PRIMARY KEY,
+            $columnId INTEGER PRIMARY KEY,
             $gameId INTEGER NOT NULL,
             $gameColumnQuestion TEXT NOT NULL,  
             $gameColumnCorrectAnwser TEXT NOT NULL,
@@ -158,7 +154,7 @@ class DatabaseGameHelper {
     await db.execute(sql2);
     String sql3 = '''
           CREATE TABLE IF NOT EXISTS  $propertiesTable (
-            $questionColumnId INTEGER PRIMARY KEY,
+            $columnId INTEGER PRIMARY KEY,
             $gameId INTEGER NOT NULL,      
             $propertyTypeColumn TEXT NOT NULL,
             $propertyValueColumn TEXT NOT NULL           
@@ -168,7 +164,7 @@ class DatabaseGameHelper {
 
     String sql4 = '''
           CREATE TABLE IF NOT EXISTS  $questionDataTable (
-          $questionColumnId INTEGER PRIMARY KEY,
+            $columnId INTEGER PRIMARY KEY,
             $primaryQuestionData TEXT NOT NULL,     
             $secondaryQuestionData TEXT NOT NULL,
             $questionType TEXT NOT NULL,
@@ -190,98 +186,59 @@ class DatabaseGameHelper {
     await fillDataOnCreate(db);
   }
 
-  Future<void> fillCountries(Database db) async {
-    var geoString = await rootBundle.loadString('assets/countries/geo.csv');
-    LineSplitter ls = new LineSplitter();
-    List<String> geoLines = ls.convert(geoString);
-    for (int i = 1; i < geoLines.length; i++) {
-      if (geoLines[i].split(",").length < 4) {
-        Map<String, dynamic> values = {
-          primaryQuestionData: geoLines[i].split(",")[0],
-          secondaryQuestionData: geoLines[i].split(",")[1],
-          questionType: 'Countries',
-          category: geoLines[i].split(",")[2]
-        };
+  Future<void> insertType(String type,String secondaryType,String primaryQuestion,String secondaryQuestion) async {
+  Map<String, dynamic> atributes = {
+    DatabaseGameHelper.questionType: type,
+    DatabaseGameHelper.questionSecondaryType: secondaryType,
+    DatabaseGameHelper.primaryQuestionColumn: primaryQuestion,
+    DatabaseGameHelper.secondaryQuestionColumn: secondaryQuestion
+  };
+  Database db = await instance.database;
+  await db.insert(DatabaseGameHelper.gameAtriburesTable, atributes);
+}
 
-        final id = db.insert(questionDataTable, values);
-        print('id: $id');
-      }
-    }
+
+  Future<void> updateType(String type,String secondaryType,String primaryQuestion,String secondaryQuestion) async {
     Map<String, dynamic> atributes = {
-      questionType: 'Countries',
-      questionSecondaryType: 'Capitals',
-      primaryQuestionColumn: 'The capital of %s is?',
-      secondaryQuestionColumn: ' %s is the capital of?'
+      DatabaseGameHelper.questionType: type,
+      DatabaseGameHelper.questionSecondaryType: secondaryType,
+      DatabaseGameHelper.primaryQuestionColumn: primaryQuestion,
+      DatabaseGameHelper.secondaryQuestionColumn: secondaryQuestion
     };
-
-    await db.insert(gameAtriburesTable, atributes);
+    Database db = await instance.database;
+    await db.update(DatabaseGameHelper.gameAtriburesTable, atributes,where: '${DatabaseGameHelper.questionType} = ?',whereArgs: [DatabaseGameHelper.questionType]);
   }
 
-  Future<void> fillStates(Database db) async {
-    await fillStateData(db, 'assets/states/us_state_capitals.csv', 'USA');
-    await fillStateData(
-        db, 'assets/states/german_state_capitals.csv', 'Deutschland');
-    await fillStateData(
-        db, 'assets/states/austrian_state_capitals.csv', 'Ostereich');
 
-    Map<String, dynamic> atributes = {
-      questionType: 'States',
-      questionSecondaryType: 'Capitals',
-      primaryQuestionColumn: 'The capital of %s is?',
-      secondaryQuestionColumn: ' %s is the capital of?'
+  Future<int> insertQuestionData(String primaryData, String secondaryData,
+      String qType, String qCatagory) async {
+    Map<String, dynamic> row = {
+      primaryQuestionData: primaryData,
+      secondaryQuestionData: secondaryData,
+      questionType: qType,
+      category: qCatagory
     };
 
-    await db.insert(gameAtriburesTable, atributes);
+    Database db = await instance.database;
+    return await db.insert(questionDataTable, row);
   }
 
-  Future<void> fillStateData(
-      Database db, String filePath, String stateCategory) async {
-    var geoString = await rootBundle.loadString(filePath);
-    LineSplitter ls = new LineSplitter();
-    List<String> geoLines = ls.convert(geoString);
-    for (int i = 1; i < geoLines.length; i++) {
-      if (geoLines[i].split(",").length < 4) {
-        Map<String, dynamic> values = {
-          primaryQuestionData: geoLines[i].split(",")[0],
-          secondaryQuestionData: geoLines[i].split(",")[1],
-          questionType: 'States',
-          category: stateCategory
-        };
-        final id = db.insert(questionDataTable, values);
-      }
-    }
-  }
-
-  Future<void> fillUsPresidents(Database db) async {
-    var geoString = await rootBundle
-        .loadString('assets/presidents/american_presidents.csv');
-    LineSplitter ls = new LineSplitter();
-    List<String> geoLines = ls.convert(geoString);
-    for (int i = 1; i < geoLines.length; i++) {
-      String categoryPresidents = 'first 15';
-      if (i > 15) {
-        categoryPresidents = 'second 15';
-      }
-      if (i > 30) {
-        categoryPresidents = 'last 15';
-      }
-      Map<String, dynamic> values = {
-        primaryQuestionData: geoLines[i].split(",")[1],
-        secondaryQuestionData: geoLines[i].split(",")[2],
-        questionType: 'Presidents',
-        category: categoryPresidents
-      };
-      final id = db.insert(questionDataTable, values);
-    }
-
-    Map<String, dynamic> atributes = {
-      questionType: 'Presidents',
-      questionSecondaryType: 'Year',
-      primaryQuestionColumn: '%s became president in the year:',
-      secondaryQuestionColumn: 'Who became president in %s?'
+  Future<int> updateQuestionData(String primaryData, String secondaryData,
+      String qType, String qCatagory, int id) async {
+    Map<String, dynamic> row = {
+      primaryQuestionData: primaryData,
+      secondaryQuestionData: secondaryData,
+      questionType: qType,
+      category: qCatagory
     };
 
-    await db.insert(gameAtriburesTable, atributes);
+    Database db = await instance.database;
+    return await db.update(questionDataTable, row , where: '$columnId = ?', whereArgs: [id]);
+  }
+
+  Future<int> deleteQuestionData(int id) async {
+    Database db = await instance.database;
+    return await db.delete(questionDataTable, where: '$columnId = ?', whereArgs: [id]);
   }
 
   Future<void> createQuestionData() async {
@@ -302,7 +259,7 @@ class DatabaseGameHelper {
   Future<List<Map<String, dynamic>>> selectAllTypes() async {
     Database db = await instance.database;
     return await db.query(
-      questionDataTable,
+      DatabaseGameHelper.gameAtriburesTable,
       columns: [questionType],
       distinct: true,
     );
@@ -364,7 +321,7 @@ class DatabaseGameHelper {
   Future<int> queryCorrectAnwsersCountLast() async {
     Database db = await instance.database;
     return Sqflite.firstIntValue(await db.rawQuery(
-        'SELECT COUNT(*) FROM $questionsTable WHERE $gameId=(SELECT MAX($gameColumnId) FROM $gameTable) AND $gameColumnCorrectAnwser=$gameColumnAnwser'));
+        'SELECT COUNT(*) FROM $questionsTable WHERE $gameId=(SELECT MAX($columnId) FROM $gameTable) AND $gameColumnCorrectAnwser=$gameColumnAnwser'));
   }
 
   Future<int> queryWrongAnwsersCount(int gId) async {
@@ -376,7 +333,7 @@ class DatabaseGameHelper {
   Future<int> queryWrongAnwsersLast() async {
     Database db = await instance.database;
     return Sqflite.firstIntValue(await db.rawQuery(
-        'SELECT COUNT(*) FROM $questionsTable WHERE $gameId=(SELECT MAX($gameColumnId) FROM $gameTable) AND ($gameColumnCorrectAnwser != $gameColumnAnwser AND $gameColumnAnwser NOT LIKE "Skipped")'));
+        'SELECT COUNT(*) FROM $questionsTable WHERE $gameId=(SELECT MAX($columnId) FROM $gameTable) AND ($gameColumnCorrectAnwser != $gameColumnAnwser AND $gameColumnAnwser NOT LIKE "Skipped")'));
   }
 
   Future<int> querySkippedAnwsersCount(int gId) async {
@@ -388,13 +345,13 @@ class DatabaseGameHelper {
   Future<int> querySkippedAnwsersCountLast() async {
     Database db = await instance.database;
     return Sqflite.firstIntValue(await db.rawQuery(
-        'SELECT COUNT(*) FROM $questionsTable WHERE $gameId=(SELECT MAX($gameColumnId) FROM $gameTable)AND $gameColumnAnwser LIKE "Skipped"'));
+        'SELECT COUNT(*) FROM $questionsTable WHERE $gameId=(SELECT MAX($columnId) FROM $gameTable)AND $gameColumnAnwser LIKE "Skipped"'));
   }
 
   Future<int> queryLastGameId() async {
     Database db = await instance.database;
     String sql = '''
-          Select $questionColumnId FROM  $questionsTable WHERE $gameId=(SELECT MAX($gameColumnId) FROM $gameTable)
+          Select $columnId FROM  $questionsTable WHERE $gameId=(SELECT MAX($columnId) FROM $gameTable)
           ''';
     return Sqflite.firstIntValue(await db.rawQuery(sql));
   }
@@ -434,7 +391,7 @@ class DatabaseGameHelper {
   Future<List<Map<String, dynamic>>> queryLastGameRows() async {
     Database db = await instance.database;
     String sql = '''
-          Select * FROM  $questionsTable WHERE $gameId=(SELECT MAX($gameColumnId) FROM $gameTable)
+          Select * FROM  $questionsTable WHERE $gameId=(SELECT MAX($columnId) FROM $gameTable)
           ''';
     return await db.rawQuery(sql);
   }
@@ -442,7 +399,7 @@ class DatabaseGameHelper {
   Future<List<Map<String, dynamic>>> queryLastGameProperties() async {
     Database db = await instance.database;
     String sql = '''
-          Select * FROM  $propertiesTable WHERE $gameId=(SELECT MAX($gameColumnId) FROM $gameTable)
+          Select * FROM  $propertiesTable WHERE $gameId=(SELECT MAX($columnId) FROM $gameTable)
           
           ''';
     return await db.rawQuery(sql);
@@ -456,14 +413,13 @@ class DatabaseGameHelper {
 
   Future<int> update(Map<String, dynamic> row) async {
     Database db = await instance.database;
-    int id = row[gameColumnId];
+    int id = row[columnId];
     return await db
-        .update(gameTable, row, where: '$gameColumnId = ?', whereArgs: [id]);
+        .update(gameTable, row, where: '$columnId = ?', whereArgs: [id]);
   }
 
   Future<int> delete(int id) async {
     Database db = await instance.database;
-    return await db
-        .delete(gameColumnId, where: '$gameColumnId = ?', whereArgs: [id]);
+    return await db.delete(gameTable, where: '$columnId = ?', whereArgs: [id]);
   }
 }

@@ -5,10 +5,12 @@ import 'constants.dart';
 
 
 class QuizObjectData{
+
+  int id;
   String type;
   String secondaryType;
   String category;
-  QuizObjectData({this.type,this.secondaryType,this.category}){
+  QuizObjectData({this.id,this.type,this.secondaryType,this.category}){
 
   }
 }
